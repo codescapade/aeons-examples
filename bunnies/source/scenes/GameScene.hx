@@ -1,5 +1,6 @@
 package scenes;
 
+import aeons.input.MouseButton;
 import aeons.Aeons;
 import aeons.graphics.atlas.Atlas;
 import aeons.core.Scene;
@@ -20,6 +21,8 @@ class GameScene extends Scene {
   var bunnies: Array<EBunny> = [];
 
   var addBunnies = false;
+
+  var removeBunnies = false;
 
   public override function init() {
     addSystem(new RenderSystem());
@@ -45,6 +48,14 @@ class GameScene extends Scene {
       for (i in 0...20) {
         createBunny();
       }
+    } else if (removeBunnies) {
+      for (i in 0...20) {
+        if (bunnies.length > 0) {
+          final bunny = bunnies.pop();
+          removeEntity(bunny, true);
+          bunnyCount.setText('Bunnies: ${bunnies.length}');
+        }
+      }
     }
   }
 
@@ -55,10 +66,18 @@ class GameScene extends Scene {
   }
 
   function mouseDown(event: MouseEvent) {
-    addBunnies = true;
+    if (event.button == LEFT) {
+      addBunnies = true;
+    } else if (event.button == RIGHT) {
+      removeBunnies = true;
+    }
   }
 
   function mouseUp(event: MouseEvent) {
-    addBunnies = false;
+    if (event.button == LEFT) {
+      addBunnies = false;
+    } else if (event.button == RIGHT) {
+      removeBunnies = false;
+    }
   }
 }
