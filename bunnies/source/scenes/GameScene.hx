@@ -1,14 +1,15 @@
 package scenes;
 
-import aeons.events.input.MouseEvent;
-import systems.BunnySystem;
-import entities.EBunny;
-import aeons.graphics.atlas.Atlas;
-import entities.EText;
-import entities.ECamera;
 import aeons.Aeons;
+import aeons.graphics.atlas.Atlas;
 import aeons.core.Scene;
+import aeons.events.input.MouseEvent;
 import aeons.systems.RenderSystem;
+
+import entities.EBunny;
+import entities.ECamera;
+import entities.EText;
+import systems.BunnySystem;
 
 class GameScene extends Scene {
 
