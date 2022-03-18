@@ -16,10 +16,10 @@ class EBunny extends Entity {
   public override function init(id: Int) {
     super.init(id);
 
-    addComponent(CTransform.get());
-    addComponent(CBunnyMove.get());
+    addComponent(new CTransform());
+    addComponent(new CBunnyMove());
     final color = Color.fromBytes(Aeons.random.int(0, 255), Aeons.random.int(0, 255), Aeons.random.int(0, 255));
     final atlas = Aeons.assets.getAtlas('atlas');
-    addComponent(CSprite.get({ atlas: atlas, frameName: 'bunny', color: color }));
+    addComponent(new CSprite({ atlas: atlas, frameName: 'bunny', color: color }));
   }
 }

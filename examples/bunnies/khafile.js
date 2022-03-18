@@ -19,4 +19,8 @@ project.addLibrary('aeons');
 
 project.addParameter('-dce full');
 
+project.targetOptions.html5.disableContextMenu = true;
+project.targetOptions.html5.canvasId = 'aeonsGame';
+project.targetOptions.html5.scriptName = 'aeons';
+
 resolve(project);

@@ -52,7 +52,7 @@ class GameScene extends Scene {
       for (i in 0...20) {
         if (bunnies.length > 0) {
           final bunny = bunnies.pop();
-          removeEntity(bunny, true);
+          removeEntity(bunny);
           bunnyCount.setText('Bunnies: ${bunnies.length}');
         }
       }
