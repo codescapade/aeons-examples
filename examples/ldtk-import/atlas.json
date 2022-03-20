@@ -1,0 +1,21 @@
+{
+  "configs": [
+    {
+      "name": "atlas",
+      "saveFolder": "assets",
+      "folders": ["atlasImages"],
+      "trimmed": true,
+      "extrude": 1,
+      "packMethod": "optimal"
+    },
+    {
+      "name": "tiles",
+      "saveFolder": "assets",
+      "folders": ["atlasImages/tiles"],
+      "trimmed": false,
+      "extrude": 1,
+      "packMethod": "basic",
+      "noData": true
+    }
+  ]
+}
