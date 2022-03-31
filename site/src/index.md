@@ -1,6 +1,6 @@
 ---
 layout: 'layouts/base.html'
-title: 'Some text'
+title: 'Aeons Examples'
 ---
 
 Some text here.
