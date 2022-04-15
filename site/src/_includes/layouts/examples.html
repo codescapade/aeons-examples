@@ -2,7 +2,17 @@
 
 {% block content %}
   <article>
-    <canvas id="aeonsGame" width="800" height="600" tabindex="-1"></canvas>
+    <div class="canvas-container">
+      <canvas id="aeonsGame" width="800" height="600" tabindex="-1"></canvas>
+    </div>
     <script src="aeons.js"></script>
+    <div class="title-source">
+      <div class="example-title">{{ title }}</div>
+      <a class="source-link" href="{{ source }}"><img class="source-github-logo" src="/static/github_logo.png"><span>Source</span></a>
+    </div>
+    {{ content | safe }}
+    <div class="back-link">
+      <a href="/">Back</a>
+    </div>
   </article>
 {% endblock %}

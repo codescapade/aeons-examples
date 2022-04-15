@@ -261,6 +261,7 @@ aeons_core_Entities.prototype = {
 	,getComponent: null
 	,getUpdateComponents: null
 	,getRenderComponents: null
+	,getDebugRenderComponents: null
 	,hasComponent: null
 	,hasBundleComponents: null
 	,__class__: aeons_core_Entities
@@ -364,12 +365,37 @@ aeons_assets_services_InternalAssets.__interfaces__ = [aeons_assets_Assets];
 aeons_assets_services_InternalAssets.prototype = {
 	atlasses: null
 	,getFont: function(name) {
-		return kha_Assets.fonts.get(name);
+		try {
+			return kha_Assets.fonts.get(name);
+		} catch( _g ) {
+			haxe_Log.trace("Font " + name + " is not loaded.",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 57, className : "aeons.assets.services.InternalAssets", methodName : "getFont"});
+			return null;
+		}
 	}
-	,loadAtlas: function(name,complete) {
-		var atlas = new aeons_graphics_atlas_Atlas(kha_Assets.images.get(name),kha_Assets.blobs.get("" + name + "_json").toString());
+	,loadAtlas: function(name) {
+		var image;
+		try {
+			image = kha_Assets.images.get(name);
+		} catch( _g ) {
+			haxe_Log.trace("Image " + name + " is not loaded.",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 39, className : "aeons.assets.services.InternalAssets", methodName : "getImage"});
+			image = null;
+		}
+		var image1 = image;
+		var name1 = "" + name + "_json";
+		var data;
+		try {
+			data = kha_Assets.blobs.get(name1);
+		} catch( _g ) {
+			haxe_Log.trace("Blob " + name1 + " is not loaded.",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 76, className : "aeons.assets.services.InternalAssets", methodName : "getBlob"});
+			data = null;
+		}
+		if(image1 == null || data == null) {
+			haxe_Log.trace("Unable to load atlas " + name + ".",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 124, className : "aeons.assets.services.InternalAssets", methodName : "loadAtlas"});
+			return null;
+		}
+		var atlas = new aeons_graphics_atlas_Atlas(image1,data.toString());
 		this.atlasses.h[name] = atlas;
-		complete(atlas);
+		return atlas;
 	}
 	,getAtlas: function(name) {
 		return this.atlasses.h[name];
@@ -560,6 +586,11 @@ aeons_components_CCamera.prototype = $extend(aeons_core_Component.prototype,{
 		}
 		this.tempMatrix = new kha_math_FastMatrix4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 	}
+	,cleanup: function() {
+		if(aeons_components_CCamera.main == this) {
+			aeons_components_CCamera.main = null;
+		}
+	}
 	,updateMatrix: function() {
 		this.updateBounds();
 		var _this = this.matrix;
@@ -696,6 +727,7 @@ aeons_components_CCamera.prototype = $extend(aeons_core_Component.prototype,{
 		_this._33 = m__331;
 	}
 	,put: function() {
+		aeons_core_Component.prototype.put.call(this);
 		if(aeons_components_CCamera.main == this) {
 			aeons_components_CCamera.main = null;
 		}
@@ -714,6 +746,23 @@ aeons_components_CCamera.prototype = $extend(aeons_core_Component.prototype,{
 		this.bounds.height = this.viewHeight / this.zoom;
 	}
 	,__class__: aeons_components_CCamera
+});
+var aeons_components_CDebugRender = function() {
+	aeons_core_Component.call(this);
+};
+$hxClasses["aeons.components.CDebugRender"] = aeons_components_CDebugRender;
+aeons_components_CDebugRender.__name__ = "aeons.components.CDebugRender";
+aeons_components_CDebugRender.__super__ = aeons_core_Component;
+aeons_components_CDebugRender.prototype = $extend(aeons_core_Component.prototype,{
+	components: null
+	,init: function(entityId) {
+		aeons_core_Component.prototype.init.call(this,entityId);
+		this.components = aeons_Aeons._entities.getDebugRenderComponents(entityId);
+	}
+	,put: function() {
+		aeons_components_CDebugRender.pool.put(this);
+	}
+	,__class__: aeons_components_CDebugRender
 });
 var aeons_components_CRender = function() {
 	aeons_core_Component.call(this);
@@ -794,9 +843,7 @@ aeons_components_CSprite.prototype = $extend(aeons_core_Component.prototype,{
 	,__class__: aeons_components_CSprite
 });
 var aeons_components_CText = function(options) {
-	this.bounds = new aeons_math_Rect();
 	aeons_core_Component.call(this);
-	this.bounds = new aeons_math_Rect();
 	if(options == null) {
 		this.text = "";
 		if(this.font == null) {
@@ -845,7 +892,6 @@ aeons_components_CText.prototype = $extend(aeons_core_Component.prototype,{
 	,width: null
 	,anchorX: null
 	,anchorY: null
-	,bounds: null
 	,render: function(target,cameraBounds) {
 		if(this.font == null) {
 			return;
@@ -886,7 +932,7 @@ var aeons_components_CTransform = function(options) {
 		this.parent = options.parent == null ? null : options.parent;
 		var value = options.zIndex == null ? 0.0 : options.zIndex;
 		this.zIndex = value;
-		aeons_Aeons._events.emit(aeons_events_SortEvent.get("aeons_sort_z"));
+		aeons_events_SortEvent.emit("aeons_sort_z");
 	} else {
 		this.changed = true;
 		this.x = 0.0;
@@ -899,7 +945,7 @@ var aeons_components_CTransform = function(options) {
 		this.changed = true;
 		this.scaleY = 1.0;
 		this.zIndex = 0.0;
-		aeons_Aeons._events.emit(aeons_events_SortEvent.get("aeons_sort_z"));
+		aeons_events_SortEvent.emit("aeons_sort_z");
 		this.parent = null;
 	}
 	this.changed = true;
@@ -944,6 +990,25 @@ aeons_components_CTransform.prototype = $extend(aeons_core_Component.prototype,{
 	,resetChanged: function() {
 		this.changed = false;
 	}
+	,parentToLocalPosition: function(position) {
+		if(this.angle == 0) {
+			if(this.scaleX == 1 && this.scaleY == 1) {
+				position.x -= this.x;
+				position.y -= this.y;
+			} else {
+				position.x = (position.x - this.x) / this.scaleX;
+				position.y = (position.y - this.y) / this.scaleY;
+			}
+		} else {
+			var cos = Math.cos(this.angle * (Math.PI / 180.0));
+			var sin = Math.sin(this.angle * (Math.PI / 180.0));
+			var toX = position.x - this.x;
+			var toY = position.y - this.y;
+			position.x = (toX * cos + toY * sin) / this.scaleX;
+			position.y = (toX * -sin + toY * cos) / this.scaleY;
+		}
+		return position;
+	}
 	,localToParentPosition: function(position) {
 		if(this.isCameraTransform) {
 			return position;
@@ -971,6 +1036,12 @@ aeons_components_CTransform.prototype = $extend(aeons_core_Component.prototype,{
 		while(p != null) {
 			p.localToParentPosition(position);
 			p = p.parent;
+		}
+		return position;
+	}
+	,worldToLocalPosition: function(position) {
+		if(this.parent != null) {
+			this.parent.parentToLocalPosition(position);
 		}
 		return position;
 	}
@@ -1081,8 +1152,13 @@ $hxClasses["aeons.core.BundleList"] = aeons_core_BundleList;
 aeons_core_BundleList.__name__ = "aeons.core.BundleList";
 aeons_core_BundleList.prototype = {
 	bundles: null
+	,bundleAdded: null
+	,bundleRemoved: null
 	,addBundle: function(bundle) {
 		this.bundles.unshift(bundle);
+		if(this.bundleAdded != null) {
+			this.bundleAdded(bundle);
+		}
 	}
 	,removeBundle: function(entity) {
 		var _g = 0;
@@ -1092,6 +1168,9 @@ aeons_core_BundleList.prototype = {
 			++_g;
 			if(bundle.entity == entity) {
 				HxOverrides.remove(this.bundles,bundle);
+				if(this.bundleRemoved != null) {
+					this.bundleRemoved(bundle);
+				}
 				break;
 			}
 		}
@@ -1110,6 +1189,10 @@ aeons_core_BundleList.prototype = {
 	}
 	,__class__: aeons_core_BundleList
 };
+var aeons_core_DebugRenderable = function() { };
+$hxClasses["aeons.core.DebugRenderable"] = aeons_core_DebugRenderable;
+aeons_core_DebugRenderable.__name__ = "aeons.core.DebugRenderable";
+aeons_core_DebugRenderable.__isInterface__ = true;
 var aeons_core_Entity = function() {
 };
 $hxClasses["aeons.core.Entity"] = aeons_core_Entity;
@@ -1315,6 +1398,7 @@ aeons_core_services_InternalDisplay.prototype = {
 var aeons_core_services_InternalEntities = function() {
 	this.nextEntityId = -1;
 	this.freeIds = [];
+	this.debugRenderComponents = [];
 	this.renderComponents = [];
 	this.updateComponents = [];
 	this.componentsToRemove = [];
@@ -1334,6 +1418,7 @@ aeons_core_services_InternalEntities.prototype = {
 	,componentsToRemove: null
 	,updateComponents: null
 	,renderComponents: null
+	,debugRenderComponents: null
 	,freeIds: null
 	,nextEntityId: null
 	,addEntity: function(entity) {
@@ -1402,6 +1487,25 @@ aeons_core_services_InternalEntities.prototype = {
 				this.renderComponents[entity.id].push(component);
 			}
 		}
+		if(js_Boot.__implements(component,aeons_core_DebugRenderable)) {
+			if(this.debugRenderComponents[entity.id] == null) {
+				this.debugRenderComponents[entity.id] = [component];
+				if(!this.hasComponent(entity.id,aeons_components_CDebugRender)) {
+					var renderComp = new aeons_components_CDebugRender();
+					var renderCompName = aeons_components_CDebugRender.__name__;
+					if(this.components.h[renderCompName] == null) {
+						var v = [];
+						this.components.h[renderCompName] = v;
+					}
+					this.components.h[renderCompName][entity.id] = renderComp;
+					renderComp.init(entity.id);
+					var renderEventType = "aeons_" + renderCompName + "_added";
+					this.componentsToAdd.push(aeons_events_ComponentEvent.get(renderEventType,entity));
+				}
+			} else {
+				this.debugRenderComponents[entity.id].push(component);
+			}
+		}
 		return component;
 	}
 	,getComponent: function(entityId,componentType) {
@@ -1425,6 +1529,12 @@ aeons_core_services_InternalEntities.prototype = {
 			return [];
 		}
 		return this.renderComponents[entityId];
+	}
+	,getDebugRenderComponents: function(entityId) {
+		if(this.debugRenderComponents[entityId] == null) {
+			return [];
+		}
+		return this.debugRenderComponents[entityId];
 	}
 	,hasComponent: function(entityId,componentType) {
 		var name = componentType.__name__;
@@ -1487,8 +1597,14 @@ aeons_core_services_InternalEntities.prototype = {
 						this.renderComponents[entityInfo.entity.id] = null;
 					}
 				}
+				if(js_Boot.__implements(component,aeons_core_DebugRenderable)) {
+					HxOverrides.remove(this.debugRenderComponents[entityInfo.entity.id],component);
+					if(this.debugRenderComponents[entityInfo.entity.id].length == 0) {
+						this.debugRenderComponents[entityInfo.entity.id] = null;
+					}
+				}
 				var eventType = "aeons_" + name + "_removed";
-				aeons_Aeons._events.emit(aeons_events_ComponentEvent.get(eventType,entityInfo.entity));
+				aeons_events_ComponentEvent.emit(eventType,entityInfo.entity);
 				if(entityInfo.pool) {
 					component.put();
 				} else {
@@ -1503,7 +1619,7 @@ aeons_core_services_InternalEntities.prototype = {
 			var update = this.componentsToRemove.pop();
 			var eventType = "aeons_" + update.componentName + "_removed";
 			this.components.h[update.componentName][update.entity.id] = null;
-			aeons_Aeons._events.emit(aeons_events_ComponentEvent.get(eventType,update.entity));
+			aeons_events_ComponentEvent.emit(eventType,update.entity);
 			if(update.pool) {
 				update.component.put();
 			} else {
@@ -1517,7 +1633,7 @@ aeons_core_services_InternalEntities.prototype = {
 					var updateCompName = aeons_components_CUpdate.__name__;
 					eventType = "aeons_" + updateCompName + "_removed";
 					this.components.h[updateCompName][update.entity.id] = null;
-					aeons_Aeons._events.emit(aeons_events_ComponentEvent.get(eventType,update.entity));
+					aeons_events_ComponentEvent.emit(eventType,update.entity);
 					updateComp.cleanup();
 				}
 			}
@@ -1529,8 +1645,20 @@ aeons_core_services_InternalEntities.prototype = {
 					var renderCompName = aeons_components_CRender.__name__;
 					eventType = "aeons_" + renderCompName + "_removed";
 					this.components.h[renderCompName][update.entity.id] = null;
-					aeons_Aeons._events.emit(aeons_events_ComponentEvent.get(eventType,update.entity));
+					aeons_events_ComponentEvent.emit(eventType,update.entity);
 					renderComp.cleanup();
+				}
+			}
+			if(js_Boot.__implements(update.component,aeons_core_DebugRenderable)) {
+				HxOverrides.remove(this.debugRenderComponents[update.entity.id],update.component);
+				if(this.debugRenderComponents[update.entity.id].length == 0) {
+					this.debugRenderComponents[update.entity.id] = null;
+					var renderComp1 = this.getComponent(update.entity.id,aeons_components_CDebugRender);
+					var renderCompName1 = aeons_components_CDebugRender.__name__;
+					eventType = "aeons_" + renderCompName1 + "_removed";
+					this.components.h[renderCompName1][update.entity.id] = null;
+					aeons_events_ComponentEvent.emit(eventType,update.entity);
+					renderComp1.cleanup();
 				}
 			}
 		}
@@ -1573,6 +1701,7 @@ aeons_core_services_EntityRemovedInfo.prototype = {
 	,__class__: aeons_core_services_EntityRemovedInfo
 };
 var aeons_core_services_InternalSystems = function() {
+	this.debugRenderSystems = [];
 	this.renderSystems = [];
 	this.updateSystems = [];
 	this.systemMap = new haxe_ds_StringMap();
@@ -1584,6 +1713,7 @@ aeons_core_services_InternalSystems.prototype = {
 	systemMap: null
 	,updateSystems: null
 	,renderSystems: null
+	,debugRenderSystems: null
 	,add: function(system) {
 		var systemClass = js_Boot.getClass(system);
 		var name = systemClass.__name__;
@@ -1596,6 +1726,9 @@ aeons_core_services_InternalSystems.prototype = {
 		}
 		if(js_Boot.__implements(system,aeons_core_SysRenderable)) {
 			this.renderSystems.push(system);
+		}
+		if(js_Boot.__implements(system,aeons_core_DebugRenderable)) {
+			this.debugRenderSystems.push(system);
 		}
 		system.init();
 		return system;
@@ -1644,6 +1777,10 @@ aeons_events_ComponentEvent.get = function(type,entity) {
 	event.init(type,entity);
 	return event;
 };
+aeons_events_ComponentEvent.emit = function(type,entity) {
+	var event = aeons_events_ComponentEvent.get(type,entity);
+	aeons_Aeons._events.emit(event);
+};
 aeons_events_ComponentEvent.__super__ = aeons_events_Event;
 aeons_events_ComponentEvent.prototype = $extend(aeons_events_Event.prototype,{
 	entity: null
@@ -1671,6 +1808,7 @@ aeons_events_EventHandler.prototype = {
 	,__class__: aeons_events_EventHandler
 };
 var aeons_events_SceneEvent = function() {
+	this.userData = null;
 	aeons_events_Event.call(this);
 };
 $hxClasses["aeons.events.SceneEvent"] = aeons_events_SceneEvent;
@@ -1695,6 +1833,10 @@ aeons_events_SortEvent.get = function(type) {
 	event.init(type);
 	return event;
 };
+aeons_events_SortEvent.emit = function(type) {
+	var event = aeons_events_SortEvent.get(type);
+	aeons_Aeons._events.emit(event);
+};
 aeons_events_SortEvent.__super__ = aeons_events_Event;
 aeons_events_SortEvent.prototype = $extend(aeons_events_Event.prototype,{
 	init: function(type) {
@@ -1707,14 +1849,39 @@ aeons_events_SortEvent.prototype = $extend(aeons_events_Event.prototype,{
 	,__class__: aeons_events_SortEvent
 });
 var aeons_events_input_GamepadEvent = function() {
+	this.value = 0.0;
+	this.button = -1;
+	this.axis = -1;
 	aeons_events_Event.call(this);
 };
 $hxClasses["aeons.events.input.GamepadEvent"] = aeons_events_input_GamepadEvent;
 aeons_events_input_GamepadEvent.__name__ = "aeons.events.input.GamepadEvent";
 aeons_events_input_GamepadEvent.get = function(type,id,axis,button,value) {
+	if(value == null) {
+		value = 0.0;
+	}
+	if(button == null) {
+		button = -1;
+	}
+	if(axis == null) {
+		axis = -1;
+	}
 	var event = aeons_events_input_GamepadEvent.pool.get();
 	event.init(type,id,axis,button,value);
 	return event;
+};
+aeons_events_input_GamepadEvent.emit = function(type,id,axis,button,value) {
+	if(value == null) {
+		value = 0.0;
+	}
+	if(button == null) {
+		button = -1;
+	}
+	if(axis == null) {
+		axis = -1;
+	}
+	var event = aeons_events_input_GamepadEvent.get(type,id,axis,button,value);
+	aeons_Aeons._events.emit(event);
 };
 aeons_events_input_GamepadEvent.__super__ = aeons_events_Event;
 aeons_events_input_GamepadEvent.prototype = $extend(aeons_events_Event.prototype,{
@@ -1723,6 +1890,15 @@ aeons_events_input_GamepadEvent.prototype = $extend(aeons_events_Event.prototype
 	,button: null
 	,value: null
 	,init: function(type,id,axis,button,value) {
+		if(value == null) {
+			value = 0.0;
+		}
+		if(button == null) {
+			button = -1;
+		}
+		if(axis == null) {
+			axis = -1;
+		}
 		this.type = type;
 		this.id = id;
 		this.axis = axis;
@@ -1745,6 +1921,10 @@ aeons_events_input_KeyboardEvent.get = function(type,key) {
 	event.init(type,key);
 	return event;
 };
+aeons_events_input_KeyboardEvent.emit = function(type,key) {
+	var event = aeons_events_input_KeyboardEvent.get(type,key);
+	aeons_Aeons._events.emit(event);
+};
 aeons_events_input_KeyboardEvent.__super__ = aeons_events_Event;
 aeons_events_input_KeyboardEvent.prototype = $extend(aeons_events_Event.prototype,{
 	key: null
@@ -1759,14 +1939,67 @@ aeons_events_input_KeyboardEvent.prototype = $extend(aeons_events_Event.prototyp
 	,__class__: aeons_events_input_KeyboardEvent
 });
 var aeons_events_input_MouseEvent = function() {
+	this.leave = false;
+	this.scrollDirection = 0;
+	this.deltaY = 0;
+	this.deltaX = 0;
+	this.y = 0;
+	this.x = 0;
+	this.button = -1;
 	aeons_events_Event.call(this);
 };
 $hxClasses["aeons.events.input.MouseEvent"] = aeons_events_input_MouseEvent;
 aeons_events_input_MouseEvent.__name__ = "aeons.events.input.MouseEvent";
 aeons_events_input_MouseEvent.get = function(type,button,x,y,deltaX,deltaY,scrollDirection,leave) {
+	if(leave == null) {
+		leave = false;
+	}
+	if(scrollDirection == null) {
+		scrollDirection = 0;
+	}
+	if(deltaY == null) {
+		deltaY = 0;
+	}
+	if(deltaX == null) {
+		deltaX = 0;
+	}
+	if(y == null) {
+		y = 0;
+	}
+	if(x == null) {
+		x = 0;
+	}
+	if(button == null) {
+		button = -1;
+	}
 	var event = aeons_events_input_MouseEvent.pool.get();
 	event.init(type,button,x,y,deltaX,deltaY,scrollDirection,leave);
 	return event;
+};
+aeons_events_input_MouseEvent.emit = function(type,button,x,y,deltaX,deltaY,scrollDirection,leave) {
+	if(leave == null) {
+		leave = false;
+	}
+	if(scrollDirection == null) {
+		scrollDirection = 0;
+	}
+	if(deltaY == null) {
+		deltaY = 0;
+	}
+	if(deltaX == null) {
+		deltaX = 0;
+	}
+	if(y == null) {
+		y = 0;
+	}
+	if(x == null) {
+		x = 0;
+	}
+	if(button == null) {
+		button = -1;
+	}
+	var event = aeons_events_input_MouseEvent.get(type,button,x,y,deltaX,deltaY,scrollDirection,leave);
+	aeons_Aeons._events.emit(event);
 };
 aeons_events_input_MouseEvent.__super__ = aeons_events_Event;
 aeons_events_input_MouseEvent.prototype = $extend(aeons_events_Event.prototype,{
@@ -1778,6 +2011,27 @@ aeons_events_input_MouseEvent.prototype = $extend(aeons_events_Event.prototype,{
 	,scrollDirection: null
 	,leave: null
 	,init: function(type,button,x,y,deltaX,deltaY,scrollDirection,leave) {
+		if(leave == null) {
+			leave = false;
+		}
+		if(scrollDirection == null) {
+			scrollDirection = 0;
+		}
+		if(deltaY == null) {
+			deltaY = 0;
+		}
+		if(deltaX == null) {
+			deltaX = 0;
+		}
+		if(y == null) {
+			y = 0;
+		}
+		if(x == null) {
+			x = 0;
+		}
+		if(button == null) {
+			button = -1;
+		}
 		this.type = type;
 		this.button = button;
 		this.x = x;
@@ -1802,6 +2056,10 @@ aeons_events_input_TouchEvent.get = function(type,id,x,y) {
 	var event = aeons_events_input_TouchEvent.pool.get();
 	event.init(type,id,x,y);
 	return event;
+};
+aeons_events_input_TouchEvent.emit = function(type,id,x,y) {
+	var event = aeons_events_input_TouchEvent.get(type,id,x,y);
+	aeons_Aeons._events.emit(event);
 };
 aeons_events_input_TouchEvent.__super__ = aeons_events_Event;
 aeons_events_input_TouchEvent.prototype = $extend(aeons_events_Event.prototype,{
@@ -2534,28 +2792,28 @@ aeons_input_Input.prototype = {
 	,setupGamepads: function() {
 		var _gthis = this;
 		this.gpa0 = function(axis,value) {
-			aeons_Aeons._events.emit(aeons_events_input_GamepadEvent.get("aeons_gamepad_axis",0,axis,-1,value));
+			aeons_events_input_GamepadEvent.emit("aeons_gamepad_axis",0,axis,-1,value);
 		};
 		this.gpa1 = function(axis,value) {
-			aeons_Aeons._events.emit(aeons_events_input_GamepadEvent.get("aeons_gamepad_axis",1,axis,-1,value));
+			aeons_events_input_GamepadEvent.emit("aeons_gamepad_axis",1,axis,-1,value);
 		};
 		this.gpa2 = function(axis,value) {
-			aeons_Aeons._events.emit(aeons_events_input_GamepadEvent.get("aeons_gamepad_axis",2,axis,-1,value));
+			aeons_events_input_GamepadEvent.emit("aeons_gamepad_axis",2,axis,-1,value);
 		};
 		this.gpa3 = function(axis,value) {
-			aeons_Aeons._events.emit(aeons_events_input_GamepadEvent.get("aeons_gamepad_axis",3,axis,-1,value));
+			aeons_events_input_GamepadEvent.emit("aeons_gamepad_axis",3,axis,-1,value);
 		};
 		this.gpb0 = function(button,value) {
-			aeons_Aeons._events.emit(aeons_events_input_GamepadEvent.get("aeons_gamepad_button",0,-1,button,value));
+			aeons_events_input_GamepadEvent.emit("aeons_gamepad_button",0,-1,button,value);
 		};
 		this.gpb1 = function(button,value) {
-			aeons_Aeons._events.emit(aeons_events_input_GamepadEvent.get("aeons_gamepad_button",1,-1,button,value));
+			aeons_events_input_GamepadEvent.emit("aeons_gamepad_button",1,-1,button,value);
 		};
 		this.gpb2 = function(button,value) {
-			aeons_Aeons._events.emit(aeons_events_input_GamepadEvent.get("aeons_gamepad_button",2,-1,button,value));
+			aeons_events_input_GamepadEvent.emit("aeons_gamepad_button",2,-1,button,value);
 		};
 		this.gpb3 = function(button,value) {
-			aeons_Aeons._events.emit(aeons_events_input_GamepadEvent.get("aeons_gamepad_button",3,-1,button,value));
+			aeons_events_input_GamepadEvent.emit("aeons_gamepad_button",3,-1,button,value);
 		};
 		kha_input_Gamepad.notifyOnConnect($bind(this,this.gamepadConnected),$bind(this,this.gamepadDisconnected));
 		kha_input_Gamepad.get(0).notify(this.gpa0,this.gpb0);
@@ -2564,40 +2822,40 @@ aeons_input_Input.prototype = {
 		kha_input_Gamepad.get(3).notify(this.gpa3,this.gpb3);
 	}
 	,keyDown: function(key) {
-		aeons_Aeons._events.emit(aeons_events_input_KeyboardEvent.get("aeons_key_down",key));
+		aeons_events_input_KeyboardEvent.emit("aeons_key_down",key);
 	}
 	,keyUp: function(key) {
-		aeons_Aeons._events.emit(aeons_events_input_KeyboardEvent.get("aeons_key_up",key));
+		aeons_events_input_KeyboardEvent.emit("aeons_key_up",key);
 	}
 	,mouseDown: function(button,x,y) {
-		aeons_Aeons._events.emit(aeons_events_input_MouseEvent.get("aeons_mouse_down",button,x,y,0,0,0,false));
+		aeons_events_input_MouseEvent.emit("aeons_mouse_down",button,x,y);
 	}
 	,mouseUp: function(button,x,y) {
-		aeons_Aeons._events.emit(aeons_events_input_MouseEvent.get("aeons_mouse_up",button,x,y,0,0,0,false));
+		aeons_events_input_MouseEvent.emit("aeons_mouse_up",button,x,y);
 	}
 	,mouseMove: function(x,y,deltaX,deltaY) {
-		aeons_Aeons._events.emit(aeons_events_input_MouseEvent.get("aeons_mouse_move",-1,x,y,deltaX,deltaY,0,false));
+		aeons_events_input_MouseEvent.emit("aeons_mouse_move",-1,x,y,deltaX,deltaY);
 	}
 	,mouseScroll: function(direction) {
-		aeons_Aeons._events.emit(aeons_events_input_MouseEvent.get("aeons_mouse_scroll",-1,0,0,0,0,direction,false));
+		aeons_events_input_MouseEvent.emit("aeons_mouse_scroll",-1,0,0,0,0,direction);
 	}
 	,mouseLeave: function() {
-		aeons_Aeons._events.emit(aeons_events_input_MouseEvent.get("aeons_mouse_leave",-1,0,0,0,0,0,true));
+		aeons_events_input_MouseEvent.emit("aeons_mouse_leave",-1,0,0,0,0,0,true);
 	}
 	,touchStart: function(id,x,y) {
-		aeons_Aeons._events.emit(aeons_events_input_TouchEvent.get("aeons_touch_start",id,x,y));
+		aeons_events_input_TouchEvent.emit("aeons_touch_start",id,x,y);
 	}
 	,touchEnd: function(id,x,y) {
-		aeons_Aeons._events.emit(aeons_events_input_TouchEvent.get("aeons_touch_end",id,x,y));
+		aeons_events_input_TouchEvent.emit("aeons_touch_end",id,x,y);
 	}
 	,touchMove: function(id,x,y) {
-		aeons_Aeons._events.emit(aeons_events_input_TouchEvent.get("aeons_touch_move",id,x,y));
+		aeons_events_input_TouchEvent.emit("aeons_touch_move",id,x,y);
 	}
 	,gamepadConnected: function(id) {
-		aeons_Aeons._events.emit(aeons_events_input_GamepadEvent.get("aeons_gamepad_connected",id,-1,-1,0.0));
+		aeons_events_input_GamepadEvent.emit("aeons_gamepad_connected",id);
 	}
 	,gamepadDisconnected: function(id) {
-		aeons_Aeons._events.emit(aeons_events_input_GamepadEvent.get("aeons_gamepad_disconnected",id,-1,-1,0.0));
+		aeons_events_input_GamepadEvent.emit("aeons_gamepad_disconnected",id);
 	}
 	,__class__: aeons_input_Input
 };
@@ -2903,7 +3161,9 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 			camera.updateMatrix();
 			var camTransform = camBundle.c_transform;
 			var camTarget = camera.renderTarget;
-			camTarget.start();
+			var localBounds = new aeons_math_Rect(0,0,camera.bounds.width,camera.bounds.height);
+			var boundsPos = aeons_math_Vector2.get();
+			camTarget.start(true,camera.backgroundColor);
 			var _g1_current1 = 0;
 			var _g1_array1 = this.renderBundles.bundles;
 			while(_g1_current1 < _g1_array1.length) {
@@ -2964,8 +3224,14 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 					_this1._23 = m__23;
 					_this1._33 = m__33;
 				}
-				renderable.c_render.render(camTarget,camera.bounds);
+				boundsPos.x = camera.bounds.x;
+				boundsPos.y = camera.bounds.y;
+				renderable.c_transform.worldToLocalPosition(boundsPos);
+				localBounds.x = boundsPos.x;
+				localBounds.y = boundsPos.y;
+				renderable.c_render.render(camTarget,localBounds);
 			}
+			aeons_math_Vector2.pool.put(boundsPos);
 			camTarget.present();
 		}
 		var _g2_current = 0;
@@ -4474,135 +4740,6 @@ var haxe_io_Encoding = $hxEnums["haxe.io.Encoding"] = { __ename__:true,__constru
 	,RawNative: {_hx_name:"RawNative",_hx_index:1,__enum__:"haxe.io.Encoding",toString:$estr}
 };
 haxe_io_Encoding.__constructs__ = [haxe_io_Encoding.UTF8,haxe_io_Encoding.RawNative];
-var haxe_ds_ArraySort = function() { };
-$hxClasses["haxe.ds.ArraySort"] = haxe_ds_ArraySort;
-haxe_ds_ArraySort.__name__ = "haxe.ds.ArraySort";
-haxe_ds_ArraySort.sort = function(a,cmp) {
-	haxe_ds_ArraySort.rec(a,cmp,0,a.length);
-};
-haxe_ds_ArraySort.rec = function(a,cmp,from,to) {
-	var middle = from + to >> 1;
-	if(to - from < 12) {
-		if(to <= from) {
-			return;
-		}
-		var _g = from + 1;
-		var _g1 = to;
-		while(_g < _g1) {
-			var i = _g++;
-			var j = i;
-			while(j > from) {
-				if(cmp(a[j],a[j - 1]) < 0) {
-					haxe_ds_ArraySort.swap(a,j - 1,j);
-				} else {
-					break;
-				}
-				--j;
-			}
-		}
-		return;
-	}
-	haxe_ds_ArraySort.rec(a,cmp,from,middle);
-	haxe_ds_ArraySort.rec(a,cmp,middle,to);
-	haxe_ds_ArraySort.doMerge(a,cmp,from,middle,to,middle - from,to - middle);
-};
-haxe_ds_ArraySort.doMerge = function(a,cmp,from,pivot,to,len1,len2) {
-	var first_cut;
-	var second_cut;
-	var len11;
-	var len22;
-	if(len1 == 0 || len2 == 0) {
-		return;
-	}
-	if(len1 + len2 == 2) {
-		if(cmp(a[pivot],a[from]) < 0) {
-			haxe_ds_ArraySort.swap(a,pivot,from);
-		}
-		return;
-	}
-	if(len1 > len2) {
-		len11 = len1 >> 1;
-		first_cut = from + len11;
-		second_cut = haxe_ds_ArraySort.lower(a,cmp,pivot,to,first_cut);
-		len22 = second_cut - pivot;
-	} else {
-		len22 = len2 >> 1;
-		second_cut = pivot + len22;
-		first_cut = haxe_ds_ArraySort.upper(a,cmp,from,pivot,second_cut);
-		len11 = first_cut - from;
-	}
-	haxe_ds_ArraySort.rotate(a,cmp,first_cut,pivot,second_cut);
-	var new_mid = first_cut + len22;
-	haxe_ds_ArraySort.doMerge(a,cmp,from,first_cut,new_mid,len11,len22);
-	haxe_ds_ArraySort.doMerge(a,cmp,new_mid,second_cut,to,len1 - len11,len2 - len22);
-};
-haxe_ds_ArraySort.rotate = function(a,cmp,from,mid,to) {
-	if(from == mid || mid == to) {
-		return;
-	}
-	var n = haxe_ds_ArraySort.gcd(to - from,mid - from);
-	while(n-- != 0) {
-		var val = a[from + n];
-		var shift = mid - from;
-		var p1 = from + n;
-		var p2 = from + n + shift;
-		while(p2 != from + n) {
-			a[p1] = a[p2];
-			p1 = p2;
-			if(to - p2 > shift) {
-				p2 += shift;
-			} else {
-				p2 = from + (shift - (to - p2));
-			}
-		}
-		a[p1] = val;
-	}
-};
-haxe_ds_ArraySort.gcd = function(m,n) {
-	while(n != 0) {
-		var t = m % n;
-		m = n;
-		n = t;
-	}
-	return m;
-};
-haxe_ds_ArraySort.upper = function(a,cmp,from,to,val) {
-	var len = to - from;
-	var half;
-	var mid;
-	while(len > 0) {
-		half = len >> 1;
-		mid = from + half;
-		if(cmp(a[val],a[mid]) < 0) {
-			len = half;
-		} else {
-			from = mid + 1;
-			len = len - half - 1;
-		}
-	}
-	return from;
-};
-haxe_ds_ArraySort.lower = function(a,cmp,from,to,val) {
-	var len = to - from;
-	var half;
-	var mid;
-	while(len > 0) {
-		half = len >> 1;
-		mid = from + half;
-		if(cmp(a[mid],a[val]) < 0) {
-			from = mid + 1;
-			len = len - half - 1;
-		} else {
-			len = half;
-		}
-	}
-	return from;
-};
-haxe_ds_ArraySort.swap = function(a,i,j) {
-	var tmp = a[i];
-	a[i] = a[j];
-	a[j] = tmp;
-};
 var haxe_ds_IntMap = function() {
 	this.h = { };
 };
@@ -4785,7 +4922,7 @@ haxe_io_Input.__name__ = "haxe.io.Input";
 haxe_io_Input.prototype = {
 	bigEndian: null
 	,readByte: function() {
-		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/KhaBundled/Tools/haxe/std/haxe/io/Input.hx", lineNumber : 53, className : "haxe.io.Input", methodName : "readByte"});
+		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/Kha/Tools/haxe/std/haxe/io/Input.hx", lineNumber : 53, className : "haxe.io.Input", methodName : "readByte"});
 	}
 	,readBytes: function(s,pos,len) {
 		var k = len;
@@ -4917,7 +5054,7 @@ haxe_io_Output.__name__ = "haxe.io.Output";
 haxe_io_Output.prototype = {
 	bigEndian: null
 	,writeByte: function(c) {
-		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/KhaBundled/Tools/haxe/std/haxe/io/Output.hx", lineNumber : 47, className : "haxe.io.Output", methodName : "writeByte"});
+		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/Kha/Tools/haxe/std/haxe/io/Output.hx", lineNumber : 47, className : "haxe.io.Output", methodName : "writeByte"});
 	}
 	,writeBytes: function(s,pos,len) {
 		if(pos < 0 || len < 0 || pos + len > s.length) {
@@ -5351,7 +5488,7 @@ kha_Assets.loadEverything = function(callback,filter,uncompressSoundsFilter,fail
 		}
 	};
 	var onError = function(err,bytes) {
-		(kha_Assets.reporter(failed,{ fileName : "lib/KhaBundled/Sources/kha/Assets.hx", lineNumber : 116, className : "kha.Assets", methodName : "loadEverything"}))(err);
+		(kha_Assets.reporter(failed,{ fileName : "lib/Kha/Sources/kha/Assets.hx", lineNumber : 116, className : "kha.Assets", methodName : "loadEverything"}))(err);
 		onLoaded(bytes);
 	};
 	var loadFunc = function(desc,done,failure) {
@@ -5363,21 +5500,21 @@ kha_Assets.loadEverything = function(callback,filter,uncompressSoundsFilter,fail
 				done(size);
 			},function(err) {
 				onError(err,size);
-			},{ fileName : "lib/KhaBundled/Sources/kha/Assets.hx", lineNumber : 142, className : "kha.Assets", methodName : "loadEverything"});
+			},{ fileName : "lib/Kha/Sources/kha/Assets.hx", lineNumber : 142, className : "kha.Assets", methodName : "loadEverything"});
 			break;
 		case "font":
 			kha_Assets.loadFont(name,function(font) {
 				done(size);
 			},function(err) {
 				onError(err,size);
-			},{ fileName : "lib/KhaBundled/Sources/kha/Assets.hx", lineNumber : 146, className : "kha.Assets", methodName : "loadEverything"});
+			},{ fileName : "lib/Kha/Sources/kha/Assets.hx", lineNumber : 146, className : "kha.Assets", methodName : "loadEverything"});
 			break;
 		case "image":
 			kha_Assets.loadImage(name,function(image) {
 				done(size);
 			},function(err) {
 				onError(err,size);
-			},{ fileName : "lib/KhaBundled/Sources/kha/Assets.hx", lineNumber : 125, className : "kha.Assets", methodName : "loadEverything"});
+			},{ fileName : "lib/Kha/Sources/kha/Assets.hx", lineNumber : 125, className : "kha.Assets", methodName : "loadEverything"});
 			break;
 		case "sound":
 			kha_Assets.loadSound(name,function(sound) {
@@ -5390,14 +5527,14 @@ kha_Assets.loadEverything = function(callback,filter,uncompressSoundsFilter,fail
 				}
 			},function(err) {
 				onError(err,size);
-			},{ fileName : "lib/KhaBundled/Sources/kha/Assets.hx", lineNumber : 129, className : "kha.Assets", methodName : "loadEverything"});
+			},{ fileName : "lib/Kha/Sources/kha/Assets.hx", lineNumber : 129, className : "kha.Assets", methodName : "loadEverything"});
 			break;
 		case "video":
 			kha_Assets.loadVideo(name,function(video) {
 				done(size);
 			},function(err) {
 				onError(err,size);
-			},{ fileName : "lib/KhaBundled/Sources/kha/Assets.hx", lineNumber : 150, className : "kha.Assets", methodName : "loadEverything"});
+			},{ fileName : "lib/Kha/Sources/kha/Assets.hx", lineNumber : 150, className : "kha.Assets", methodName : "loadEverything"});
 			break;
 		}
 	};
@@ -6465,11 +6602,6 @@ kha_Scheduler.start = function(restartTimers) {
 		restartTimers = false;
 	}
 	kha_Scheduler.vsync = kha_Window.get(0).get_vSynced();
-	var hz = kha_Display.get_primary().get_frequency();
-	if(hz >= 57 && hz <= 63) {
-		hz = 60;
-	}
-	kha_Scheduler.onedifhz = 1.0 / hz;
 	kha_Scheduler.stopped = false;
 	kha_Scheduler.resetTime();
 	kha_Scheduler.lastTime = kha_Scheduler.realTime() - kha_Scheduler.startTime;
@@ -6509,11 +6641,11 @@ kha_Scheduler.executeFrame = function() {
 				delta = kha_Scheduler.maxframetime;
 				frameEnd += delta;
 			} else if(kha_Scheduler.vsync) {
-				var frames = Math.round(delta / kha_Scheduler.onedifhz);
+				var frames = Math.round(delta / (1.0 / kha_Display.get_primary().get_frequency()));
 				if(frames < 1) {
 					return;
 				}
-				var realdif = frames * kha_Scheduler.onedifhz;
+				var realdif = frames * (1.0 / kha_Display.get_primary().get_frequency());
 				delta = realdif;
 				var _g = 0;
 				var _g1 = kha_Scheduler.DIF_COUNT - 2;
@@ -7280,7 +7412,7 @@ kha_SystemImpl.loadFinished = function(defaultWidth,defaultHeight) {
 		kha_SystemImpl.gl2 = true;
 		kha_Shaders.init();
 	} catch( _g ) {
-		haxe_Log.trace("Could not initialize WebGL 2, falling back to WebGL.",{ fileName : "lib/KhaBundled/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 376, className : "kha.SystemImpl", methodName : "loadFinished"});
+		haxe_Log.trace("Could not initialize WebGL 2, falling back to WebGL.",{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 378, className : "kha.SystemImpl", methodName : "loadFinished"});
 	}
 	if(!kha_SystemImpl.gl2) {
 		try {
@@ -7302,7 +7434,7 @@ kha_SystemImpl.loadFinished = function(defaultWidth,defaultHeight) {
 			gl = true;
 			kha_Shaders.init();
 		} catch( _g ) {
-			haxe_Log.trace("Could not initialize WebGL, falling back to <canvas>.",{ fileName : "lib/KhaBundled/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 404, className : "kha.SystemImpl", methodName : "loadFinished"});
+			haxe_Log.trace("Could not initialize WebGL, falling back to <canvas>.",{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 406, className : "kha.SystemImpl", methodName : "loadFinished"});
 		}
 	}
 	kha_SystemImpl.setCanvas(canvas);
@@ -7383,11 +7515,21 @@ kha_SystemImpl.initAnimate = function(callback) {
 	if(requestAnimationFrame == null) {
 		requestAnimationFrame = $window.msRequestAnimationFrame;
 	}
+	var isRefreshRateDetectionActive = false;
+	var lastTimestamp = 0.0;
+	var possibleRefreshRates = [30,60,75,90,120,144,240,340,360];
+	var _g = [];
+	var _g1 = 0;
+	var _g2 = possibleRefreshRates.length;
+	while(_g1 < _g2) {
+		var _ = _g1++;
+		_g.push(0);
+	}
+	var refreshRatesCounts = _g;
 	var animate = null;
 	animate = function(timestamp) {
-		var $window = window;
 		if(requestAnimationFrame == null) {
-			$window.setTimeout(animate,16.666666666666668);
+			window.setTimeout(animate,16.666666666666668);
 		} else {
 			requestAnimationFrame(animate);
 		}
@@ -7405,11 +7547,18 @@ kha_SystemImpl.initAnimate = function(callback) {
 		}
 		kha_Scheduler.executeFrame();
 		if(canvas.getContext != null) {
-			var displayWidth = canvas.clientWidth | 0;
-			var displayHeight = canvas.clientHeight | 0;
-			if(canvas.width != displayWidth || canvas.height != displayHeight) {
-				canvas.width = displayWidth;
-				canvas.height = displayHeight;
+			if(kha_SystemImpl.lastCanvasClientWidth != canvas.clientWidth || kha_SystemImpl.lastCanvasClientHeight != canvas.clientHeight) {
+				var scale = window.devicePixelRatio;
+				var clientWidth = canvas.clientWidth;
+				var clientHeight = canvas.clientHeight;
+				canvas.width = clientWidth;
+				canvas.height = clientHeight;
+				if(scale != 1) {
+					canvas.style.width = (clientWidth / scale | 0) + "px";
+					canvas.style.height = (clientHeight / scale | 0) + "px";
+				}
+				kha_SystemImpl.lastCanvasClientWidth = canvas.clientWidth;
+				kha_SystemImpl.lastCanvasClientHeight = canvas.clientHeight;
 			}
 			kha_System.render([kha_SystemImpl.frame]);
 			if(kha_SystemImpl.gl != null) {
@@ -7419,88 +7568,54 @@ kha_SystemImpl.initAnimate = function(callback) {
 				kha_SystemImpl.gl.colorMask(true,true,true,true);
 			}
 		}
-	};
-	var initialTimestamp = 0;
-	var prevTimestamp = 0;
-	var currentSamples = 0;
-	var timeDiffs = [];
-	var SAMPLE_COUNT = 90;
-	var MEAN_TRUNCATION_CUTOFF = 0.33333333333333331;
-	var roundToKnownRefreshRate = function(hz) {
-		var hz30 = { low : 27, high : 33, target : 30};
-		var hz60 = { low : 57, high : 63, target : 60};
-		var hz75 = { low : 72, high : 78, target : 75};
-		var hz90 = { low : 87, high : 93, target : 90};
-		var hz120 = { low : 117, high : 123, target : 120};
-		var hz144 = { low : 141, high : 147, target : 144};
-		var hz240 = { low : 237, high : 243, target : 240};
-		var hz340 = { low : 337, high : 343, target : 340};
-		var hz360 = { low : 357, high : 363, target : 360};
-		var rates = [hz30,hz60,hz75,hz90,hz120,hz144,hz240,hz340,hz360];
-		var nearestHz = hz;
-		var _g = 0;
-		while(_g < rates.length) {
-			var rate = rates[_g];
-			++_g;
-			if(hz >= rate.low && hz <= rate.high) {
-				nearestHz = rate.target;
-			}
+		if(!isRefreshRateDetectionActive) {
+			return;
 		}
-		return nearestHz;
-	};
-	var detectRefreshRate = null;
-	detectRefreshRate = function(timestamp) {
-		var $window = window;
-		if(initialTimestamp == 0) {
-			initialTimestamp = timestamp;
+		if(lastTimestamp == 0) {
+			lastTimestamp = timestamp;
+			return;
 		}
-		var timeDifferential = timestamp - prevTimestamp - initialTimestamp;
-		prevTimestamp = timestamp - initialTimestamp;
-		if(timeDifferential != 0) {
-			timeDiffs.push(timeDifferential);
+		var fps = Math.floor(1000 / (timestamp - lastTimestamp));
+		if(kha_SystemImpl.estimatedRefreshRate < fps) {
+			kha_SystemImpl.estimatedRefreshRate = fps;
 		}
-		if(currentSamples < SAMPLE_COUNT) {
-			currentSamples += 1;
-			if(requestAnimationFrame == null) {
-				$window.setTimeout(detectRefreshRate,16.666666666666668);
-			} else {
-				requestAnimationFrame(detectRefreshRate);
+		lastTimestamp = timestamp;
+		var _g3_current = 0;
+		var _g3_array = possibleRefreshRates;
+		while(_g3_current < _g3_array.length) {
+			var _g4_value = _g3_array[_g3_current];
+			var _g4_key = _g3_current++;
+			var i = _g4_key;
+			var rate = _g4_value;
+			if(fps > rate - 3 && fps < rate + 3) {
+				refreshRatesCounts[i]++;
 			}
-		} else {
-			haxe_ds_ArraySort.sort(timeDiffs,function(a,b) {
-				return a - b;
-			});
-			var truncatedTimeDiffs = [];
-			var cutoff = Math.round(timeDiffs.length * MEAN_TRUNCATION_CUTOFF);
-			var _g = cutoff;
-			var _g1 = timeDiffs.length - cutoff;
-			while(_g < _g1) {
-				var i = _g++;
-				truncatedTimeDiffs.push(timeDiffs[i]);
-			}
-			var total = 0;
-			var _g = 0;
-			while(_g < truncatedTimeDiffs.length) {
-				var time = truncatedTimeDiffs[_g];
-				++_g;
-				total += time;
-			}
-			var avg = total / truncatedTimeDiffs.length;
-			kha_SystemImpl.estimatedRefreshRate = roundToKnownRefreshRate(Math.round(1000 / avg));
-			kha_Scheduler.start();
-			if(requestAnimationFrame == null) {
-				$window.setTimeout(animate,16.666666666666668);
-			} else {
-				requestAnimationFrame(animate);
-			}
-			callback(kha_SystemImpl.window);
 		}
 	};
-	if(requestAnimationFrame == null) {
-		$window.setTimeout(detectRefreshRate,16.666666666666668);
-	} else {
-		requestAnimationFrame(detectRefreshRate);
-	}
+	window.setTimeout(function() {
+		isRefreshRateDetectionActive = true;
+		return window.setTimeout(function() {
+			isRefreshRateDetectionActive = false;
+			var index = possibleRefreshRates.indexOf(60);
+			var max = 0;
+			var _g3_current = 0;
+			var _g3_array = refreshRatesCounts;
+			while(_g3_current < _g3_array.length) {
+				var _g4_value = _g3_array[_g3_current];
+				var _g4_key = _g3_current++;
+				var i = _g4_key;
+				var count = _g4_value;
+				if(count > max) {
+					max = count;
+					index = i;
+				}
+			}
+			return kha_SystemImpl.estimatedRefreshRate = possibleRefreshRates[index];
+		},1000);
+	},500);
+	kha_Scheduler.start();
+	requestAnimationFrame(animate);
+	callback(kha_SystemImpl.window);
 };
 kha_SystemImpl.lockMouse = function() {
 	if(($_=kha_SystemImpl.khanvas,$bind($_,$_.requestPointerLock))) {
@@ -7575,7 +7690,7 @@ kha_SystemImpl.unlockSound = function() {
 			context.resume().then(function(c) {
 				kha_SystemImpl.soundEnabled = true;
 			}).catch(function(err) {
-				haxe_Log.trace(err,{ fileName : "lib/KhaBundled/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 738, className : "kha.SystemImpl", methodName : "unlockSound"});
+				haxe_Log.trace(err,{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 700, className : "kha.SystemImpl", methodName : "unlockSound"});
 			});
 		}
 		kha_audio2_Audio.wakeChannels();
@@ -7625,11 +7740,7 @@ kha_SystemImpl.mouseDown = function(event) {
 	kha_SystemImpl.setMouseXY(event);
 	if(event.which == 1) {
 		kha_SystemImpl.mouse.sendDownEvent(0,0,kha_SystemImpl.mouseX,kha_SystemImpl.mouseY);
-		if(kha_SystemImpl.khanvas.setCapture != null) {
-			kha_SystemImpl.khanvas.setCapture();
-		} else {
-			kha_SystemImpl.khanvas.ownerDocument.addEventListener("mousemove",kha_SystemImpl.documentMouseMove,true);
-		}
+		kha_SystemImpl.khanvas.ownerDocument.addEventListener("mousemove",kha_SystemImpl.documentMouseMove,true);
 		kha_SystemImpl.khanvas.ownerDocument.addEventListener("mouseup",kha_SystemImpl.mouseLeftUp);
 	} else if(event.which == 2) {
 		kha_SystemImpl.mouse.sendDownEvent(0,2,kha_SystemImpl.mouseX,kha_SystemImpl.mouseY);
@@ -7653,11 +7764,7 @@ kha_SystemImpl.mouseLeftUp = function(event) {
 	}
 	kha_SystemImpl.insideInputEvent = true;
 	kha_SystemImpl.khanvas.ownerDocument.removeEventListener("mouseup",kha_SystemImpl.mouseLeftUp);
-	if(kha_SystemImpl.khanvas.releaseCapture != null) {
-		kha_SystemImpl.khanvas.ownerDocument.releaseCapture();
-	} else {
-		kha_SystemImpl.khanvas.ownerDocument.removeEventListener("mousemove",kha_SystemImpl.documentMouseMove,true);
-	}
+	kha_SystemImpl.khanvas.ownerDocument.removeEventListener("mousemove",kha_SystemImpl.documentMouseMove,true);
 	kha_SystemImpl.mouse.sendUpEvent(0,0,kha_SystemImpl.mouseX,kha_SystemImpl.mouseY);
 	kha_SystemImpl.insideInputEvent = false;
 };
@@ -8142,7 +8249,7 @@ kha_WebGLImage.prototype = $extend(kha_Image.prototype,{
 			this.initDepthStencilBuffer(this.depthStencilFormat);
 			var e = kha_SystemImpl.gl.checkFramebufferStatus(36160);
 			if(e != 36053) {
-				haxe_Log.trace("checkframebufferStatus error " + e,{ fileName : "lib/KhaBundled/Backends/HTML5/kha/WebGLImage.hx", lineNumber : 270, className : "kha.WebGLImage", methodName : "createTexture"});
+				haxe_Log.trace("checkframebufferStatus error " + e,{ fileName : "lib/Kha/Backends/HTML5/kha/WebGLImage.hx", lineNumber : 270, className : "kha.WebGLImage", methodName : "createTexture"});
 			}
 			kha_SystemImpl.gl.bindRenderbuffer(36161,null);
 			kha_SystemImpl.gl.bindFramebuffer(36160,null);
@@ -8352,7 +8459,7 @@ var kha_Window = function(num,defaultWidth,defaultHeight,canvas) {
 			}
 		}
 		if(isResize) {
-			_gthis.resize(canvas.clientWidth,canvas.clientHeight);
+			_gthis.resize(canvas.width,canvas.height);
 		}
 	});
 	observer.observe(canvas,{ attributes : true});
@@ -8580,7 +8687,7 @@ kha_audio2_Audio1.mix = function(samplesBox,buffer) {
 	var samples = samplesBox.value;
 	if(kha_audio2_Audio1.sampleCache1.byteLength >> 2 < samples) {
 		if(kha_audio2_Audio.disableGcInteractions) {
-			haxe_Log.trace("Unexpected allocation request in audio thread.",{ fileName : "lib/KhaBundled/Sources/kha/audio2/Audio1.hx", lineNumber : 50, className : "kha.audio2.Audio1", methodName : "mix"});
+			haxe_Log.trace("Unexpected allocation request in audio thread.",{ fileName : "lib/Kha/Sources/kha/audio2/Audio1.hx", lineNumber : 50, className : "kha.audio2.Audio1", methodName : "mix"});
 			var _g = 0;
 			var _g1 = samples;
 			while(_g < _g1) {
@@ -9084,7 +9191,7 @@ kha_audio2_ogg_vorbis_VorbisDecodeState.prototype = {
 				}
 			}
 			if((this.page.flag & 1) == 0) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.CONTINUED_PACKET_FLAG_INVALID,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 171, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "next"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.CONTINUED_PACKET_FLAG_INVALID,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 171, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "next"}));
 			}
 		}
 		var len = this.segments[this.nextSeg++];
@@ -9102,7 +9209,7 @@ kha_audio2_ogg_vorbis_VorbisDecodeState.prototype = {
 		while(this.nextSeg == -1) {
 			this.page.start(this);
 			if((this.page.flag & 1) != 0) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.MISSING_CAPTURE_PATTERN,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 193, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "startPacket"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.MISSING_CAPTURE_PATTERN,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 193, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "startPacket"}));
 			}
 		}
 		this.lastSeg = false;
@@ -9149,7 +9256,7 @@ kha_audio2_ogg_vorbis_VorbisDecodeState.prototype = {
 				tmp = true;
 			}
 			if(tmp) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.MISSING_CAPTURE_PATTERN,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 218, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "maybeStartPacket"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.MISSING_CAPTURE_PATTERN,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 218, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "maybeStartPacket"}));
 			}
 			this.page.startWithoutCapturePattern(this);
 		}
@@ -9198,10 +9305,10 @@ kha_audio2_ogg_vorbis_VorbisDecodeState.prototype = {
 	}
 	,firstPageValidate: function() {
 		if(this.segments.length != 1) {
-			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"segmentCount",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 308, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "firstPageValidate"}));
+			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"segmentCount",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 308, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "firstPageValidate"}));
 		}
 		if(this.segments[0] != 30) {
-			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"decodeState head",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 311, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "firstPageValidate"}));
+			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"decodeState head",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 311, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "firstPageValidate"}));
 		}
 	}
 	,startFirstDecode: function() {
@@ -9277,7 +9384,7 @@ kha_audio2_ogg_vorbis_VorbisDecodeState.prototype = {
 			last = l;
 			break;
 		case 1:
-			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.CANT_FIND_LAST_PAGE,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 519, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "getSampleNumber"}));
+			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.CANT_FIND_LAST_PAGE,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 519, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "getSampleNumber"}));
 		}
 		var lastPageLoc = this.inputPosition;
 		_hx_loop1: while(!last) {
@@ -9312,7 +9419,7 @@ kha_audio2_ogg_vorbis_VorbisDecodeState.prototype = {
 		this.inputPosition += 4;
 		var hi = this.input.readInt32();
 		if(lo == -1 && hi == -1 || hi > 0) {
-			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.CANT_FIND_LAST_PAGE,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 553, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "getSampleNumber"}));
+			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.CANT_FIND_LAST_PAGE,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 553, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "getSampleNumber"}));
 		}
 		this.pLast = new kha_audio2_ogg_vorbis_data_ProbedPage();
 		this.pLast.pageStart = lastPageLoc;
@@ -9626,7 +9733,7 @@ kha_audio2_ogg_vorbis_VorbisDecodeState.prototype = {
 				return -1;
 			}
 		}
-		this.error = new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 847, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "decodeScalarRaw"});
+		this.error = new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 847, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "decodeScalarRaw"});
 		this.validBits = 0;
 		return -1;
 	}
@@ -9818,7 +9925,7 @@ kha_audio2_ogg_vorbis_VorbisDecoder.prototype = {
 		if(this.totalSample == null) {
 			this.setupSampleNumber(seekFunc,inputLength);
 			if(this.totalSample == 0) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.CANT_FIND_LAST_PAGE,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 187, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "seek"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.CANT_FIND_LAST_PAGE,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 187, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "seek"}));
 			}
 		}
 		if(sampleNumber < 0) {
@@ -9839,7 +9946,7 @@ kha_audio2_ogg_vorbis_VorbisDecoder.prototype = {
 				var startSample = p0.lastDecodedSample;
 				var endSample = p1.lastDecodedSample;
 				if(startSample == null || endSample == null) {
-					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.SEEK_FAILED,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 219, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "seek"}));
+					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.SEEK_FAILED,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 219, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "seek"}));
 				}
 				if(UInt.gt(endOffset,startOffset + 4000)) {
 					endOffset = endOffset - 4000;
@@ -9858,11 +9965,11 @@ kha_audio2_ogg_vorbis_VorbisDecoder.prototype = {
 					var _g2 = _g.last;
 					break;
 				case 1:
-					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.SEEK_FAILED,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 249, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "seek"}));
+					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.SEEK_FAILED,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 249, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "seek"}));
 				}
 				var q = this.decodeState.analyzePage(seekFunc,this.header);
 				if(q == null) {
-					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.SEEK_FAILED,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 255, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "seek"}));
+					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.SEEK_FAILED,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 255, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "seek"}));
 				}
 				q.afterPreviousPageStart = probe;
 				if(q.pageStart == p1.pageStart) {
@@ -9878,7 +9985,7 @@ kha_audio2_ogg_vorbis_VorbisDecoder.prototype = {
 			if(p0.lastDecodedSample <= sampleNumber && sampleNumber < p1.lastDecodedSample) {
 				this.seekFrameFromPage(seekFunc,p1.pageStart,p0.lastDecodedSample,sampleNumber);
 			} else {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.SEEK_FAILED,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 275, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "seek"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.SEEK_FAILED,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 275, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "seek"}));
 			}
 		}
 	}
@@ -10615,7 +10722,7 @@ kha_audio2_ogg_vorbis_VorbisDecoder.prototype = {
 		var log2_4 = [0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4];
 		var i = this.decodeState.readBits(n < 16384 ? n < 16 ? log2_4[n] : n < 512 ? 5 + log2_4[n >> 5] : 10 + log2_4[n >> 10] : n < 16777216 ? n < 524288 ? 15 + log2_4[n >> 15] : 20 + log2_4[n >> 20] : n < 536870912 ? 25 + log2_4[n >> 25] : n < -2147483648 ? 30 + log2_4[n >> 30] : 0);
 		if(i == -1 || i >= this.header.modes.length) {
-			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.SEEK_FAILED,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 519, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "decodeInitial"}));
+			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.SEEK_FAILED,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 519, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "decodeInitial"}));
 		}
 		var m = this.header.modes[i];
 		var n;
@@ -10653,7 +10760,7 @@ kha_audio2_ogg_vorbis_VorbisDecoder.prototype = {
 			zeroChannel[i] = false;
 			var floor = this.header.floorConfig[map.submapFloor[s]];
 			if(floor.type == 0) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 581, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "decodePacketRest"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecoder.hx", lineNumber : 581, className : "kha.audio2.ogg.vorbis.VorbisDecoder", methodName : "decodePacketRest"}));
 			} else {
 				var g = floor.floor1;
 				if(this.decodeState.readBits(1) != 0) {
@@ -11043,7 +11150,7 @@ kha_audio2_ogg_vorbis_data_Codebook.__name__ = "kha.audio2.ogg.vorbis.data.Codeb
 kha_audio2_ogg_vorbis_data_Codebook.read = function(decodeState) {
 	var c = new kha_audio2_ogg_vorbis_data_Codebook();
 	if(decodeState.readBits(8) != 66 || decodeState.readBits(8) != 67 || decodeState.readBits(8) != 86) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 40, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 40, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "read"}));
 	}
 	var x = decodeState.readBits(8);
 	c.dimensions = (decodeState.readBits(8) << 8) + x;
@@ -11066,7 +11173,7 @@ kha_audio2_ogg_vorbis_data_Codebook.read = function(decodeState) {
 			var log2_4 = [0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4];
 			var n = decodeState.readBits(limit < 16384 ? limit < 16 ? log2_4[limit] : limit < 512 ? 5 + log2_4[limit >> 5] : 10 + log2_4[limit >> 10] : limit < 16777216 ? limit < 524288 ? 15 + log2_4[limit >> 15] : 20 + log2_4[limit >> 20] : limit < 536870912 ? 25 + log2_4[limit >> 25] : limit < -2147483648 ? 30 + log2_4[limit >> 30] : 0);
 			if(currentEntry + n > c.entries) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"codebook entrys",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 67, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "read"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"codebook entrys",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 67, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "read"}));
 			}
 			var _g = 0;
 			var _g1 = n;
@@ -11128,7 +11235,7 @@ kha_audio2_ogg_vorbis_data_Codebook.read = function(decodeState) {
 		var size = c.entries + 64 * c.sortedEntries;
 	}
 	if(!c.computeCodewords(lengths,c.entries,values)) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"compute codewords",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 120, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"compute codewords",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 120, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "read"}));
 	}
 	if(c.sortedEntries != 0) {
 		c.sortedCodewords = [];
@@ -11144,7 +11251,7 @@ kha_audio2_ogg_vorbis_data_Codebook.read = function(decodeState) {
 	c.computeAcceleratedHuffman();
 	c.lookupType = decodeState.readBits(4);
 	if(c.lookupType > 2) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"codebook lookup type",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 143, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"codebook lookup type",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 143, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "read"}));
 	}
 	if(c.lookupType > 0) {
 		var x = decodeState.readBits(32);
@@ -11174,7 +11281,7 @@ kha_audio2_ogg_vorbis_data_Codebook.read = function(decodeState) {
 			var j = _g++;
 			var q = decodeState.readBits(c.valueBits);
 			if(q == -1) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"fail lookup",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 161, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "read"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"fail lookup",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 161, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "read"}));
 			}
 			mults[j] = q;
 		}
@@ -11543,7 +11650,7 @@ kha_audio2_ogg_vorbis_data_Codebook.prototype = {
 	,decodeDeinterleaveRepeat: function(decodeState,residueBuffers,ch,cInter,pInter,len,totalDecode) {
 		var effective = this.dimensions;
 		if(this.lookupType == 0) {
-			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 488, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "decodeDeinterleaveRepeat"}));
+			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 488, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "decodeDeinterleaveRepeat"}));
 		}
 		var multiplicands = this.multiplicands;
 		var sequenceP = this.sequenceP;
@@ -11576,7 +11683,7 @@ kha_audio2_ogg_vorbis_data_Codebook.prototype = {
 				if(decodeState.bytesInSeg == 0 && decodeState.lastSeg) {
 					return null;
 				}
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 503, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "decodeDeinterleaveRepeat"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Codebook.hx", lineNumber : 503, className : "kha.audio2.ogg.vorbis.data.Codebook", methodName : "decodeDeinterleaveRepeat"}));
 			}
 			if(cInter + pInter * ch + effective > len * ch) {
 				effective = len * ch - (pInter * ch - cInter);
@@ -11712,7 +11819,7 @@ kha_audio2_ogg_vorbis_data_Floor.read = function(decodeState,codebooks) {
 	var floor = new kha_audio2_ogg_vorbis_data_Floor();
 	floor.type = decodeState.readBits(16);
 	if(floor.type > 1) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Floor.hx", lineNumber : 28, className : "kha.audio2.ogg.vorbis.data.Floor", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Floor.hx", lineNumber : 28, className : "kha.audio2.ogg.vorbis.data.Floor", methodName : "read"}));
 	}
 	if(floor.type == 0) {
 		var g = floor.floor0 = new kha_audio2_ogg_vorbis_data_Floor0();
@@ -11728,7 +11835,7 @@ kha_audio2_ogg_vorbis_data_Floor.read = function(decodeState,codebooks) {
 			var j = _g++;
 			g.bookList[j] = decodeState.readBits(8);
 		}
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.FEATURE_NOT_SUPPORTED,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Floor.hx", lineNumber : 41, className : "kha.audio2.ogg.vorbis.data.Floor", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.FEATURE_NOT_SUPPORTED,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Floor.hx", lineNumber : 41, className : "kha.audio2.ogg.vorbis.data.Floor", methodName : "read"}));
 	} else {
 		var p = [];
 		var g = floor.floor1 = new kha_audio2_ogg_vorbis_data_Floor1();
@@ -11762,7 +11869,7 @@ kha_audio2_ogg_vorbis_data_Floor.read = function(decodeState,codebooks) {
 			if(g.classSubclasses[j] != 0) {
 				g.classMasterbooks[j] = decodeState.readBits(8);
 				if(g.classMasterbooks[j] >= codebooks.length) {
-					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Floor.hx", lineNumber : 64, className : "kha.audio2.ogg.vorbis.data.Floor", methodName : "read"}));
+					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Floor.hx", lineNumber : 64, className : "kha.audio2.ogg.vorbis.data.Floor", methodName : "read"}));
 				}
 			}
 			var kl = 1 << g.classSubclasses[j];
@@ -11775,7 +11882,7 @@ kha_audio2_ogg_vorbis_data_Floor.read = function(decodeState,codebooks) {
 				var k = _g2++;
 				g.subclassBooks[j][k] = decodeState.readBits(8) - 1;
 				if(g.subclassBooks[j][k] >= codebooks.length) {
-					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Floor.hx", lineNumber : 73, className : "kha.audio2.ogg.vorbis.data.Floor", methodName : "read"}));
+					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Floor.hx", lineNumber : 73, className : "kha.audio2.ogg.vorbis.data.Floor", methodName : "read"}));
 				}
 			}
 		}
@@ -11898,18 +12005,18 @@ kha_audio2_ogg_vorbis_data_Header.read = function(decodeState) {
 	var page = decodeState.page;
 	page.start(decodeState);
 	if((page.flag & 2) == 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"not firstPage",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 46, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"not firstPage",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 46, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	if((page.flag & 4) != 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"lastPage",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 49, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"lastPage",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 49, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	if((page.flag & 1) != 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"continuedPacket",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 52, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"continuedPacket",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 52, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	decodeState.firstPageValidate();
 	decodeState.inputPosition += 1;
 	if(decodeState.input.readByte() != 1) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"decodeState head",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 57, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"decodeState head",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 57, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	var header = new haxe_io_Bytes(new ArrayBuffer(6));
 	var x;
@@ -11973,25 +12080,25 @@ kha_audio2_ogg_vorbis_data_Header.read = function(decodeState) {
 	decodeState.validBits = 0;
 	header.b[5] = x;
 	if(header.toString() != "vorbis") {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"vorbis header",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 301, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "vorbisValidate"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"vorbis header",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 301, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "vorbisValidate"}));
 	}
 	decodeState.inputPosition += 4;
 	var version = decodeState.input.readInt32();
 	if(version != 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"vorbis version : " + version,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 66, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"vorbis version : " + version,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 66, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	var header = new kha_audio2_ogg_vorbis_data_Header();
 	decodeState.inputPosition += 1;
 	header.channel = decodeState.input.readByte();
 	if(header.channel == 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"no channel",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 73, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"no channel",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 73, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	} else if(header.channel > 16) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.TOO_MANY_CHANNELS,"too many channels",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 75, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.TOO_MANY_CHANNELS,"too many channels",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 75, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	decodeState.inputPosition += 4;
 	header.sampleRate = decodeState.input.readInt32();
 	if(header.sampleRate == 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"no sampling rate",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 80, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,"no sampling rate",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 80, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	decodeState.inputPosition += 4;
 	header.maximumBitRate = decodeState.input.readInt32();
@@ -12006,18 +12113,18 @@ kha_audio2_ogg_vorbis_data_Header.read = function(decodeState) {
 	header.blocksize0 = 1 << log0;
 	header.blocksize1 = 1 << log1;
 	if(log0 < 6 || log0 > 13) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 93, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 93, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	if(log1 < 6 || log1 > 13) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 96, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 96, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	if(log0 > log1) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 99, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 99, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	decodeState.inputPosition += 1;
 	var x = decodeState.input.readByte();
 	if((x & 1) == 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 105, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_FIRST_PAGE,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 105, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	decodeState.page.start(decodeState);
 	decodeState.startPacket();
@@ -12052,7 +12159,7 @@ kha_audio2_ogg_vorbis_data_Header.read = function(decodeState) {
 	}
 	var x1 = packetInput.readByte();
 	if((x1 & 1) == 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 141, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 141, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	decodeState.startPacket();
 	var x1;
@@ -12065,7 +12172,7 @@ kha_audio2_ogg_vorbis_data_Header.read = function(decodeState) {
 	}
 	decodeState.validBits = 0;
 	if(x1 != 5) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"setup packet",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 149, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"setup packet",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 149, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 	}
 	var header1 = new haxe_io_Bytes(new ArrayBuffer(6));
 	var x1;
@@ -12129,7 +12236,7 @@ kha_audio2_ogg_vorbis_data_Header.read = function(decodeState) {
 	decodeState.validBits = 0;
 	header1.b[5] = x1;
 	if(header1.toString() != "vorbis") {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"vorbis header",{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 301, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "vorbisValidate"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"vorbis header",{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 301, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "vorbisValidate"}));
 	}
 	var codebookCount = decodeState.readBits(8) + 1;
 	var this1 = new Array(codebookCount);
@@ -12146,7 +12253,7 @@ kha_audio2_ogg_vorbis_data_Header.read = function(decodeState) {
 	while(_g < _g1) {
 		var i = _g++;
 		if(decodeState.readBits(16) != 0) {
-			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 165, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 165, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 		}
 	}
 	var floorCount = decodeState.readBits(6) + 1;
@@ -12181,10 +12288,10 @@ kha_audio2_ogg_vorbis_data_Header.read = function(decodeState) {
 		while(_g2 < _g3) {
 			var j = _g2++;
 			if(map.submapFloor[j] >= header.floorConfig.length) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 191, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 191, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 			}
 			if(map.submapResidue[j] >= header.residueConfig.length) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 194, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 194, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 			}
 		}
 	}
@@ -12198,7 +12305,7 @@ kha_audio2_ogg_vorbis_data_Header.read = function(decodeState) {
 		var mode = kha_audio2_ogg_vorbis_data_Mode.read(decodeState);
 		header.modes[i] = mode;
 		if(mode.mapping >= header.mapping.length) {
-			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 205, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
+			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Header.hx", lineNumber : 205, className : "kha.audio2.ogg.vorbis.data.Header", methodName : "read"}));
 		}
 	}
 	while(decodeState.bytesInSeg != 0 || !decodeState.lastSeg && decodeState.next() != 0) {
@@ -12242,7 +12349,7 @@ kha_audio2_ogg_vorbis_data_Mapping.read = function(decodeState,channels) {
 	var m = new kha_audio2_ogg_vorbis_data_Mapping();
 	var mappingType = decodeState.readBits(16);
 	if(mappingType != 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"mapping type " + mappingType,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 22, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,"mapping type " + mappingType,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 22, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
 	}
 	var this1 = new Array(channels);
 	m.chan = this1;
@@ -12270,20 +12377,20 @@ kha_audio2_ogg_vorbis_data_Mapping.read = function(decodeState,channels) {
 			var log2_41 = [0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4];
 			m.chan[k].angle = decodeState.readBits(n1 < 16384 ? n1 < 16 ? log2_41[n1] : n1 < 512 ? 5 + log2_41[n1 >> 5] : 10 + log2_41[n1 >> 10] : n1 < 16777216 ? n1 < 524288 ? 15 + log2_41[n1 >> 15] : 20 + log2_41[n1 >> 20] : n1 < 536870912 ? 25 + log2_41[n1 >> 25] : n1 < -2147483648 ? 30 + log2_41[n1 >> 30] : 0);
 			if(m.chan[k].magnitude >= channels) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 46, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 46, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
 			}
 			if(m.chan[k].angle >= channels) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 49, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 49, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
 			}
 			if(m.chan[k].magnitude == m.chan[k].angle) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 52, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 52, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
 			}
 		}
 	} else {
 		m.couplingSteps = 0;
 	}
 	if(decodeState.readBits(2) != 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 61, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 61, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
 	}
 	if(m.submaps > 1) {
 		var _g = 0;
@@ -12292,7 +12399,7 @@ kha_audio2_ogg_vorbis_data_Mapping.read = function(decodeState,channels) {
 			var j = _g++;
 			m.chan[j].mux = decodeState.readBits(4);
 			if(m.chan[j].mux >= m.submaps) {
-				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 67, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
+				throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 67, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "read"}));
 			}
 		}
 	} else {
@@ -12329,7 +12436,7 @@ kha_audio2_ogg_vorbis_data_Mapping.prototype = {
 		var floor;
 		var floor = floors[this.submapFloor[s]];
 		if(floor.type == 0) {
-			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 94, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "doFloor"}));
+			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Mapping.hx", lineNumber : 94, className : "kha.audio2.ogg.vorbis.data.Mapping", methodName : "doFloor"}));
 		} else {
 			var g = floor.floor1;
 			var lx = 0;
@@ -12380,10 +12487,10 @@ kha_audio2_ogg_vorbis_data_Mode.read = function(decodeState) {
 	m.transformtype = decodeState.readBits(16);
 	m.mapping = decodeState.readBits(8);
 	if(m.windowtype != 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Mode.hx", lineNumber : 22, className : "kha.audio2.ogg.vorbis.data.Mode", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Mode.hx", lineNumber : 22, className : "kha.audio2.ogg.vorbis.data.Mode", methodName : "read"}));
 	}
 	if(m.transformtype != 0) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Mode.hx", lineNumber : 25, className : "kha.audio2.ogg.vorbis.data.Mode", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Mode.hx", lineNumber : 25, className : "kha.audio2.ogg.vorbis.data.Mode", methodName : "read"}));
 	}
 	return m;
 };
@@ -12429,7 +12536,7 @@ kha_audio2_ogg_vorbis_data_Page.prototype = {
 			tmp = true;
 		}
 		if(tmp) {
-			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.MISSING_CAPTURE_PATTERN,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 324, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "capturePattern"}));
+			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.MISSING_CAPTURE_PATTERN,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/VorbisDecodeState.hx", lineNumber : 324, className : "kha.audio2.ogg.vorbis.VorbisDecodeState", methodName : "capturePattern"}));
 		}
 		this.startWithoutCapturePattern(decodeState);
 	}
@@ -12437,7 +12544,7 @@ kha_audio2_ogg_vorbis_data_Page.prototype = {
 		decodeState.inputPosition += 1;
 		var version = decodeState.input.readByte();
 		if(version != 0) {
-			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM_STRUCTURE_VERSION,"" + version,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Page.hx", lineNumber : 34, className : "kha.audio2.ogg.vorbis.data.Page", methodName : "startWithoutCapturePattern"}));
+			throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_STREAM_STRUCTURE_VERSION,"" + version,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Page.hx", lineNumber : 34, className : "kha.audio2.ogg.vorbis.data.Page", methodName : "startWithoutCapturePattern"}));
 		}
 		decodeState.inputPosition += 1;
 		this.flag = decodeState.input.readByte();
@@ -12514,7 +12621,7 @@ kha_audio2_ogg_vorbis_data_Residue.read = function(decodeState,codebooks) {
 	var r = new kha_audio2_ogg_vorbis_data_Residue();
 	r.type = decodeState.readBits(16);
 	if(r.type > 2) {
-		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Residue.hx", lineNumber : 29, className : "kha.audio2.ogg.vorbis.data.Residue", methodName : "read"}));
+		throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Residue.hx", lineNumber : 29, className : "kha.audio2.ogg.vorbis.data.Residue", methodName : "read"}));
 	}
 	var this1 = new Array(64);
 	var residueCascade = this1;
@@ -12549,7 +12656,7 @@ kha_audio2_ogg_vorbis_data_Residue.read = function(decodeState,codebooks) {
 			if((residueCascade[j] & 1 << k) != 0) {
 				r.residueBooks[j][k] = decodeState.readBits(8);
 				if(r.residueBooks[j][k] >= codebooks.length) {
-					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/KhaBundled/Sources/kha/audio2/ogg/vorbis/data/Residue.hx", lineNumber : 55, className : "kha.audio2.ogg.vorbis.data.Residue", methodName : "read"}));
+					throw haxe_Exception.thrown(new kha_audio2_ogg_vorbis_data_ReaderError(kha_audio2_ogg_vorbis_data_ReaderErrorType.INVALID_SETUP,null,{ fileName : "lib/Kha/Sources/kha/audio2/ogg/vorbis/data/Residue.hx", lineNumber : 55, className : "kha.audio2.ogg.vorbis.data.Residue", methodName : "read"}));
 				}
 			} else {
 				r.residueBooks[j][k] = -1;
@@ -20471,7 +20578,7 @@ var kha_graphics4_PerFramebufferPipelineCache = function(pipeline,texture) {
 		projectionLocation = pipeline.getConstantLocation("projectionMatrix");
 	} catch( _g ) {
 		var x = haxe_Exception.caught(_g).unwrap();
-		haxe_Log.trace(x,{ fileName : "lib/KhaBundled/Sources/kha/graphics4/Graphics2.hx", lineNumber : 90, className : "kha.graphics4.PerFramebufferPipelineCache", methodName : "new"});
+		haxe_Log.trace(x,{ fileName : "lib/Kha/Sources/kha/graphics4/Graphics2.hx", lineNumber : 90, className : "kha.graphics4.PerFramebufferPipelineCache", methodName : "new"});
 	}
 	var textureLocation = null;
 	if(texture) {
@@ -20479,7 +20586,7 @@ var kha_graphics4_PerFramebufferPipelineCache = function(pipeline,texture) {
 			textureLocation = pipeline.getTextureUnit("tex");
 		} catch( _g ) {
 			var x = haxe_Exception.caught(_g).unwrap();
-			haxe_Log.trace(x,{ fileName : "lib/KhaBundled/Sources/kha/graphics4/Graphics2.hx", lineNumber : 99, className : "kha.graphics4.PerFramebufferPipelineCache", methodName : "new"});
+			haxe_Log.trace(x,{ fileName : "lib/Kha/Sources/kha/graphics4/Graphics2.hx", lineNumber : 99, className : "kha.graphics4.PerFramebufferPipelineCache", methodName : "new"});
 		}
 	}
 	this.pipelines.push(new kha_graphics4_InternalPipeline(pipeline,projectionLocation,textureLocation));
@@ -21593,7 +21700,7 @@ kha_graphics4_PipelineState.prototype = $extend(kha_graphics4_PipelineStateBase.
 		kha_SystemImpl.gl.linkProgram(this.program);
 		if(!kha_SystemImpl.gl.getProgramParameter(this.program,35714)) {
 			var message = "Could not link the shader program:\n" + kha_SystemImpl.gl.getProgramInfoLog(this.program);
-			haxe_Log.trace("Error: " + message,{ fileName : "lib/KhaBundled/Backends/HTML5/kha/graphics4/PipelineState.hx", lineNumber : 49, className : "kha.graphics4.PipelineState", methodName : "compile"});
+			haxe_Log.trace("Error: " + message,{ fileName : "lib/Kha/Backends/HTML5/kha/graphics4/PipelineState.hx", lineNumber : 49, className : "kha.graphics4.PipelineState", methodName : "compile"});
 			throw haxe_Exception.thrown(message);
 		}
 	}
@@ -21638,7 +21745,7 @@ kha_graphics4_PipelineState.prototype = $extend(kha_graphics4_PipelineStateBase.
 		kha_SystemImpl.gl.compileShader(s);
 		if(!kha_SystemImpl.gl.getShaderParameter(s,35713)) {
 			var message = "Could not compile shader:\n" + kha_SystemImpl.gl.getShaderInfoLog(s);
-			haxe_Log.trace("Error: " + message,{ fileName : "lib/KhaBundled/Backends/HTML5/kha/graphics4/PipelineState.hx", lineNumber : 89, className : "kha.graphics4.PipelineState", methodName : "compileShader"});
+			haxe_Log.trace("Error: " + message,{ fileName : "lib/Kha/Backends/HTML5/kha/graphics4/PipelineState.hx", lineNumber : 89, className : "kha.graphics4.PipelineState", methodName : "compileShader"});
 			throw haxe_Exception.thrown(message);
 		}
 		shader.shader = s;
@@ -21646,7 +21753,7 @@ kha_graphics4_PipelineState.prototype = $extend(kha_graphics4_PipelineStateBase.
 	,getConstantLocation: function(name) {
 		var location = kha_SystemImpl.gl.getUniformLocation(this.program,name);
 		if(location == null) {
-			haxe_Log.trace("Warning: Uniform " + name + " not found.",{ fileName : "lib/KhaBundled/Backends/HTML5/kha/graphics4/PipelineState.hx", lineNumber : 98, className : "kha.graphics4.PipelineState", methodName : "getConstantLocation"});
+			haxe_Log.trace("Warning: Uniform " + name + " not found.",{ fileName : "lib/Kha/Backends/HTML5/kha/graphics4/PipelineState.hx", lineNumber : 98, className : "kha.graphics4.PipelineState", methodName : "getConstantLocation"});
 		}
 		var type = 5126;
 		var count = kha_SystemImpl.gl.getProgramParameter(this.program,35718);
@@ -21667,7 +21774,7 @@ kha_graphics4_PipelineState.prototype = $extend(kha_graphics4_PipelineStateBase.
 		if(index < 0) {
 			var location = kha_SystemImpl.gl.getUniformLocation(this.program,name);
 			if(location == null) {
-				haxe_Log.trace("Warning: Sampler " + name + " not found.",{ fileName : "lib/KhaBundled/Backends/HTML5/kha/graphics4/PipelineState.hx", lineNumber : 117, className : "kha.graphics4.PipelineState", methodName : "getTextureUnit"});
+				haxe_Log.trace("Warning: Sampler " + name + " not found.",{ fileName : "lib/Kha/Backends/HTML5/kha/graphics4/PipelineState.hx", lineNumber : 117, className : "kha.graphics4.PipelineState", methodName : "getTextureUnit"});
 			}
 			index = this.textures.length;
 			this.textureValues.push(location);
@@ -22359,10 +22466,10 @@ kha_input_Mouse.prototype = $extend(kha_netsync_Controller.prototype,{
 				if(windowId < this.windowDownListeners.length) {
 					HxOverrides.remove(this.windowDownListeners[windowId],downListener);
 				} else {
-					haxe_Log.trace("no downListeners for window \"" + windowId + "\" are registered",{ fileName : "lib/KhaBundled/Sources/kha/input/Mouse.hx", lineNumber : 152, className : "kha.input.Mouse", methodName : "removeWindowed"});
+					haxe_Log.trace("no downListeners for window \"" + windowId + "\" are registered",{ fileName : "lib/Kha/Sources/kha/input/Mouse.hx", lineNumber : 152, className : "kha.input.Mouse", methodName : "removeWindowed"});
 				}
 			} else {
-				haxe_Log.trace("no downListeners were ever registered",{ fileName : "lib/KhaBundled/Sources/kha/input/Mouse.hx", lineNumber : 156, className : "kha.input.Mouse", methodName : "removeWindowed"});
+				haxe_Log.trace("no downListeners were ever registered",{ fileName : "lib/Kha/Sources/kha/input/Mouse.hx", lineNumber : 156, className : "kha.input.Mouse", methodName : "removeWindowed"});
 			}
 		}
 		if(upListener != null) {
@@ -22370,10 +22477,10 @@ kha_input_Mouse.prototype = $extend(kha_netsync_Controller.prototype,{
 				if(windowId < this.windowUpListeners.length) {
 					HxOverrides.remove(this.windowUpListeners[windowId],upListener);
 				} else {
-					haxe_Log.trace("no upListeners for window \"" + windowId + "\" are registered",{ fileName : "lib/KhaBundled/Sources/kha/input/Mouse.hx", lineNumber : 166, className : "kha.input.Mouse", methodName : "removeWindowed"});
+					haxe_Log.trace("no upListeners for window \"" + windowId + "\" are registered",{ fileName : "lib/Kha/Sources/kha/input/Mouse.hx", lineNumber : 166, className : "kha.input.Mouse", methodName : "removeWindowed"});
 				}
 			} else {
-				haxe_Log.trace("no upListeners were ever registered",{ fileName : "lib/KhaBundled/Sources/kha/input/Mouse.hx", lineNumber : 170, className : "kha.input.Mouse", methodName : "removeWindowed"});
+				haxe_Log.trace("no upListeners were ever registered",{ fileName : "lib/Kha/Sources/kha/input/Mouse.hx", lineNumber : 170, className : "kha.input.Mouse", methodName : "removeWindowed"});
 			}
 		}
 		if(moveListener != null) {
@@ -22381,10 +22488,10 @@ kha_input_Mouse.prototype = $extend(kha_netsync_Controller.prototype,{
 				if(windowId < this.windowMoveListeners.length) {
 					HxOverrides.remove(this.windowMoveListeners[windowId],moveListener);
 				} else {
-					haxe_Log.trace("no moveListeners for window \"" + windowId + "\" are registered",{ fileName : "lib/KhaBundled/Sources/kha/input/Mouse.hx", lineNumber : 180, className : "kha.input.Mouse", methodName : "removeWindowed"});
+					haxe_Log.trace("no moveListeners for window \"" + windowId + "\" are registered",{ fileName : "lib/Kha/Sources/kha/input/Mouse.hx", lineNumber : 180, className : "kha.input.Mouse", methodName : "removeWindowed"});
 				}
 			} else {
-				haxe_Log.trace("no moveListeners were ever registered",{ fileName : "lib/KhaBundled/Sources/kha/input/Mouse.hx", lineNumber : 184, className : "kha.input.Mouse", methodName : "removeWindowed"});
+				haxe_Log.trace("no moveListeners were ever registered",{ fileName : "lib/Kha/Sources/kha/input/Mouse.hx", lineNumber : 184, className : "kha.input.Mouse", methodName : "removeWindowed"});
 			}
 		}
 		if(wheelListener != null) {
@@ -22392,10 +22499,10 @@ kha_input_Mouse.prototype = $extend(kha_netsync_Controller.prototype,{
 				if(windowId < this.windowWheelListeners.length) {
 					HxOverrides.remove(this.windowWheelListeners[windowId],wheelListener);
 				} else {
-					haxe_Log.trace("no wheelListeners for window \"" + windowId + "\" are registered",{ fileName : "lib/KhaBundled/Sources/kha/input/Mouse.hx", lineNumber : 194, className : "kha.input.Mouse", methodName : "removeWindowed"});
+					haxe_Log.trace("no wheelListeners for window \"" + windowId + "\" are registered",{ fileName : "lib/Kha/Sources/kha/input/Mouse.hx", lineNumber : 194, className : "kha.input.Mouse", methodName : "removeWindowed"});
 				}
 			} else {
-				haxe_Log.trace("no wheelListeners were ever registered",{ fileName : "lib/KhaBundled/Sources/kha/input/Mouse.hx", lineNumber : 198, className : "kha.input.Mouse", methodName : "removeWindowed"});
+				haxe_Log.trace("no wheelListeners were ever registered",{ fileName : "lib/Kha/Sources/kha/input/Mouse.hx", lineNumber : 198, className : "kha.input.Mouse", methodName : "removeWindowed"});
 			}
 		}
 		if(leaveListener != null) {
@@ -22403,10 +22510,10 @@ kha_input_Mouse.prototype = $extend(kha_netsync_Controller.prototype,{
 				if(windowId < this.windowLeaveListeners.length) {
 					HxOverrides.remove(this.windowLeaveListeners[windowId],leaveListener);
 				} else {
-					haxe_Log.trace("no leaveListeners for window \"" + windowId + "\" are registered",{ fileName : "lib/KhaBundled/Sources/kha/input/Mouse.hx", lineNumber : 208, className : "kha.input.Mouse", methodName : "removeWindowed"});
+					haxe_Log.trace("no leaveListeners for window \"" + windowId + "\" are registered",{ fileName : "lib/Kha/Sources/kha/input/Mouse.hx", lineNumber : 208, className : "kha.input.Mouse", methodName : "removeWindowed"});
 				}
 			} else {
-				haxe_Log.trace("no leaveListeners were ever registered",{ fileName : "lib/KhaBundled/Sources/kha/input/Mouse.hx", lineNumber : 212, className : "kha.input.Mouse", methodName : "removeWindowed"});
+				haxe_Log.trace("no leaveListeners were ever registered",{ fileName : "lib/Kha/Sources/kha/input/Mouse.hx", lineNumber : 212, className : "kha.input.Mouse", methodName : "removeWindowed"});
 			}
 		}
 	}
@@ -22816,7 +22923,7 @@ kha_internal_HdrFormat.readPixelsRaw = function(buffer,data,offset,numpixels) {
 	var numExpected = 4 * numpixels;
 	var numRead = kha_internal_HdrFormat.readBufOffset(data,offset,numExpected);
 	if(numRead < numExpected) {
-		haxe_Log.trace("Error reading raw pixels: got " + numRead + " bytes, expected " + numExpected,{ fileName : "lib/KhaBundled/Sources/kha/internal/HdrFormat.hx", lineNumber : 39, className : "kha.internal.HdrFormat", methodName : "readPixelsRaw"});
+		haxe_Log.trace("Error reading raw pixels: got " + numRead + " bytes, expected " + numExpected,{ fileName : "lib/Kha/Sources/kha/internal/HdrFormat.hx", lineNumber : 39, className : "kha.internal.HdrFormat", methodName : "readPixelsRaw"});
 		return;
 	}
 };
@@ -22831,7 +22938,7 @@ kha_internal_HdrFormat.readPixelsRawRLE = function(buffer,data,offset,scanline_w
 	var buf = this1;
 	while(num_scanlines > 0) {
 		if(kha_internal_HdrFormat.readBuf(rgbe) < rgbe.length) {
-			haxe_Log.trace("Error reading bytes: expected " + rgbe.length,{ fileName : "lib/KhaBundled/Sources/kha/internal/HdrFormat.hx", lineNumber : 55, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
+			haxe_Log.trace("Error reading bytes: expected " + rgbe.length,{ fileName : "lib/Kha/Sources/kha/internal/HdrFormat.hx", lineNumber : 55, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
 			return;
 		}
 		if(rgbe[0] != 2 || rgbe[1] != 2 || (rgbe[2] & 128) != 0) {
@@ -22843,7 +22950,7 @@ kha_internal_HdrFormat.readPixelsRawRLE = function(buffer,data,offset,scanline_w
 			return;
 		}
 		if(((rgbe[2] & 255) << 8 | rgbe[3] & 255) != scanline_width) {
-			haxe_Log.trace("Wrong scanline width " + ((rgbe[2] & 255) << 8 | rgbe[3] & 255) + ", expected " + scanline_width,{ fileName : "lib/KhaBundled/Sources/kha/internal/HdrFormat.hx", lineNumber : 70, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
+			haxe_Log.trace("Wrong scanline width " + ((rgbe[2] & 255) << 8 | rgbe[3] & 255) + ", expected " + scanline_width,{ fileName : "lib/Kha/Sources/kha/internal/HdrFormat.hx", lineNumber : 70, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
 			return;
 		}
 		if(scanline_buffer == null) {
@@ -22857,26 +22964,26 @@ kha_internal_HdrFormat.readPixelsRawRLE = function(buffer,data,offset,scanline_w
 			ptr_end = (i + 1) * scanline_width;
 			while(ptr < ptr_end) {
 				if(kha_internal_HdrFormat.readBuf(buf) < buf.length) {
-					haxe_Log.trace("Error reading 2-byte buffer",{ fileName : "lib/KhaBundled/Sources/kha/internal/HdrFormat.hx", lineNumber : 84, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
+					haxe_Log.trace("Error reading 2-byte buffer",{ fileName : "lib/Kha/Sources/kha/internal/HdrFormat.hx", lineNumber : 84, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
 					return;
 				}
 				if((buf[0] & 255) > 128) {
 					count = (buf[0] & 255) - 128;
 					if(count == 0 || count > ptr_end - ptr) {
-						haxe_Log.trace("Bad scanline data",{ fileName : "lib/KhaBundled/Sources/kha/internal/HdrFormat.hx", lineNumber : 91, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
+						haxe_Log.trace("Bad scanline data",{ fileName : "lib/Kha/Sources/kha/internal/HdrFormat.hx", lineNumber : 91, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
 						return;
 					}
 					while(count-- > 0) scanline_buffer[ptr++] = buf[1];
 				} else {
 					count = buf[0] & 255;
 					if(count == 0 || count > ptr_end - ptr) {
-						haxe_Log.trace("Bad scanline data",{ fileName : "lib/KhaBundled/Sources/kha/internal/HdrFormat.hx", lineNumber : 102, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
+						haxe_Log.trace("Bad scanline data",{ fileName : "lib/Kha/Sources/kha/internal/HdrFormat.hx", lineNumber : 102, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
 						return;
 					}
 					scanline_buffer[ptr++] = buf[1];
 					if(--count > 0) {
 						if(kha_internal_HdrFormat.readBufOffset(scanline_buffer,ptr,count) < count) {
-							haxe_Log.trace("Error reading non-run data",{ fileName : "lib/KhaBundled/Sources/kha/internal/HdrFormat.hx", lineNumber : 108, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
+							haxe_Log.trace("Error reading non-run data",{ fileName : "lib/Kha/Sources/kha/internal/HdrFormat.hx", lineNumber : 108, className : "kha.internal.HdrFormat", methodName : "readPixelsRawRLE"});
 							return;
 						}
 						ptr += count;
@@ -22935,7 +23042,7 @@ kha_internal_HdrFormat.parse = function(bytes) {
 		}
 	}
 	if(!rle) {
-		haxe_Log.trace("File is not run length encoded!",{ fileName : "lib/KhaBundled/Sources/kha/internal/HdrFormat.hx", lineNumber : 171, className : "kha.internal.HdrFormat", methodName : "parse"});
+		haxe_Log.trace("File is not run length encoded!",{ fileName : "lib/Kha/Sources/kha/internal/HdrFormat.hx", lineNumber : 171, className : "kha.internal.HdrFormat", methodName : "parse"});
 		return null;
 	}
 	var this1 = new Uint8Array(width * height * 4);
@@ -23319,7 +23426,7 @@ kha_js_Video.prototype = $extend(kha_Video.prototype,{
 				}
 			}
 		}
-		haxe_Log.trace("Error loading " + this.element.src,{ fileName : "lib/KhaBundled/Backends/HTML5/kha/js/Video.hx", lineNumber : 132, className : "kha.js.Video", methodName : "errorListener"});
+		haxe_Log.trace("Error loading " + this.element.src,{ fileName : "lib/Kha/Backends/HTML5/kha/js/Video.hx", lineNumber : 132, className : "kha.js.Video", methodName : "errorListener"});
 		this.finishAsset();
 	}
 	,canPlayThroughListener: function(eventInfo) {
@@ -23906,7 +24013,7 @@ var kha_js_vr_VrInterface = function() {
 	if(displayEnabled) {
 		this.vrEnabled = true;
 		this.getVRDisplays();
-		haxe_Log.trace("Display enabled.",{ fileName : "lib/KhaBundled/Backends/HTML5/kha/js/vr/VrInterface.hx", lineNumber : 40, className : "kha.js.vr.VrInterface", methodName : "new"});
+		haxe_Log.trace("Display enabled.",{ fileName : "lib/Kha/Backends/HTML5/kha/js/vr/VrInterface.hx", lineNumber : 40, className : "kha.js.vr.VrInterface", methodName : "new"});
 	}
 };
 $hxClasses["kha.js.vr.VrInterface"] = kha_js_vr_VrInterface;
@@ -23936,7 +24043,7 @@ kha_js_vr_VrInterface.prototype = $extend(kha_vr_VrInterface.prototype,{
 				_gthis.vrWidth = Math.max(leftEye.renderWidth,rightEye.renderWidth) * 2 | 0;
 				_gthis.vrHeight = Math.max(leftEye.renderHeight,rightEye.renderHeight) | 0;
 			} else {
-				haxe_Log.trace("There are no VR displays connected.",{ fileName : "lib/KhaBundled/Backends/HTML5/kha/js/vr/VrInterface.hx", lineNumber : 61, className : "kha.js.vr.VrInterface", methodName : "getVRDisplays"});
+				haxe_Log.trace("There are no VR displays connected.",{ fileName : "lib/Kha/Backends/HTML5/kha/js/vr/VrInterface.hx", lineNumber : 61, className : "kha.js.vr.VrInterface", methodName : "getVRDisplays"});
 			}
 		});
 	}
@@ -24135,8 +24242,7 @@ scenes_GameScene.prototype = $extend(aeons_core_Scene.prototype,{
 		aeons_Aeons._systems.add(system);
 		var system = new systems_BunnySystem();
 		aeons_Aeons._systems.add(system);
-		aeons_Aeons._assets.loadAtlas("atlas",function(atlas) {
-		});
+		aeons_Aeons._assets.loadAtlas("atlas");
 		var entity = new entities_ECamera();
 		aeons_Aeons._entities.addEntity(entity);
 		var entity = new entities_EText({ x : 10, y : 10, text : "FPS: 60"});
@@ -24317,6 +24423,7 @@ if(ArrayBuffer.prototype.slice == null) {
 	ArrayBuffer.prototype.slice = js_lib__$ArrayBuffer_ArrayBufferCompat.sliceImpl;
 }
 aeons_components_CCamera.pool = new aeons_utils_Pool(aeons_components_CCamera);
+aeons_components_CDebugRender.pool = new aeons_utils_Pool(aeons_components_CDebugRender);
 aeons_components_CRender.pool = new aeons_utils_Pool(aeons_components_CRender);
 aeons_components_CSprite.pool = new aeons_utils_Pool(aeons_components_CSprite);
 aeons_components_CText.pool = new aeons_utils_Pool(aeons_components_CText);
@@ -24387,6 +24494,8 @@ kha_SystemImpl.estimatedRefreshRate = 60;
 kha_SystemImpl.minimumScroll = 999;
 kha_SystemImpl.lastFirstTouchX = 0;
 kha_SystemImpl.lastFirstTouchY = 0;
+kha_SystemImpl.lastCanvasClientWidth = -1;
+kha_SystemImpl.lastCanvasClientHeight = -1;
 kha_SystemImpl.iosSoundEnabled = false;
 kha_SystemImpl.soundEnabled = false;
 kha_SystemImpl.iosTouchs = [];

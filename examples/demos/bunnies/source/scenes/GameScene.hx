@@ -28,7 +28,7 @@ class GameScene extends Scene {
     addSystem(new RenderSystem());
     addSystem(new BunnySystem());
 
-    Aeons.assets.loadAtlas('atlas', (atlas: Atlas)-> {});
+    Aeons.assets.loadAtlas('atlas');
     addEntity(new ECamera());
 
     fps = addEntity(new EText({ x: 10, y: 10, text: 'FPS: 60' }));

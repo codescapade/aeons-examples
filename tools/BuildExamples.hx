@@ -11,16 +11,27 @@ using StringTools;
 class BuildExamples {
 
   static function main() {
-    var examplesPath = Path.join([Sys.programPath(), '../../examples']);
-    var exampleFolders = FileSystem.readDirectory(examplesPath);
+    var sourcePath = Path.join([Sys.programPath(), '../../examples/features']);
+    var outPath = Path.join([Sys.programPath(), '../../site/src/exampleFiles/features']);
+    buildExamples(sourcePath, outPath);
 
-    var outPath = Path.join([Sys.programPath(), '../../site/src/exampleFiles']);
+    sourcePath = Path.join([Sys.programPath(), '../../examples/demos']);
+    outPath = Path.join([Sys.programPath(), '../../site/src/exampleFiles/demos']);
+    buildExamples(sourcePath, outPath);
+    
+
+    final sitePath = Path.join([Sys.programPath(), '../../site']);
+    Sys.setCwd(sitePath);
+    runCommand('', 'npx', ['@11ty/eleventy']);
+  }
+
+  static function buildExamples(sourcePath: String, outPath: String) {
+    final folders = FileSystem.readDirectory(sourcePath);
     if (FileSystem.exists(outPath)) {
-      trace('does exist');
       deleteDir(outPath);
     }
 
-    var docsPath = Path.join([Sys.programPath(), '../../docs']);
+    final docsPath = Path.join([Sys.programPath(), '../../docs']);
     if (FileSystem.exists(docsPath)) {
       deleteDir(docsPath);
     }
@@ -28,11 +39,15 @@ class BuildExamples {
     FileSystem.createDirectory(outPath);
 
     final haxelibPath = getHaxelibPath('aeons');
-    final makePath = Path.join([haxelibPath, 'lib/KhaBundled/make.js']);
-    for (folder in exampleFolders) {
-      var path = Path.join([examplesPath, folder]);
-
-      var buildPath = Path.join([path, 'build']);
+    final makePath = Path.join([haxelibPath, 'lib/Kha/make.js']);
+    for (folder in folders) {
+      final path = Path.join([sourcePath, folder]);
+      final draftPath = Path.join([path, '.draft']);
+      if (FileSystem.exists(draftPath)) {
+        continue;
+      }
+      
+      final buildPath = Path.join([path, 'build']);
       if (FileSystem.exists(buildPath)) {
         deleteDir(buildPath);
       }
@@ -41,7 +56,7 @@ class BuildExamples {
       runCommand('', 'node', [makePath, 'html5']);
       FileSystem.deleteFile('build/html5/index.html');
 
-      var outFolder = Path.join([outPath, folder]);
+      final outFolder = Path.join([outPath, folder]);
       FileSystem.createDirectory(outFolder);
       copyDir('build/html5', outFolder);
 
@@ -49,10 +64,6 @@ class BuildExamples {
         deleteDir(buildPath);
       } 
     }
-
-    var sitePath = Path.join([Sys.programPath(), '../../site']);
-    Sys.setCwd(sitePath);
-    runCommand('', 'npx', ['@11ty/eleventy']);
   }
 
   /**
