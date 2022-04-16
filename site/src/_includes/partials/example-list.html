@@ -1,8 +1,8 @@
 <div class="example-list">
   {% for example in collections.examples %}
     <div class="example-item">
-        <a href="{{ example.url }}">
-          <img class="thumbnail" src="{{ example.data.thumbnail }}">
+        <a class="example-container" href="{{ example.url | url }}">
+          <img class="thumbnail" src="{{ example.data.thumbnail | url }}">
           <div class="thumbnail-text">{{ example.data.title }}</div>
         </a>
     </div>

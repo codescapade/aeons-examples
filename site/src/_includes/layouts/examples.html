@@ -8,11 +8,9 @@
     <script src="aeons.js"></script>
     <div class="title-source">
       <div class="example-title">{{ title }}</div>
-      <a class="source-link" href="{{ source }}"><img class="source-github-logo" src="/static/github_logo.png"><span>Source</span></a>
+      <a class="source-link button" href="{{ source }}"><img class="source-github-logo" src="{{ '/static/github_logo.png' | url }}">Source</a>
     </div>
     {{ content | safe }}
-    <div class="back-link">
-      <a href="/">Back</a>
-    </div>
+      <a class="button" href="{{ '/' | url }}">Back</a>
   </article>
 {% endblock %}

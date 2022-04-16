@@ -1,8 +1,9 @@
 ---
 title: Scenes
 layout: layouts/examples.html
-eleventyExcludeFromCollections: true
 permalink: false
+thumbnail: /thumbnails/bunnies.png
+eleventyExcludeFromCollections: true
 ---
 
 This is the Scenes example.

@@ -2,7 +2,7 @@
 title: Bunnies
 layout: layouts/examples.html
 thumbnail: /thumbnails/bunnies.png
-source: https://github.com/codescapade/aeons-examples/tree/main/examples/bunnies
+source: https://github.com/codescapade/aeons-examples/tree/main/examples/demos/bunnies
 ---
 
 ### Info
