@@ -20,6 +20,8 @@ project.addLibrary('aeons');
 project.addParameter('-dce full');
 
 project.targetOptions.html5.disableContextMenu = true;
+
+// This sets the canvas id and javascript name in the html output file.
 project.targetOptions.html5.canvasId = 'aeonsGame';
 project.targetOptions.html5.scriptName = 'aeons';
 

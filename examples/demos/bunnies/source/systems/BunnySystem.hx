@@ -2,20 +2,21 @@ package systems;
 
 import aeons.Aeons;
 import aeons.components.CTransform;
-import components.CBunnyMove;
 import aeons.core.Bundle;
-import aeons.core.Updatable;
 import aeons.core.System;
+import aeons.core.Updatable;
+
+import components.CBunnyMove;
 
 class BunnySystem extends System implements Updatable {
 
-
   final gravity = 0.5;
 
-  var maxX = 800;
+  final maxX = Aeons.display.viewWidth;
+  final maxY = Aeons.display.viewHeight;
 
-  var maxY = 600;
-
+  // Bundles are created when an entity has the components required by the bundle.
+  // Each component can be accessed from the bundle.
   @:bundle
   var bunnyBundles: Bundle<CBunnyMove, CTransform>;
 
@@ -24,15 +25,21 @@ class BunnySystem extends System implements Updatable {
   }
 
   public function update(dt: Float) {
+    // Loop though all the bundles.
     for (bunny in bunnyBundles) {
+      // Get the components.
       final transform = bunny.c_transform;
       final move = bunny.c_bunny_move;
 
+      // Update the position and rotation.
       transform.x += move.speedX;
       transform.y += move.speedY;
       transform.angle += move.rotationSpeed;
+
+      // Add gravity.
       move.speedY += gravity;
 
+      // Reverse if the bunny is hitting x axis bounds.
       if (transform.x > maxX) {
         transform.x = maxX;
         move.speedX *= -1;
@@ -41,13 +48,18 @@ class BunnySystem extends System implements Updatable {
         move.speedX *= -1;
       }
 
+      // Hitting the ground. Bounce back up at a ranom speed.
       if (transform.y > maxY) {
         transform.y = maxY;
+
+        // Decrease the up speed a bit.
         move.speedY *= -0.8;
 
+        // 50% chance to bounce with more speed.
         if (Aeons.random.float() > 0.5) {
           move.speedY -= 3 + Aeons.random.float(0, 4);
         }
+      // Hit the top. Reset the vertical speed.
       } else if (transform.y < 0) {
         transform.y = 0;
         move.speedY = 0;
