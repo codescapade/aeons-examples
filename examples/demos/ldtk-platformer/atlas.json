@@ -1,0 +1,29 @@
+{
+  "configs": [
+    {
+      "name": "tiles",
+      "saveFolder": "assets",
+      "folders": ["atlasImages/tiles"],
+      "extrude": 1,
+      "trimmed": false,
+      "packMethod": "basic",
+      "noData": true,
+      "maxWidth": 400
+    },
+    {
+      "name": "backgrounds",
+      "saveFolder": "assets",
+      "folders": ["atlasImages/backgrounds"],
+      "extrude": 1,
+      "trimmed": false,
+      "packMethod": "basic",
+      "noData": true,
+      "maxWidth": 156
+    },
+    {
+      "name": "sprites",
+      "saveFolder": "assets",
+      "folders": ["atlasImages/sprites"]
+    }
+  ]
+}
