@@ -1,8 +1,11 @@
 package scenes;
 
-import aeons.physics.simple.Collide;
-import components.CPlayerMovement;
-import aeons.events.input.KeyboardEvent;
+import aeons.systems.AnimationSystem;
+import aeons.components.CAnimation;
+import aeons.graphics.animation.Animation;
+import aeons.graphics.atlas.Atlas;
+import systems.PlayerMovement;
+import components.CPlayer;
 import aeons.components.CSimpleBody;
 import aeons.systems.UpdateSystem;
 import aeons.math.Rect;
@@ -26,7 +29,9 @@ class GameScene extends Scene {
   var transform: CTransform;
 
   public override function init() {
+    addSystem(new PlayerMovement());
     addSystem(new SimplePhysicsSystem({ worldWidth: 814, worldHeight: 616, gravity: { x: 0, y: 600 } }));
+    addSystem(new AnimationSystem());
     addSystem(new RenderSystem());
     addSystem(new UpdateSystem());
     // addSystem(new DebugRenderSystem());
@@ -55,11 +60,7 @@ class GameScene extends Scene {
     var atlas = Aeons.assets.loadAtlas('sprites');
 
     var playerData = levelEntities.all_Player[0];
-    var player = addEntity(new Entity());
-    transform = player.addComponent(new CTransform({ x: playerData.pixelX, y: playerData.pixelY, scaleX: playerData.f_Flipped ? -1 : 1 }));
-    player.addComponent(new CSprite({ atlas: atlas, frameName: 'green_alien_00', anchorX: 0.5, anchorY: 0.5 }));
-    player.addComponent(new CSimpleBody({ width: 20, height: 22, offset: { x: 0, y: 1 } }));
-    player.addComponent(new CPlayerMovement());
+    createPlayer(playerData, atlas);
 
     addOwnWayPlatforms(levelEntities.all_One_way);
 
@@ -74,6 +75,19 @@ class GameScene extends Scene {
       entity.addComponent(new CTransform({ x: platform.pixelX, y: platform.pixelY }));
       entity.addComponent(new CSimpleBody({ width: platform.width, height: platform.height, canCollide: TOP, type: STATIC }));
     }
+  }
+
+  function createPlayer(data: Ldtk.Entity_Player, atlas: Atlas) {
+    var player = addEntity(new Entity());
+    transform = player.addComponent(new CTransform({ x: data.pixelX, y: data.pixelY, scaleX: data.f_Flipped ? -1 : 1 }));
+    player.addComponent(new CSprite({ atlas: atlas, frameName: 'green_alien_00', anchorX: 0.5, anchorY: 0.5 }));
+    player.addComponent(new CSimpleBody({ width: 20, height: 22, offset: { x: 0, y: 1 } }));
+    player.addComponent(new CPlayer());
+
+    var idle = new Animation('idle', atlas, ['green_alien_00'], 1);
+    var walk = new Animation('walk', atlas, ['green_alien_00', 'green_alien_01'], 0.15, LOOP);
+    var jump = new Animation('jump', atlas, ['green_alien_01'], 1);
+    player.addComponent(new CAnimation({ animations: [idle, walk, jump]}));
   }
 }
 
