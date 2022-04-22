@@ -1,5 +1,6 @@
 package systems;
 
+import aeons.systems.SimplePhysicsSystem;
 import aeons.math.Vector2;
 import aeons.components.CAnimation;
 import aeons.Aeons;
@@ -23,6 +24,8 @@ class PlayerMovement extends System implements Updatable {
 
   var animation: CAnimation;
 
+  var player: CPlayer;
+
   var grounded = false;
 
   var jumping = false;
@@ -30,6 +33,10 @@ class PlayerMovement extends System implements Updatable {
   var goingLeft = false;
 
   var goingRight = false;
+
+  var onLeftWall = false;
+
+  var onRightWall = false;
 
   var leftKeys: Array<KeyCode> = [Left, J];
   var rightKeys: Array<KeyCode> = [Right, L];
@@ -45,7 +52,7 @@ class PlayerMovement extends System implements Updatable {
 
   var drag = 4;
 
-  var xVelocity = 160;
+  var xVelocity = 180;
 
   var moveThreshold = 10;
 
@@ -53,13 +60,23 @@ class PlayerMovement extends System implements Updatable {
 
   var jumpCanceledSpeed = 200;
 
-  var wallJumpSpeed = new Vector2(200, -250);
+  var wallJumpSpeed = new Vector2(180, -270);
+
+  var physics: SimplePhysicsSystem;
+
+  var rayStart = new Vector2();
+
+  var rayEnd = new Vector2();
+
+  var rayTags = [Tag.Ground];
 
   public function new() {
     super();
   }
 
   public override function init() {
+    physics = getSystem(SimplePhysicsSystem);
+
     playerBundles.onAdded(onPlayerAdded);
     Aeons.events.on(KeyboardEvent.KEY_DOWN, keyDown);
     Aeons.events.on(KeyboardEvent.KEY_UP, keyUp);
@@ -73,6 +90,12 @@ class PlayerMovement extends System implements Updatable {
   public function update(dt: Float) {
     if (!hasPlayer) {
       return;
+    }
+
+    if (player.dead && transform.y > player.levelBottom) {
+      transform.setPosition(player.spawnPosition.x, player.spawnPosition.y);
+      player.dead = false;
+      transform.scaleY = 1;
     }
 
     grounded = false;
@@ -91,7 +114,24 @@ class PlayerMovement extends System implements Updatable {
       body.acceleration.x = 0;
     }
 
-    if (!grounded && body.isTouchingAny([LEFT, RIGHT]) && body.velocity.y > 0) {
+    onLeftWall = false;
+    onRightWall = false;
+    transform.getWorldPosition(rayStart);
+    if (transform.scaleX == 1) {
+      rayEnd.set(rayStart.x - 10, rayStart.y);
+    } else {
+      rayEnd.set(rayStart.x + 10, rayStart.y);
+    }
+    var hits = physics.raycast(rayStart, rayEnd, rayTags);
+    if (hits.count > 0) {
+      if (transform.scaleX == 1) {
+        onLeftWall = true;
+      } else {
+        onRightWall = true;
+      }
+    }
+
+    if (!grounded && (onLeftWall || onRightWall) && body.velocity.y > 0) {
       body.maxVelocity.y = wallVelocity;
     } else {
       body.maxVelocity.y = airVelocity;
@@ -108,11 +148,13 @@ class PlayerMovement extends System implements Updatable {
     } else if (animation.current != PlayerAnims.Jump) {
       animation.play(PlayerAnims.Jump);
     }
+
   }
 
   function onPlayerAdded(bundle: aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimation) {
     transform = bundle.c_transform;
     body = bundle.c_simple_body;
+    player = bundle.c_player;
     animation = bundle.c_animation;
     animation.play(PlayerAnims.Idle);
 
@@ -122,7 +164,7 @@ class PlayerMovement extends System implements Updatable {
   }
 
   function keyDown(event: KeyboardEvent) {
-    if (!hasPlayer) {
+    if (!hasPlayer || player.dead) {
       return;
     }
 
@@ -135,20 +177,24 @@ class PlayerMovement extends System implements Updatable {
         body.velocity.y = -jumpSpeed;
         grounded = false;
         jumping = true;
-      } else if (body.isTouching(LEFT)) {
+      } else if (onLeftWall) {
         body.velocity.set(wallJumpSpeed.x, wallJumpSpeed.y);
         body.maxVelocity.y = airVelocity;
         jumping = true;
-      } else if (body.isTouching(RIGHT)) {
+        transform.scaleX *= -1;
+      } else if (onRightWall) {
         body.velocity.set(-wallJumpSpeed.x, wallJumpSpeed.y);
         body.maxVelocity.y = airVelocity;
         jumping = true;
+        transform.scaleX *= -1;
       }
     }
   }
 
   function keyUp(event: KeyboardEvent) {
-    if (!hasPlayer) {
+    if (!hasPlayer || player.dead) {
+      goingLeft = false;
+      goingRight = false;
       return;
     }
 
