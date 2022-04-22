@@ -33,4 +33,8 @@ class ECamera extends Entity {
     transform.x = x;
     transform.y = y;
   }
+
+  public function addChild(transform: CTransform) {
+    camera.addChild(transform);
+  }
 }

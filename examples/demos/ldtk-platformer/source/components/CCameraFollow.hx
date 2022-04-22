@@ -36,8 +36,8 @@ class CCameraFollow extends Component implements Updatable {
 
     var x = AeMath.lerp(transform.x, target.x, speed);
     var y = AeMath.lerp(transform.y, target.y, speed);
-    x = Math.round(AeMath.clamp(x, bounds.x + camera.viewWidth * 0.5, bounds.width - camera.viewWidth * 0.5));
-    y = Math.round(AeMath.clamp(y, bounds.y + camera.viewHeight * 0.5, bounds.height - camera.viewHeight * 0.5));
+    x = AeMath.clamp(x, bounds.x + camera.viewWidth * 0.5, bounds.width - camera.viewWidth * 0.5);
+    y = AeMath.clamp(y, bounds.y + camera.viewHeight * 0.5, bounds.height - camera.viewHeight * 0.5);
     transform.x = x;
     transform.y = y;
   }
