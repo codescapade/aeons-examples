@@ -15,6 +15,7 @@ class ECamera extends Entity {
   var transform: CTransform;
 
   var camera: CCamera;
+
   public function new(target: CTransform, bounds: Rect) {
     super();
     this.target = target;

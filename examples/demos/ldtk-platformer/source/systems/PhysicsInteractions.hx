@@ -1,8 +1,9 @@
 package systems;
 
+import aeons.audio.SoundChannel;
+import aeons.components.CAudio;
 import scenes.GameScene;
 import aeons.events.SceneEvent;
-import aeons.components.CCamera;
 import aeons.components.CTransform;
 import components.CPlayer;
 import aeons.Aeons;
@@ -23,12 +24,17 @@ class PhysicsInteractions extends System {
   @:bundle
   var playerBundle: Bundle<CTransform, CPlayer>;
 
+  var deadSoundChannel: SoundChannel;
+
   public function new() {
     super();
   }
 
   public override function init() {
     super.init();
+
+    final deathSound = Aeons.assets.getSound('dead');
+    deadSoundChannel = Aeons.audio.addChannel(deathSound);
 
     physics = getSystem(SimplePhysicsSystem);
     physics.addInteractionListener(TRIGGER_START, Tag.Player, Tag.Coin, collectCoin);
@@ -40,11 +46,20 @@ class PhysicsInteractions extends System {
     physics.removeInteractionListener(TRIGGER_START, Tag.Player, Tag.Coin, collectCoin);
     physics.removeInteractionListener(TRIGGER_START, Tag.Player, Tag.Death, hitDeath);
     physics.removeInteractionListener(TRIGGER_START, Tag.Player, Tag.Flag, hitFlag);
+    Aeons.audio.removeChannel(deadSoundChannel);
   }
 
   function collectCoin(player: Body, coin: Body) {
-    Aeons.entities.removeEntityById(coin.component.entityId);
     counterBundle.get(0).c_coin_counter.addCoin();
+
+    final entity = Aeons.entities.getEntityById(coin.component.entityId);
+    entity.getComponent(CAudio).play();
+    entity.active = false;
+
+    // Wait for the audio to finish before removing the entity so the audio plays.
+    Aeons.timers.create(0.2, () -> {
+      Aeons.entities.removeEntityById(coin.component.entityId);
+    }, 0, true);
   }
 
   function hitDeath(playerBody: Body, death: Body) {
@@ -54,6 +69,7 @@ class PhysicsInteractions extends System {
       bundle.c_transform.scaleY = -1;
       playerBody.velocity.set(0, -100);
       playerBody.isTrigger = true;
+      deadSoundChannel.play();
     }
   }
 

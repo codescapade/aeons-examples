@@ -1,5 +1,6 @@
 package systems;
 
+import aeons.components.CAudio;
 import aeons.systems.SimplePhysicsSystem;
 import aeons.math.Vector2;
 import aeons.components.CAnimation;
@@ -16,15 +17,9 @@ import aeons.core.Updatable;
 class PlayerMovement extends System implements Updatable {
 
   @:bundle
-  var playerBundles: Bundle<CTransform, CSimpleBody, CPlayer, CAnimation>;
+  var playerBundles: Bundle<CTransform, CSimpleBody, CPlayer, CAnimation, CAudio>;
 
-  var transform: CTransform;
-
-  var body: CSimpleBody;
-
-  var animation: CAnimation;
-
-  var player: CPlayer;
+  var bundle: aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimationCAudio;
 
   var grounded = false;
 
@@ -76,7 +71,7 @@ class PlayerMovement extends System implements Updatable {
 
   public override function init() {
     physics = getSystem(SimplePhysicsSystem);
-
+    trace(physics.worldHeight);
     playerBundles.onAdded(onPlayerAdded);
     Aeons.events.on(KeyboardEvent.KEY_DOWN, keyDown);
     Aeons.events.on(KeyboardEvent.KEY_UP, keyUp);
@@ -92,13 +87,29 @@ class PlayerMovement extends System implements Updatable {
       return;
     }
 
-    if (player.dead && transform.y > player.levelBottom) {
+    final player = bundle.c_player;
+    final transform = bundle.c_transform;
+    final body = bundle.c_simple_body;
+    final animation = bundle.c_animation;
+
+    if (player.dead && transform.y > physics.worldY + physics.worldHeight) {
       transform.setPosition(player.spawnPosition.x, player.spawnPosition.y);
       player.dead = false;
       transform.scaleY = 1;
+      body.velocity.set(0, 0);
+      body.isTrigger = false;
     }
 
     grounded = false;
+    onLeftWall = false;
+    onRightWall = false;
+
+    if (player.dead) {
+      body.maxVelocity.y = airVelocity;
+      body.acceleration.x = 0;
+      return;
+    }
+
     if (body.isTouching(BOTTOM)) {
       grounded = true;
       jumping = false;
@@ -114,15 +125,21 @@ class PlayerMovement extends System implements Updatable {
       body.acceleration.x = 0;
     }
 
-    onLeftWall = false;
-    onRightWall = false;
     transform.getWorldPosition(rayStart);
+    rayStart.y -= 8;
     if (transform.scaleX == 1) {
       rayEnd.set(rayStart.x - 10, rayStart.y);
     } else {
       rayEnd.set(rayStart.x + 10, rayStart.y);
     }
+
     var hits = physics.raycast(rayStart, rayEnd, rayTags);
+    if (hits.count == 0) {
+      rayStart.y += 16;
+      rayEnd.y = rayStart.y;
+      physics.raycast(rayStart, rayEnd, rayTags);
+    }
+
     if (hits.count > 0) {
       if (transform.scaleX == 1) {
         onLeftWall = true;
@@ -151,22 +168,23 @@ class PlayerMovement extends System implements Updatable {
 
   }
 
-  function onPlayerAdded(bundle: aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimation) {
-    transform = bundle.c_transform;
-    body = bundle.c_simple_body;
-    player = bundle.c_player;
-    animation = bundle.c_animation;
-    animation.play(PlayerAnims.Idle);
+  function onPlayerAdded(bundle: aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimationCAudio) {
+    this.bundle = bundle;
+    bundle.c_animation.play(PlayerAnims.Idle);
 
-    body.maxVelocity.x = xVelocity;
-    body.drag.x = drag;
+    bundle.c_simple_body.maxVelocity.x = xVelocity;
+    bundle.c_simple_body.drag.x = drag;
     hasPlayer = true;
   }
 
   function keyDown(event: KeyboardEvent) {
-    if (!hasPlayer || player.dead) {
+    if (!hasPlayer || bundle.c_player.dead) {
       return;
     }
+
+    final body = bundle.c_simple_body;
+    final transform = bundle.c_transform;
+    final audio = bundle.c_audio;
 
     if (leftKeys.contains(event.key)) {
       goingLeft = true;
@@ -177,26 +195,31 @@ class PlayerMovement extends System implements Updatable {
         body.velocity.y = -jumpSpeed;
         grounded = false;
         jumping = true;
+        audio.play();
       } else if (onLeftWall) {
         body.velocity.set(wallJumpSpeed.x, wallJumpSpeed.y);
         body.maxVelocity.y = airVelocity;
         jumping = true;
         transform.scaleX *= -1;
+        audio.play();
       } else if (onRightWall) {
         body.velocity.set(-wallJumpSpeed.x, wallJumpSpeed.y);
         body.maxVelocity.y = airVelocity;
         jumping = true;
         transform.scaleX *= -1;
+        audio.play();
       }
     }
   }
 
   function keyUp(event: KeyboardEvent) {
-    if (!hasPlayer || player.dead) {
+    if (!hasPlayer || bundle.c_player.dead) {
       goingLeft = false;
       goingRight = false;
       return;
     }
+
+    final body = bundle.c_simple_body;
 
     if (leftKeys.contains(event.key)) {
       goingLeft = false;
