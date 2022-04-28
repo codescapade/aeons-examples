@@ -1,5 +1,6 @@
 package systems;
 
+import aeons.components.CAnimation;
 import aeons.audio.SoundChannel;
 import aeons.components.CAudio;
 import scenes.GameScene;
@@ -40,6 +41,7 @@ class PhysicsInteractions extends System {
     physics.addInteractionListener(TRIGGER_START, Tag.Player, Tag.Coin, collectCoin);
     physics.addInteractionListener(TRIGGER_START, Tag.Player, Tag.Death, hitDeath);
     physics.addInteractionListener(TRIGGER_START, Tag.Player, Tag.Flag, hitFlag);
+    physics.addInteractionListener(COLLISION_START, Tag.Player, Tag.Enemy, hitEnemy);
   }
 
   public override function cleanup() {
@@ -63,6 +65,32 @@ class PhysicsInteractions extends System {
   }
 
   function hitDeath(playerBody: Body, death: Body) {
+    die(playerBody);
+  }
+
+  function hitFlag(player: Body, flag: Body) {
+    SceneEvent.emit(SceneEvent.REPLACE, GameScene);
+  }
+
+  function hitEnemy(playerBody: Body, enemy: Body) {
+    if (playerBody.component.isTouching(BOTTOM) && enemy.component.isTouching(TOP)) {
+      playerBody.velocity.y = -200;
+      final entity = Aeons.entities.getEntityById(enemy.component.entityId);
+      enemy.type = DYNAMIC;
+      enemy.velocity.x = 0;
+      enemy.isTrigger = true;
+      entity.getComponent(CTransform).scaleY = -0.5;
+      entity.getComponent(CAnimation).stop();
+
+      Aeons.timers.create(5, () -> {
+        Aeons.entities.removeEntityById(enemy.component.entityId);
+      }, 0, true);
+    } else {
+      die(playerBody);
+    }
+  }
+
+  function die(playerBody: Body) {
     var bundle = playerBundle.get(0);
     if (!bundle.c_player.dead) {
       bundle.c_player.dead = true;
@@ -71,9 +99,5 @@ class PhysicsInteractions extends System {
       playerBody.isTrigger = true;
       deadSoundChannel.play();
     }
-  }
-
-  function hitFlag(player: Body, flag: Body) {
-    SceneEvent.emit(SceneEvent.REPLACE, GameScene);
   }
 }

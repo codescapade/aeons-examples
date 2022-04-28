@@ -1,5 +1,10 @@
 package scenes;
 
+import components.CFPSUpdate;
+import aeons.components.CAnimation;
+import aeons.graphics.animation.Animation;
+import systems.EnemyPatrol;
+import components.CPatrol;
 import aeons.Aeons;
 import aeons.components.CLdtkTilemap;
 import aeons.components.CSimpleBody;
@@ -32,6 +37,8 @@ class GameScene extends Scene {
 
   var debug: DebugRenderSystem;
 
+  var fpsEntity: Entity;
+
   public override function init() {
     final world = new Ldtk();
     final level = world.all_levels.Level_01;
@@ -39,10 +46,11 @@ class GameScene extends Scene {
     addSystem(new SimplePhysicsSystem({
       worldY: -200,
       worldWidth: level.pxWid,
-      worldHeight: level.pxHei + 200,
+      worldHeight: level.pxHei + 400,
       gravity: { x: 0, y: 800 }
     }));
 
+    addSystem(new EnemyPatrol());
     addSystem(new AnimationSystem());
     addSystem(new UpdateSystem());
     addSystem(new PlayerMovement());
@@ -62,6 +70,10 @@ class GameScene extends Scene {
       addEntity(new ECoin(coin.pixelX, coin.pixelY));
     }
 
+    createSmallRobots(levelEntities.all_Robot_small, levelEntities.gridSize);
+    createBigRobots(levelEntities.all_Robot_big, levelEntities.gridSize);
+    createFlyers(levelEntities.all_Flyer, levelEntities.gridSize);
+
     final flagData = levelEntities.all_Flag[0];
     addEntity(new EFlag(flagData.pixelX, flagData.pixelY, flagData.width, flagData.height));
 
@@ -73,6 +85,7 @@ class GameScene extends Scene {
     camera.setPosition(playerData.pixelX, playerData.pixelY);
 
     createCoinCounter(camera, levelEntities.all_Coin.length);
+    createFPS(camera);
 
     Aeons.events.on(KeyboardEvent.KEY_DOWN, keyDown);
   }
@@ -123,7 +136,9 @@ class GameScene extends Scene {
     final iconTransform = icon.addComponent(new CTransform({
       x: 20,
       y: 20,
-      zIndex: 1
+      scaleX: 1,
+      scaleY: 1,
+      zIndex: 5
     }));
     camera.addChild(iconTransform);
 
@@ -136,15 +151,15 @@ class GameScene extends Scene {
 
     counter.addComponent(new CTransform({
       x: 12,
-      y: -1,
+      y: 0,
       zIndex: 5,
       parent: iconTransform
     }));
 
-    final font = Aeons.assets.getFont('kenney_mini');
+    final font = Aeons.assets.getFont('kenney_pixel');
     counter.addComponent(new CText({
       font: font,
-      fontSize: 20,
+      fontSize: 12,
       anchorX: 0,
       color: Color.Black
     }));
@@ -173,9 +188,135 @@ class GameScene extends Scene {
     }
   }
 
+  function createSmallRobots(data: Array<Ldtk.Entity_Robot_small>, gridSze: Int) {
+    final atlas = Aeons.assets.getAtlas('sprites');
+
+    for (item in data) {
+      var entity = addEntity(new Entity());
+      entity.addComponent(new CTransform({
+        x: item.pixelX,
+        y: item.pixelY
+      }));
+
+      entity.addComponent(new CSprite({
+        atlas: atlas,
+        frameName: 'robot_small_00'
+      }));
+      
+      entity.addComponent(new CSimpleBody({
+        width: 14,
+        height: 12,
+        offset: { x: 0, y: 6 },
+        type: KINEMATIC,
+        tags: [Tag.Enemy]
+      }));
+
+      entity.addComponent(new CPatrol({
+        startX: gridToWorld(item.f_Path[0].cx, gridSze),
+        startY: gridToWorld(item.f_Path[0].cy, gridSze),
+        endX: gridToWorld(item.f_Path[1].cx, gridSze),
+        endY: gridToWorld(item.f_Path[1].cy, gridSze),
+        speed: 20
+      }));
+
+      var walk = new Animation('walk', atlas, ['robot_small_00', 'robot_small_01', 'robot_small_02'], 0.15, LOOP);
+      var anim = entity.addComponent(new CAnimation({ animations: [walk] }));
+      anim.play('walk');
+    }
+  }
+
+  function createBigRobots(data: Array<Ldtk.Entity_Robot_big>, gridSze: Int) {
+    final atlas = Aeons.assets.getAtlas('sprites');
+
+    for (item in data) {
+      var entity = addEntity(new Entity());
+      entity.addComponent(new CTransform({
+        x: item.pixelX,
+        y: item.pixelY
+      }));
+
+      entity.addComponent(new CSprite({
+        atlas: atlas,
+        frameName: 'robot_00'
+      }));
+      
+      entity.addComponent(new CSimpleBody({
+        width: 24,
+        height: 22,
+        offset: { x: 0, y: 2 },
+        type: KINEMATIC,
+        tags: [Tag.Enemy]
+      }));
+
+      entity.addComponent(new CPatrol({
+        startX: gridToWorld(item.f_Path[0].cx, gridSze),
+        startY: gridToWorld(item.f_Path[0].cy, gridSze),
+        endX: gridToWorld(item.f_Path[1].cx, gridSze),
+        endY: gridToWorld(item.f_Path[1].cy, gridSze),
+        speed: 20
+      }));
+
+      var walk = new Animation('walk', atlas, ['robot_00', 'robot_01', 'robot_02'], 0.15, LOOP);
+      var anim = entity.addComponent(new CAnimation({ animations: [walk] }));
+      anim.play('walk');
+    }
+  }
+
+  function createFlyers(data: Array<Ldtk.Entity_Flyer>, gridSze: Int) {
+    final atlas = Aeons.assets.getAtlas('sprites');
+
+    for (item in data) {
+      var entity = addEntity(new Entity());
+      entity.addComponent(new CTransform({
+        x: item.pixelX,
+        y: item.pixelY
+      }));
+
+      entity.addComponent(new CSprite({
+        atlas: atlas,
+        frameName: 'flyer_00'
+      }));
+      
+      entity.addComponent(new CSimpleBody({
+        width: 12,
+        height: 12,
+        offset: { x: 0, y: 0 },
+        type: KINEMATIC,
+        tags: [Tag.Enemy]
+      }));
+
+      entity.addComponent(new CPatrol({
+        startX: gridToWorld(item.f_Path[0].cx, gridSze),
+        startY: gridToWorld(item.f_Path[0].cy, gridSze),
+        endX: gridToWorld(item.f_Path[1].cx, gridSze),
+        endY: gridToWorld(item.f_Path[1].cy, gridSze),
+        speed: 20
+      }));
+
+      var fly = new Animation('fly', atlas, ['flyer_00', 'flyer_01', 'flyer_02'], 0.15, LOOP);
+      var anim = entity.addComponent(new CAnimation({ animations: [fly] }));
+      anim.play('fly');
+    }
+  }
+
   function keyDown(event: KeyboardEvent) {
     if (event.key == Q) {
       debug.enabled = !debug.enabled;
     }
+  }
+
+  function gridToWorld(gridPos, gridSize): Float {
+    return gridPos * gridSize + gridSize * 0.5;
+  }
+
+  function createFPS(camera: ECamera) {
+    final font = Aeons.assets.getFont('kenney_pixel');
+    fpsEntity = addEntity(new Entity());
+
+    final transform = fpsEntity.addComponent(new CTransform({ x: Aeons.display.viewWidth - 60, y: 10, zIndex: 5 }));
+    camera.addChild(transform);
+
+    fpsEntity.addComponent(new CText({ font: font, fontSize: 12, anchorX: 0, text: 'FPS: 0', color: Color.Black }));
+    fpsEntity.addComponent(new CFPSUpdate());
   }
 }

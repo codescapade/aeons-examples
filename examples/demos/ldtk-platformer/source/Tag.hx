@@ -6,4 +6,5 @@ enum abstract Tag(String) to String {
   var Ground;
   var Death;
   var Flag;
+  var Enemy;
 }

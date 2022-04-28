@@ -35,7 +35,7 @@ class PlayerMovement extends System implements Updatable {
 
   var leftKeys: Array<KeyCode> = [Left, J];
   var rightKeys: Array<KeyCode> = [Right, L];
-  var jumpKeys: Array<KeyCode> = [Space, X];
+  var jumpKeys: Array<KeyCode> = [Space, X, Up];
 
   var hasPlayer = false;
 
@@ -71,7 +71,6 @@ class PlayerMovement extends System implements Updatable {
 
   public override function init() {
     physics = getSystem(SimplePhysicsSystem);
-    trace(physics.worldHeight);
     playerBundles.onAdded(onPlayerAdded);
     Aeons.events.on(KeyboardEvent.KEY_DOWN, keyDown);
     Aeons.events.on(KeyboardEvent.KEY_UP, keyUp);

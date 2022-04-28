@@ -355,7 +355,7 @@
         "h": 24,
         "w": 24
       },
-      "filename": "flying_00"
+      "filename": "flyer_00"
     },
     {
       "rotated": false,
@@ -418,7 +418,7 @@
         "h": 24,
         "w": 24
       },
-      "filename": "flying_02"
+      "filename": "flyer_02"
     },
     {
       "rotated": false,
@@ -502,7 +502,7 @@
         "h": 24,
         "w": 24
       },
-      "filename": "flying_01"
+      "filename": "flyer_01"
     },
     {
       "rotated": false,
