@@ -7,8 +7,9 @@ import aeons.core.Scene;
 class LoadScene extends Scene {
 
   public override function init() {
+    super.init();
     Aeons.assets.loadAtlas('sprites');
 
-    SceneEvent.emit(SceneEvent.REPLACE, GameScene);
+    SceneEvent.emit(SceneEvent.REPLACE, new GameScene());
   }
 }

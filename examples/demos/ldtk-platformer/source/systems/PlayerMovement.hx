@@ -164,7 +164,6 @@ class PlayerMovement extends System implements Updatable {
     } else if (animation.current != PlayerAnims.Jump) {
       animation.play(PlayerAnims.Jump);
     }
-
   }
 
   function onPlayerAdded(bundle: aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimationCAudio) {

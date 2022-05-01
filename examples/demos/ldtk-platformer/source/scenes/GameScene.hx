@@ -1,5 +1,7 @@
 package scenes;
 
+import aeons.math.AeMath;
+import aeons.events.SceneEvent;
 import components.CFPSUpdate;
 import aeons.components.CAnimation;
 import aeons.graphics.animation.Animation;
@@ -40,6 +42,7 @@ class GameScene extends Scene {
   var fpsEntity: Entity;
 
   public override function init() {
+    super.init();
     final world = new Ldtk();
     final level = world.all_levels.Level_01;
 
@@ -82,11 +85,16 @@ class GameScene extends Scene {
 
     final bounds = new Rect(0, 0, level.pxWid, level.pxHei);
     final camera = addEntity(new ECamera(player.transform, bounds));
-    camera.setPosition(playerData.pixelX, playerData.pixelY);
+
+    final camX = AeMath.clamp(playerData.pixelX, 0 + Aeons.display.viewWidth * 0.5,
+        level.pxWid - Aeons.display.viewWidth * 0.5);
+    final camY = AeMath.clamp(playerData.pixelY, 0 + Aeons.display.viewHeight * 0.5,
+        level.pxHei - Aeons.display.viewHeight * 0.5);
+
+    camera.setPosition(camX, camY);
 
     createCoinCounter(camera, levelEntities.all_Coin.length);
     createFPS(camera);
-
     Aeons.events.on(KeyboardEvent.KEY_DOWN, keyDown);
   }
 
@@ -302,6 +310,16 @@ class GameScene extends Scene {
   function keyDown(event: KeyboardEvent) {
     if (event.key == Q) {
       debug.enabled = !debug.enabled;
+      event.canceled = true;
+    } else if (event.key == A) {
+      SceneEvent.emit(SceneEvent.PUSH, new GameScene());
+      event.canceled = true;
+    } else if (event.key == S) {
+      SceneEvent.emit(SceneEvent.POP);
+      event.canceled = true;
+    } else if (event.key == D) {
+      SceneEvent.emit(SceneEvent.REPLACE, new GameScene(), false, true);
+      event.canceled = true;
     }
   }
 

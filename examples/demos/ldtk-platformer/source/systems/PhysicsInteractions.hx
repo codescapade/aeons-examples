@@ -1,5 +1,6 @@
 package systems;
 
+import aeons.core.Transition;
 import aeons.components.CAnimation;
 import aeons.audio.SoundChannel;
 import aeons.components.CAudio;
@@ -69,7 +70,7 @@ class PhysicsInteractions extends System {
   }
 
   function hitFlag(player: Body, flag: Body) {
-    SceneEvent.emit(SceneEvent.REPLACE, GameScene);
+    SceneEvent.emit(SceneEvent.PUSH, new GameScene());
   }
 
   function hitEnemy(playerBody: Body, enemy: Body) {

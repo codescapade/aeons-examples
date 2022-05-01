@@ -10,7 +10,7 @@ class Main {
     new Game({
       title: 'ldtk-platformer',
       preload: true,
-      startScene: LoadScene,
+      startScene: new LoadScene(),
       designWidth: 400,
       designHeight: 300,
       windowWidth: 800,
