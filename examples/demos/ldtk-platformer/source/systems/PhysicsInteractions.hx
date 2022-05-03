@@ -1,6 +1,9 @@
 package systems;
 
-import aeons.core.Transition;
+import events.HealthEvent;
+import components.CPatrol;
+import transitions.SquaresTransition;
+import aeons.graphics.Color;
 import aeons.components.CAnimation;
 import aeons.audio.SoundChannel;
 import aeons.components.CAudio;
@@ -70,7 +73,8 @@ class PhysicsInteractions extends System {
   }
 
   function hitFlag(player: Body, flag: Body) {
-    SceneEvent.emit(SceneEvent.PUSH, new GameScene());
+    final health = getSystem(HealthSystem).currentHealth;
+    SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new GameScene({ health: health }), 1.8, Color.Black, 12));
   }
 
   function hitEnemy(playerBody: Body, enemy: Body) {
@@ -82,6 +86,7 @@ class PhysicsInteractions extends System {
       enemy.isTrigger = true;
       entity.getComponent(CTransform).scaleY = -0.5;
       entity.getComponent(CAnimation).stop();
+      entity.getComponent(CPatrol).dead = true;
 
       Aeons.timers.create(5, () -> {
         Aeons.entities.removeEntityById(enemy.component.entityId);
@@ -94,6 +99,7 @@ class PhysicsInteractions extends System {
   function die(playerBody: Body) {
     var bundle = playerBundle.get(0);
     if (!bundle.c_player.dead) {
+      HealthEvent.emit(HealthEvent.HEALTH_DOWN);
       bundle.c_player.dead = true;
       bundle.c_transform.scaleY = -1;
       playerBody.velocity.set(0, -100);

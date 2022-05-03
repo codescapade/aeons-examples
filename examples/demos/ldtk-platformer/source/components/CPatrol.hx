@@ -5,6 +5,8 @@ import aeons.math.Vector2;
 import aeons.core.Component;
 
 class CPatrol extends Component {
+  public var dead = false;
+
   public var startPosition(default, null): Vector2;
 
   public var endPosition(default, null): Vector2;

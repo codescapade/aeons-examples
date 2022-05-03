@@ -2,10 +2,10 @@ package components;
 
 import aeons.Aeons;
 import aeons.components.CText;
-import aeons.core.Updatable;
 import aeons.core.Component;
 
-class CFPSUpdate extends Component implements Updatable {
+class CTextBlink extends Component {
+
   var text: CText;
 
   public function new() {
@@ -16,13 +16,12 @@ class CFPSUpdate extends Component implements Updatable {
     super.init(entityId);
 
     text = getComponent(CText);
+    Aeons.timers.create(1.0, () -> {
+      text.active = !text.active;
+    }, -1, true);
   }
 
-  public function update(dt: Float) {
-    text.text = 'FPS: ${Aeons.timeStep.fps}';
-  }
-
-  override function get_requiredComponents(): Array<Class<Component>> {
+  override function get_requiredComponents():Array<Class<Component>> {
     return [CText];
   }
 }

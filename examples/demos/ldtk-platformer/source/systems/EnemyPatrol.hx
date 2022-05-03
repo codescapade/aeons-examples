@@ -22,6 +22,11 @@ class EnemyPatrol extends System implements Updatable {
 
   public function update(dt: Float) {
     for (bundle in patrolBundles) {
+      if (bundle.c_patrol.dead) {
+        bundle.c_simple_body.velocity.x = 0;
+        return;
+      }
+
       if (bundle.c_patrol.direction == 1) {
         bundle.c_simple_body.velocity.x = bundle.c_patrol.speed;
         if (bundle.c_transform.x > bundle.c_patrol.target.x) {

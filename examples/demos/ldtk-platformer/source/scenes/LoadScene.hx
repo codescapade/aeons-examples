@@ -10,6 +10,6 @@ class LoadScene extends Scene {
     super.init();
     Aeons.assets.loadAtlas('sprites');
 
-    SceneEvent.emit(SceneEvent.REPLACE, new GameScene());
+    SceneEvent.emit(SceneEvent.REPLACE, new IntroScene());
   }
 }

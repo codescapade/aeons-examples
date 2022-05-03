@@ -136,7 +136,7 @@ class PlayerMovement extends System implements Updatable {
     if (hits.count == 0) {
       rayStart.y += 16;
       rayEnd.y = rayStart.y;
-      physics.raycast(rayStart, rayEnd, rayTags);
+      physics.raycast(rayStart, rayEnd, rayTags, hits);
     }
 
     if (hits.count > 0) {

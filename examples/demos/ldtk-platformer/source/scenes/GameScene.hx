@@ -1,5 +1,7 @@
 package scenes;
 
+import systems.HealthSystem;
+import components.CHealthIcon;
 import aeons.math.AeMath;
 import aeons.events.SceneEvent;
 import components.CFPSUpdate;
@@ -57,6 +59,7 @@ class GameScene extends Scene {
     addSystem(new AnimationSystem());
     addSystem(new UpdateSystem());
     addSystem(new PlayerMovement());
+    final healthSys = addSystem(new HealthSystem(userData.health));
     addSystem(new RenderSystem());
     addSystem(new PhysicsInteractions());
 
@@ -76,6 +79,8 @@ class GameScene extends Scene {
     createSmallRobots(levelEntities.all_Robot_small, levelEntities.gridSize);
     createBigRobots(levelEntities.all_Robot_big, levelEntities.gridSize);
     createFlyers(levelEntities.all_Flyer, levelEntities.gridSize);
+    createSpikeys(levelEntities.all_Spikey, levelEntities.gridSize);
+    createSpikeBall(levelEntities.all_Spike_ball, levelEntities.gridSize);
 
     final flagData = levelEntities.all_Flag[0];
     addEntity(new EFlag(flagData.pixelX, flagData.pixelY, flagData.width, flagData.height));
@@ -94,6 +99,8 @@ class GameScene extends Scene {
     camera.setPosition(camX, camY);
 
     createCoinCounter(camera, levelEntities.all_Coin.length);
+    createHearts(camera, 5);
+
     createFPS(camera);
     Aeons.events.on(KeyboardEvent.KEY_DOWN, keyDown);
   }
@@ -196,7 +203,7 @@ class GameScene extends Scene {
     }
   }
 
-  function createSmallRobots(data: Array<Ldtk.Entity_Robot_small>, gridSze: Int) {
+  function createSmallRobots(data: Array<Ldtk.Entity_Robot_small>, gridSize: Int) {
     final atlas = Aeons.assets.getAtlas('sprites');
 
     for (item in data) {
@@ -220,10 +227,10 @@ class GameScene extends Scene {
       }));
 
       entity.addComponent(new CPatrol({
-        startX: gridToWorld(item.f_Path[0].cx, gridSze),
-        startY: gridToWorld(item.f_Path[0].cy, gridSze),
-        endX: gridToWorld(item.f_Path[1].cx, gridSze),
-        endY: gridToWorld(item.f_Path[1].cy, gridSze),
+        startX: gridToWorld(item.f_Path[0].cx, gridSize),
+        startY: gridToWorld(item.f_Path[0].cy, gridSize),
+        endX: gridToWorld(item.f_Path[1].cx, gridSize),
+        endY: gridToWorld(item.f_Path[1].cy, gridSize),
         speed: 20
       }));
 
@@ -233,7 +240,7 @@ class GameScene extends Scene {
     }
   }
 
-  function createBigRobots(data: Array<Ldtk.Entity_Robot_big>, gridSze: Int) {
+  function createBigRobots(data: Array<Ldtk.Entity_Robot_big>, gridSize: Int) {
     final atlas = Aeons.assets.getAtlas('sprites');
 
     for (item in data) {
@@ -257,10 +264,10 @@ class GameScene extends Scene {
       }));
 
       entity.addComponent(new CPatrol({
-        startX: gridToWorld(item.f_Path[0].cx, gridSze),
-        startY: gridToWorld(item.f_Path[0].cy, gridSze),
-        endX: gridToWorld(item.f_Path[1].cx, gridSze),
-        endY: gridToWorld(item.f_Path[1].cy, gridSze),
+        startX: gridToWorld(item.f_Path[0].cx, gridSize),
+        startY: gridToWorld(item.f_Path[0].cy, gridSize),
+        endX: gridToWorld(item.f_Path[1].cx, gridSize),
+        endY: gridToWorld(item.f_Path[1].cy, gridSize),
         speed: 20
       }));
 
@@ -270,7 +277,7 @@ class GameScene extends Scene {
     }
   }
 
-  function createFlyers(data: Array<Ldtk.Entity_Flyer>, gridSze: Int) {
+  function createFlyers(data: Array<Ldtk.Entity_Flyer>, gridSize: Int) {
     final atlas = Aeons.assets.getAtlas('sprites');
 
     for (item in data) {
@@ -294,10 +301,10 @@ class GameScene extends Scene {
       }));
 
       entity.addComponent(new CPatrol({
-        startX: gridToWorld(item.f_Path[0].cx, gridSze),
-        startY: gridToWorld(item.f_Path[0].cy, gridSze),
-        endX: gridToWorld(item.f_Path[1].cx, gridSze),
-        endY: gridToWorld(item.f_Path[1].cy, gridSze),
+        startX: gridToWorld(item.f_Path[0].cx, gridSize),
+        startY: gridToWorld(item.f_Path[0].cy, gridSize),
+        endX: gridToWorld(item.f_Path[1].cx, gridSize),
+        endY: gridToWorld(item.f_Path[1].cy, gridSize),
         speed: 20
       }));
 
@@ -307,19 +314,74 @@ class GameScene extends Scene {
     }
   }
 
+  function createSpikeys(data: Array<Ldtk.Entity_Spikey>, gridSize: Int) {
+    final atlas = Aeons.assets.getAtlas('sprites');
+
+    for (item in data) {
+      var entity = addEntity(new Entity());
+      entity.addComponent(new CTransform({
+        x: item.pixelX,
+        y: item.pixelY
+      }));
+
+      entity.addComponent(new CSprite({
+        atlas: atlas,
+        frameName: 'spikey_00'
+      }));
+
+      entity.addComponent(new CSimpleBody({
+        width: 12,
+        height: 16,
+        offset: { x: 0, y: 4 },
+        type: KINEMATIC,
+        isTrigger: true,
+        tags: [Tag.Death]
+      }));
+
+      entity.addComponent(new CPatrol({
+        startX: gridToWorld(item.f_Path[0].cx, gridSize),
+        startY: gridToWorld(item.f_Path[0].cy, gridSize),
+        endX: gridToWorld(item.f_Path[1].cx, gridSize),
+        endY: gridToWorld(item.f_Path[1].cy, gridSize),
+        speed: 20
+      }));
+
+      var walk = new Animation('walk', atlas, ['spikey_00', 'spikey_01', 'spikey_02'], 0.15, LOOP);
+      var anim = entity.addComponent(new CAnimation({ animations: [walk] }));
+      anim.play('walk');
+    }
+  }
+
+  function createSpikeBall(data: Array<Ldtk.Entity_Spike_ball>, gridSize: Int) {
+    final atlas = Aeons.assets.getAtlas('sprites');
+
+    for (item in data) {
+      var entity = addEntity(new Entity());
+      entity.addComponent(new CTransform({
+        x: item.pixelX,
+        y: item.pixelY
+      }));
+
+      entity.addComponent(new CSprite({
+        atlas: atlas,
+        frameName: 'spike_ball'
+      }));
+
+      entity.addComponent(new CSimpleBody({
+        width: 16,
+        height: 16,
+        offset: { x: 0, y: 0 },
+        type: STATIC,
+        isTrigger: true,
+        tags: [Tag.Death]
+      }));
+    }
+  }
+
   function keyDown(event: KeyboardEvent) {
     if (event.key == Q) {
       debug.enabled = !debug.enabled;
-      event.canceled = true;
-    } else if (event.key == A) {
-      SceneEvent.emit(SceneEvent.PUSH, new GameScene());
-      event.canceled = true;
-    } else if (event.key == S) {
-      SceneEvent.emit(SceneEvent.POP);
-      event.canceled = true;
-    } else if (event.key == D) {
-      SceneEvent.emit(SceneEvent.REPLACE, new GameScene(), false, true);
-      event.canceled = true;
+      fpsEntity.active = debug.enabled;
     }
   }
 
@@ -334,7 +396,25 @@ class GameScene extends Scene {
     final transform = fpsEntity.addComponent(new CTransform({ x: Aeons.display.viewWidth - 60, y: 10, zIndex: 5 }));
     camera.addChild(transform);
 
-    fpsEntity.addComponent(new CText({ font: font, fontSize: 12, anchorX: 0, text: 'FPS: 0', color: Color.Black }));
+    fpsEntity.addComponent(new CText({ font: font, fontSize: 12, anchorX: 0, text: 'FPS: 0', hasBackground: true }));
     fpsEntity.addComponent(new CFPSUpdate());
+    fpsEntity.active = false;
+  }
+
+  function createHearts(camera: ECamera, totalHearts: Int) {
+    final atlas = Aeons.assets.getAtlas('sprites');
+    var x = 300;
+    var y = 20;
+
+    for (i in 0...totalHearts) {
+      var e = addEntity(new Entity());
+      var transform = e.addComponent(new CTransform({ x: x, y: y }));
+      camera.addChild(transform);
+
+      e.addComponent(new CSprite({ atlas: atlas, frameName: 'heart_empty' }));
+      e.addComponent(new CHealthIcon());
+
+      x += 20;
+    }
   }
 }

@@ -1,0 +1,6 @@
+{
+  "haxe.exclude": [
+    "kha",
+    "zpp_nape"
+  ]
+}
