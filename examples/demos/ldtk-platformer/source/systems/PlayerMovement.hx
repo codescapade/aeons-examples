@@ -91,7 +91,7 @@ class PlayerMovement extends System implements Updatable {
     final body = bundle.c_simple_body;
     final animation = bundle.c_animation;
 
-    if (player.dead && transform.y > physics.worldY + physics.worldHeight) {
+    if (player.dead && transform.y > physics.worldY + physics.worldHeight && player.health != 0) {
       transform.setPosition(player.spawnPosition.x, player.spawnPosition.y);
       player.dead = false;
       transform.scaleY = 1;

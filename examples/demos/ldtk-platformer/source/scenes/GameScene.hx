@@ -1,5 +1,6 @@
 package scenes;
 
+import components.CGameOverText;
 import systems.HealthSystem;
 import components.CHealthIcon;
 import aeons.math.AeMath;
@@ -59,7 +60,7 @@ class GameScene extends Scene {
     addSystem(new AnimationSystem());
     addSystem(new UpdateSystem());
     addSystem(new PlayerMovement());
-    final healthSys = addSystem(new HealthSystem(userData.health));
+    addSystem(new HealthSystem());
     addSystem(new RenderSystem());
     addSystem(new PhysicsInteractions());
 
@@ -86,7 +87,7 @@ class GameScene extends Scene {
     addEntity(new EFlag(flagData.pixelX, flagData.pixelY, flagData.width, flagData.height));
 
     final playerData = levelEntities.all_Player[0];
-    final player = addEntity(new EPlayer(playerData.pixelX, playerData.pixelY, playerData.f_Flipped));
+    final player = addEntity(new EPlayer(playerData.pixelX, playerData.pixelY, playerData.f_Flipped, userData.health));
 
     final bounds = new Rect(0, 0, level.pxWid, level.pxHei);
     final camera = addEntity(new ECamera(player.transform, bounds));
@@ -100,6 +101,7 @@ class GameScene extends Scene {
 
     createCoinCounter(camera, levelEntities.all_Coin.length);
     createHearts(camera, 5);
+    createGameOverText(camera);
 
     createFPS(camera);
     Aeons.events.on(KeyboardEvent.KEY_DOWN, keyDown);
@@ -401,10 +403,20 @@ class GameScene extends Scene {
     fpsEntity.active = false;
   }
 
+  function createGameOverText(camera: ECamera) {
+    final font = Aeons.assets.getFont('kenney_pixel');
+    final entity = addEntity(new Entity());
+    final transform = entity.addComponent(new CTransform({ x: Aeons.display.viewCenterX, y: 120, zIndex: 5 }));
+    camera.addChild(transform);
+    entity.addComponent(new CText({ font: font, fontSize: 30, text: 'Game Over', anchorX: 0.5, color: Color.Black }));
+    entity.addComponent(new CGameOverText());
+    entity.active = false;
+  }
+
   function createHearts(camera: ECamera, totalHearts: Int) {
     final atlas = Aeons.assets.getAtlas('sprites');
     var x = 300;
-    var y = 20;
+    final y = 20;
 
     for (i in 0...totalHearts) {
       var e = addEntity(new Entity());

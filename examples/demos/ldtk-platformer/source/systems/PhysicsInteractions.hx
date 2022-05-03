@@ -73,7 +73,7 @@ class PhysicsInteractions extends System {
   }
 
   function hitFlag(player: Body, flag: Body) {
-    final health = getSystem(HealthSystem).currentHealth;
+    final health = playerBundle.get(0).c_player.health;
     SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new GameScene({ health: health }), 1.8, Color.Black, 12));
   }
 

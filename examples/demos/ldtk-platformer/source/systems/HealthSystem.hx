@@ -1,5 +1,7 @@
 package systems;
 
+import components.CGameOverText;
+import components.CPlayer;
 import aeons.Aeons;
 import aeons.graphics.Color;
 import scenes.IntroScene;
@@ -13,46 +15,54 @@ import aeons.core.System;
 
 class HealthSystem extends System {
 
-  public var currentHealth(default, null): Int;
+  @:bundle
+  var iconBundles: Bundle<CHealthIcon, CSprite>;
 
   @:bundle
-  var bundles: Bundle<CHealthIcon, CSprite>;
+  var playerBundles: Bundle<CPlayer>;
+
+  @:bundle
+  var gameOverBundle: Bundle<CGameOverText>;
 
   final fullHeart = 'heart_full';
 
   final emptyHeart = 'heart_empty';
 
-  public function new(health: Int) {
+  public function new() {
     super();
-    currentHealth = health;
   }
 
   public override function init() {
-    bundles.onAdded(bundleAdded);
+    iconBundles.onAdded(bundleAdded);
     Aeons.events.on(HealthEvent.HEALTH_DOWN, healthDown);
     Aeons.events.on(HealthEvent.HEALTH_UP, healthUp);
   }
 
   function healthUp(event: HealthEvent) {
-    if (currentHealth < bundles.count) {
-      currentHealth++;
-      updateSprites();
+    final player = playerBundles.get(0).c_player;
+    if (player.health < iconBundles.count) {
+      player.health++;
+      updateSprites(player.health);
     }
   }
 
   function healthDown(event: HealthEvent) {
-    if (currentHealth > 1) {
-      currentHealth--;
-      updateSprites();
-    } else {
-      updateSprites();
-      SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new IntroScene(), 1.8, Color.Black, 12));
+    final player = playerBundles.get(0).c_player;
+    player.health--;
+    updateSprites(player.health);
+    
+    if (player.health == 0) {
+      updateSprites(player.health);
+      gameOverBundle.get(0).entity.active = true;
+      Aeons.timers.create(3, () -> {
+        SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new IntroScene(), 1.8, Color.Black, 12));
+      }, 0, true);
     }
   }
 
-  function updateSprites() {
-    for (index => bundle in bundles.bundles) {
-      if (index < currentHealth) {
+  function updateSprites(health: Int) {
+    for (index => bundle in iconBundles.bundles) {
+      if (index < health) {
         bundle.c_sprite.setFrame(fullHeart);
       } else {
         bundle.c_sprite.setFrame(emptyHeart);
@@ -61,6 +71,6 @@ class HealthSystem extends System {
   }
 
   function bundleAdded(bundle: aeons.bundles.BundleCHealthIconCSprite) {
-    updateSprites();
+    updateSprites(playerBundles.get(0).c_player.health);
   }
 }

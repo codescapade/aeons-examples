@@ -36,7 +36,7 @@ class IntroScene extends Scene {
     addEntity(new EFlag(flagData.pixelX, flagData.pixelY, flagData.width, flagData.height));
 
     final playerData = levelEntities.all_Player[0];
-    final player = addEntity(new EPlayer(playerData.pixelX, playerData.pixelY, playerData.f_Flipped));
+    final player = addEntity(new EPlayer(playerData.pixelX, playerData.pixelY, playerData.f_Flipped, 0));
     final anim = player.getComponent(CAnimation);
     anim.getByName(PlayerAnims.Walk).frameDuration = 0.5;
     anim.play(PlayerAnims.Walk);
@@ -69,15 +69,15 @@ class IntroScene extends Scene {
     final font = Aeons.assets.getFont('kenney_pixel');
 
     final title = addEntity(new Entity());
-    title.addComponent(new CTransform({ x: 124, y: 44 }));
+    title.addComponent(new CTransform({ x: 224, y: 44 }));
     title.addComponent(new CText({ font: font, fontSize: 36, text: 'LDtk Platformer', color: Color.Black }));
 
     final demo = addEntity(new Entity());
-    demo.addComponent(new CTransform({ x: 175, y: 90 }));
+    demo.addComponent(new CTransform({ x: 200, y: 90 }));
     demo.addComponent(new CText({ font: font, fontSize: 36, text: 'Demo', color: Color.Black }));
 
     final demo = addEntity(new Entity());
-    demo.addComponent(new CTransform({ x: 110, y: 206 }));
+    demo.addComponent(new CTransform({ x: 190, y: 206 }));
     demo.addComponent(new CText({ font: font, fontSize: 24, text: 'Press Spacebar', color: Color.Black }));
     demo.addComponent(new CTextBlink());
   }

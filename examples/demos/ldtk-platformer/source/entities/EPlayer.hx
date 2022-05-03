@@ -21,11 +21,14 @@ class EPlayer extends Entity {
 
   final startFlipped: Bool;
 
-  public function new(x: Float, y: Float, flipped: Bool) {
+  final health: Int;
+
+  public function new(x: Float, y: Float, flipped: Bool, health: Int) {
     super();
     startX = x;
     startY = y;
     startFlipped = flipped;
+    this.health = health;
   }
 
   public override function init(id: Int) {
@@ -53,7 +56,8 @@ class EPlayer extends Entity {
     }));
 
     addComponent(new CPlayer({
-      spawn: new Vector2(startX, startY)
+      spawn: new Vector2(startX, startY),
+      health: health
     }));
 
     final idleAnim = new Animation(PlayerAnims.Idle, atlas, ['orange_alien_00'], 1);
