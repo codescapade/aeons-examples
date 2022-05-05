@@ -1,5 +1,6 @@
 package systems;
 
+import aeons.math.Vector2;
 import aeons.components.CTransform;
 import components.CPatrol;
 import aeons.components.CSimpleBody;
@@ -16,33 +17,23 @@ class EnemyPatrol extends System implements Updatable {
     super();
   }
 
-  public override function init() {
-    patrolBundles.onAdded(bundleAdded);
-  }
-
   public function update(dt: Float) {
     for (bundle in patrolBundles) {
       if (bundle.c_patrol.dead) {
         bundle.c_simple_body.velocity.x = 0;
-        return;
+        continue;
       }
 
-      if (bundle.c_patrol.direction == 1) {
-        bundle.c_simple_body.velocity.x = bundle.c_patrol.speed;
-        if (bundle.c_transform.x > bundle.c_patrol.target.x) {
-          bundle.c_patrol.setTarget(bundle.c_transform);
-        }
-      } else {
-        bundle.c_simple_body.velocity.x = -bundle.c_patrol.speed;
-        if (bundle.c_transform.x < bundle.c_patrol.target.x) {
-          bundle.c_patrol.setTarget(bundle.c_transform);
-        }
+      if (bundle.c_transform.x > bundle.c_patrol.maxX) {
+        bundle.c_transform.x = bundle.c_patrol.maxX;
+        bundle.c_patrol.direction *= -1;
+      } else if (bundle.c_transform.x < bundle.c_patrol.minX) {
+        bundle.c_transform.x = bundle.c_patrol.minX;
+        bundle.c_patrol.direction *= -1;
       }
+
+      bundle.c_simple_body.velocity.x = bundle.c_patrol.speed * bundle.c_patrol.direction;
       bundle.c_transform.scaleX = -bundle.c_patrol.direction;
     }
-  }
-
-  function bundleAdded(bundle: aeons.bundles.BundleCTransformCSimpleBodyCPatrol) {
-    bundle.c_patrol.setTarget(bundle.c_transform);
   }
 }

@@ -48,9 +48,7 @@ class EFlag extends Entity {
     }));
 
     final flagAnim = new Animation('flag', atlas, ['flag_00', 'flag_01'], 0.2, LOOP);
-    final anim = addComponent(new CAnimation({
-      animations: [flagAnim]
-    }));
+    final anim = addComponent(new CAnimation([flagAnim]));
     anim.play('flag');
   }
 }

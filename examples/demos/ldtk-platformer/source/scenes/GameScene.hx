@@ -181,9 +181,7 @@ class GameScene extends Scene {
       color: Color.Black
     }));
 
-    counter.addComponent(new CCoinCounter({
-      totalCoins: totalCoins
-    }));
+    counter.addComponent(new CCoinCounter(totalCoins));
   }
 
   function createDeathZones(zones: Array<Ldtk.Entity_Death>) {
@@ -228,16 +226,12 @@ class GameScene extends Scene {
         tags: [Tag.Enemy]
       }));
 
-      entity.addComponent(new CPatrol({
-        startX: gridToWorld(item.f_Path[0].cx, gridSize),
-        startY: gridToWorld(item.f_Path[0].cy, gridSize),
-        endX: gridToWorld(item.f_Path[1].cx, gridSize),
-        endY: gridToWorld(item.f_Path[1].cy, gridSize),
-        speed: 20
-      }));
+      final minX = gridToWorld(item.f_Path[0].cx, gridSize);
+      final maxX = gridToWorld(item.f_Path[1].cx, gridSize);
+      entity.addComponent(new CPatrol(minX, maxX, 20, 1));
 
       var walk = new Animation('walk', atlas, ['robot_small_00', 'robot_small_01', 'robot_small_02'], 0.15, LOOP);
-      var anim = entity.addComponent(new CAnimation({ animations: [walk] }));
+      var anim = entity.addComponent(new CAnimation([walk]));
       anim.play('walk');
     }
   }
@@ -265,16 +259,12 @@ class GameScene extends Scene {
         tags: [Tag.Enemy]
       }));
 
-      entity.addComponent(new CPatrol({
-        startX: gridToWorld(item.f_Path[0].cx, gridSize),
-        startY: gridToWorld(item.f_Path[0].cy, gridSize),
-        endX: gridToWorld(item.f_Path[1].cx, gridSize),
-        endY: gridToWorld(item.f_Path[1].cy, gridSize),
-        speed: 20
-      }));
+      final minX = gridToWorld(item.f_Path[0].cx, gridSize);
+      final maxX = gridToWorld(item.f_Path[1].cx, gridSize);
+      entity.addComponent(new CPatrol(minX, maxX, 20, 1));
 
       var walk = new Animation('walk', atlas, ['robot_00', 'robot_01', 'robot_02'], 0.15, LOOP);
-      var anim = entity.addComponent(new CAnimation({ animations: [walk] }));
+      var anim = entity.addComponent(new CAnimation([walk]));
       anim.play('walk');
     }
   }
@@ -302,16 +292,12 @@ class GameScene extends Scene {
         tags: [Tag.Enemy]
       }));
 
-      entity.addComponent(new CPatrol({
-        startX: gridToWorld(item.f_Path[0].cx, gridSize),
-        startY: gridToWorld(item.f_Path[0].cy, gridSize),
-        endX: gridToWorld(item.f_Path[1].cx, gridSize),
-        endY: gridToWorld(item.f_Path[1].cy, gridSize),
-        speed: 20
-      }));
+      final minX = gridToWorld(item.f_Path[0].cx, gridSize);
+      final maxX = gridToWorld(item.f_Path[1].cx, gridSize);
+      entity.addComponent(new CPatrol(minX, maxX, 20, 1));
 
       var fly = new Animation('fly', atlas, ['flyer_00', 'flyer_01', 'flyer_02'], 0.15, LOOP);
-      var anim = entity.addComponent(new CAnimation({ animations: [fly] }));
+      var anim = entity.addComponent(new CAnimation([fly]));
       anim.play('fly');
     }
   }
@@ -340,16 +326,12 @@ class GameScene extends Scene {
         tags: [Tag.Death]
       }));
 
-      entity.addComponent(new CPatrol({
-        startX: gridToWorld(item.f_Path[0].cx, gridSize),
-        startY: gridToWorld(item.f_Path[0].cy, gridSize),
-        endX: gridToWorld(item.f_Path[1].cx, gridSize),
-        endY: gridToWorld(item.f_Path[1].cy, gridSize),
-        speed: 20
-      }));
+      final minX = gridToWorld(item.f_Path[0].cx, gridSize);
+      final maxX = gridToWorld(item.f_Path[1].cx, gridSize);
+      entity.addComponent(new CPatrol(minX, maxX, 20, 1));
 
       var walk = new Animation('walk', atlas, ['spikey_00', 'spikey_01', 'spikey_02'], 0.15, LOOP);
-      var anim = entity.addComponent(new CAnimation({ animations: [walk] }));
+      var anim = entity.addComponent(new CAnimation([walk]));
       anim.play('walk');
     }
   }

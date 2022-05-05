@@ -103,9 +103,11 @@ class PlayerMovement extends System implements Updatable {
     onLeftWall = false;
     onRightWall = false;
 
-    if (player.dead) {
+    if (player.dead || player.complete) {
       body.maxVelocity.y = airVelocity;
+      body.velocity.x = 0;
       body.acceleration.x = 0;
+      animation.stop();
       return;
     }
 

@@ -17,10 +17,10 @@ class CCameraFollow extends Component implements Updatable {
   var transform: CTransform;
   var camera: CCamera;
 
-  public function new(options: CCameraFollowOptions) {
+  public function new(target: CTransform, bounds: Rect) {
     super();
-    target = options.target;
-    bounds = options.bounds;
+    this.target = target;
+    this.bounds = bounds;
   }
 
   public override function init(entityId: Int) {
@@ -41,9 +41,4 @@ class CCameraFollow extends Component implements Updatable {
     transform.x = x;
     transform.y = y;
   }
-}
-
-typedef CCameraFollowOptions = {
-  var target: CTransform;
-  var bounds: Rect;
 }

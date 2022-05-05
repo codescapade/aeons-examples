@@ -11,9 +11,9 @@ class CCoinCounter extends Component {
 
   var collected = 0;
 
-  public function new(options: CoinCounterOptions) {
+  public function new(totalCoins: Int) {
     super();
-    totalCoins = options.totalCoins;
+    this.totalCoins = totalCoins;
   }
 
   public override function init(entityId: Int) {
@@ -31,8 +31,4 @@ class CCoinCounter extends Component {
   override function get_requiredComponents():Array<Class<Component>> {
     return [CText];
   }
-}
-
-typedef CoinCounterOptions = {
-  var totalCoins: Int;
 }

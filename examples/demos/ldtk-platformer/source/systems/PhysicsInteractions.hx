@@ -31,6 +31,8 @@ class PhysicsInteractions extends System {
 
   var deadSoundChannel: SoundChannel;
 
+  var flagSoundChannel: SoundChannel;
+
   public function new() {
     super();
   }
@@ -40,6 +42,9 @@ class PhysicsInteractions extends System {
 
     final deathSound = Aeons.assets.getSound('dead');
     deadSoundChannel = Aeons.audio.addChannel(deathSound);
+    
+    final flagSound = Aeons.assets.getSound('flag');
+    flagSoundChannel = Aeons.audio.addChannel(flagSound);
 
     physics = getSystem(SimplePhysicsSystem);
     physics.addInteractionListener(TRIGGER_START, Tag.Player, Tag.Coin, collectCoin);
@@ -53,6 +58,7 @@ class PhysicsInteractions extends System {
     physics.removeInteractionListener(TRIGGER_START, Tag.Player, Tag.Death, hitDeath);
     physics.removeInteractionListener(TRIGGER_START, Tag.Player, Tag.Flag, hitFlag);
     Aeons.audio.removeChannel(deadSoundChannel);
+    Aeons.audio.removeChannel(flagSoundChannel);
   }
 
   function collectCoin(player: Body, coin: Body) {
@@ -73,8 +79,13 @@ class PhysicsInteractions extends System {
   }
 
   function hitFlag(player: Body, flag: Body) {
-    final health = playerBundle.get(0).c_player.health;
-    SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new GameScene({ health: health }), 1.8, Color.Black, 12));
+    final player = playerBundle.get(0).c_player;
+    player.complete = true;
+    flagSoundChannel.play();
+
+    Aeons.timers.create(1, () -> {
+      SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new GameScene({ health: player.health }), 1.8, Color.Black, 12));
+    }, 0, true);
   }
 
   function hitEnemy(playerBody: Body, enemy: Body) {
@@ -87,6 +98,7 @@ class PhysicsInteractions extends System {
       entity.getComponent(CTransform).scaleY = -0.5;
       entity.getComponent(CAnimation).stop();
       entity.getComponent(CPatrol).dead = true;
+      deadSoundChannel.play();
 
       Aeons.timers.create(5, () -> {
         Aeons.entities.removeEntityById(enemy.component.entityId);

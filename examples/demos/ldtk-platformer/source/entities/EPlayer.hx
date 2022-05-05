@@ -55,21 +55,14 @@ class EPlayer extends Entity {
       tags: [Tag.Player]
     }));
 
-    addComponent(new CPlayer({
-      spawn: new Vector2(startX, startY),
-      health: health
-    }));
+    addComponent(new CPlayer(new Vector2(startX, startY), health));
 
     final idleAnim = new Animation(PlayerAnims.Idle, atlas, ['orange_alien_00'], 1);
     final walkAnim = new Animation(PlayerAnims.Walk, atlas, ['orange_alien_00', 'orange_alien_01'], 0.15, LOOP);
     final jumpAnim = new Animation(PlayerAnims.Jump, atlas, ['orange_alien_01'], 1);
-    addComponent(new CAnimation({
-      animations: [idleAnim, walkAnim, jumpAnim]
-    }));
+    addComponent(new CAnimation([idleAnim, walkAnim, jumpAnim]));
 
     final jumpSound = Aeons.assets.getSound('jump');
-    addComponent(new CAudio({
-      sound: jumpSound
-    }));
+    addComponent(new CAudio(jumpSound));
   }
 }

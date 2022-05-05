@@ -38,9 +38,7 @@ class ECoin extends Entity {
     }));
 
     final coinAnim = new Animation('coin', atlas, ['coin_00', 'coin_01' ], Aeons.random.float(0.15, 0.3), LOOP);
-    final anim = addComponent(new CAnimation({
-      animations: [coinAnim]
-    }));
+    final anim = addComponent(new CAnimation([coinAnim]));
     anim.play('coin');
 
     addComponent(new CSimpleBody({
@@ -51,8 +49,6 @@ class ECoin extends Entity {
       tags: [Tag.Coin]
     }));
 
-    addComponent(new CAudio({
-      sound: coinSound
-    }));
+    addComponent(new CAudio(coinSound));
   }
 }
