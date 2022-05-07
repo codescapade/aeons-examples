@@ -1,5 +1,6 @@
 package systems;
 
+import scenes.IntroScene;
 import events.HealthEvent;
 import components.CPatrol;
 import transitions.SquaresTransition;
@@ -33,8 +34,11 @@ class PhysicsInteractions extends System {
 
   var flagSoundChannel: SoundChannel;
 
-  public function new() {
+  var level: Int;
+
+  public function new(level: Int) {
     super();
+    this.level = level;
   }
 
   public override function init() {
@@ -84,7 +88,20 @@ class PhysicsInteractions extends System {
     flagSoundChannel.play();
 
     Aeons.timers.create(1, () -> {
-      SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new GameScene({ health: player.health }), 1.8, Color.Black, 12));
+      if (level < 3) {
+        level++;
+
+        final coins = counterBundle.get(0).c_coin_counter.collected;
+        final data = {
+          level: level,
+          health: player.health,
+          coins: coins,
+        };
+
+        SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new GameScene(data), 1.8, Color.Black, 12));
+      } else {
+        SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new IntroScene(), 1.8, Color.Black, 12));
+      }
     }, 0, true);
   }
 

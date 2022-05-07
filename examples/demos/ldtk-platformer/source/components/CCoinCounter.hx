@@ -5,27 +5,25 @@ import aeons.core.Component;
 
 class CCoinCounter extends Component {
 
-  var totalCoins: Int;
-
   var text: CText;
 
-  var collected = 0;
+  public var collected(default, null): Int;
 
-  public function new(totalCoins: Int) {
+  public function new(collected: Int) {
     super();
-    this.totalCoins = totalCoins;
+    this.collected = collected;
   }
 
   public override function init(entityId: Int) {
     super.init(entityId);
 
     text = getComponent(CText);
-    text.text = '${collected} / ${totalCoins}';
+    text.text = '${collected}';
   }
 
   public function addCoin() {
     collected++;
-    text.text = '${collected} / ${totalCoins}';
+    text.text = '${collected}';
   }
 
   override function get_requiredComponents():Array<Class<Component>> {

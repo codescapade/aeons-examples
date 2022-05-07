@@ -84,7 +84,13 @@ class IntroScene extends Scene {
 
   function keyDown(event: KeyboardEvent) {
     if (event.key == Space) {
-      SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new GameScene({ health: 5 }), 1.8, Color.Black, 12));
+      var data = {
+        health: 5,
+        level: 1,
+        coins: 0
+      };
+
+      SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new GameScene(data), 1.8, Color.Black, 12));
     }
   }
 }

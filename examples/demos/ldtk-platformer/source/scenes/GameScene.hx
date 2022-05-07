@@ -4,7 +4,6 @@ import components.CGameOverText;
 import systems.HealthSystem;
 import components.CHealthIcon;
 import aeons.math.AeMath;
-import aeons.events.SceneEvent;
 import components.CFPSUpdate;
 import aeons.components.CAnimation;
 import aeons.graphics.animation.Animation;
@@ -47,7 +46,7 @@ class GameScene extends Scene {
   public override function init() {
     super.init();
     final world = new Ldtk();
-    final level = world.all_levels.Level_01;
+    final level = world.getLevel('Level_0${userData.level}');
 
     addSystem(new SimplePhysicsSystem({
       worldY: -200,
@@ -62,7 +61,7 @@ class GameScene extends Scene {
     addSystem(new PlayerMovement());
     addSystem(new HealthSystem());
     addSystem(new RenderSystem());
-    addSystem(new PhysicsInteractions());
+    addSystem(new PhysicsInteractions(userData.level));
 
     debug = addSystem(new DebugRenderSystem());
     debug.enabled = false;
@@ -181,7 +180,7 @@ class GameScene extends Scene {
       color: Color.Black
     }));
 
-    counter.addComponent(new CCoinCounter(totalCoins));
+    counter.addComponent(new CCoinCounter(userData.coins));
   }
 
   function createDeathZones(zones: Array<Ldtk.Entity_Death>) {
@@ -377,7 +376,7 @@ class GameScene extends Scene {
     final font = Aeons.assets.getFont('kenney_pixel');
     fpsEntity = addEntity(new Entity());
 
-    final transform = fpsEntity.addComponent(new CTransform({ x: Aeons.display.viewWidth - 60, y: 10, zIndex: 5 }));
+    final transform = fpsEntity.addComponent(new CTransform({ x: Aeons.display.viewWidth - 50, y: 6, zIndex: 5 }));
     camera.addChild(transform);
 
     fpsEntity.addComponent(new CText({ font: font, fontSize: 12, anchorX: 0, text: 'FPS: 0', hasBackground: true }));
