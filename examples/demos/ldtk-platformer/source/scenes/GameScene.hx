@@ -1,5 +1,10 @@
 package scenes;
 
+import entities.ESpikeBall;
+import entities.ESpikey;
+import entities.EFlyer;
+import entities.EBigRobot;
+import entities.ESmallRobot;
 import components.CGameOverText;
 import systems.HealthSystem;
 import components.CHealthIcon;
@@ -76,11 +81,25 @@ class GameScene extends Scene {
       addEntity(new ECoin(coin.pixelX, coin.pixelY));
     }
 
-    createSmallRobots(levelEntities.all_Robot_small, levelEntities.gridSize);
-    createBigRobots(levelEntities.all_Robot_big, levelEntities.gridSize);
-    createFlyers(levelEntities.all_Flyer, levelEntities.gridSize);
-    createSpikeys(levelEntities.all_Spikey, levelEntities.gridSize);
-    createSpikeBall(levelEntities.all_Spike_ball, levelEntities.gridSize);
+    for (robotData in levelEntities.all_Robot_small) {
+      addEntity(new ESmallRobot(robotData));
+    }
+
+    for (robotData in levelEntities.all_Robot_big) {
+      addEntity(new EBigRobot(robotData));
+    }
+
+    for (flyerData in levelEntities.all_Flyer) {
+      addEntity(new EFlyer(flyerData));
+    }
+
+    for (spikeyData in levelEntities.all_Spikey) {
+      addEntity(new ESpikey(spikeyData));
+    }
+
+    for (spikeData in levelEntities.all_Spike_ball) {
+      addEntity(new ESpikeBall(spikeData));
+    }
 
     final flagData = levelEntities.all_Flag[0];
     addEntity(new EFlag(flagData.pixelX, flagData.pixelY, flagData.width, flagData.height));
@@ -202,174 +221,11 @@ class GameScene extends Scene {
     }
   }
 
-  function createSmallRobots(data: Array<Ldtk.Entity_Robot_small>, gridSize: Int) {
-    final atlas = Aeons.assets.getAtlas('sprites');
-
-    for (item in data) {
-      var entity = addEntity(new Entity());
-      entity.addComponent(new CTransform({
-        x: item.pixelX,
-        y: item.pixelY
-      }));
-
-      entity.addComponent(new CSprite({
-        atlas: atlas,
-        frameName: 'robot_small_00'
-      }));
-      
-      entity.addComponent(new CSimpleBody({
-        width: 14,
-        height: 12,
-        offset: { x: 0, y: 6 },
-        type: KINEMATIC,
-        tags: [Tag.Enemy]
-      }));
-
-      final minX = gridToWorld(item.f_Path[0].cx, gridSize);
-      final maxX = gridToWorld(item.f_Path[1].cx, gridSize);
-      entity.addComponent(new CPatrol(minX, maxX, 20, 1));
-
-      var walk = new Animation('walk', atlas, ['robot_small_00', 'robot_small_01', 'robot_small_02'], 0.15, LOOP);
-      var anim = entity.addComponent(new CAnimation([walk]));
-      anim.play('walk');
-    }
-  }
-
-  function createBigRobots(data: Array<Ldtk.Entity_Robot_big>, gridSize: Int) {
-    final atlas = Aeons.assets.getAtlas('sprites');
-
-    for (item in data) {
-      var entity = addEntity(new Entity());
-      entity.addComponent(new CTransform({
-        x: item.pixelX,
-        y: item.pixelY
-      }));
-
-      entity.addComponent(new CSprite({
-        atlas: atlas,
-        frameName: 'robot_00'
-      }));
-      
-      entity.addComponent(new CSimpleBody({
-        width: 24,
-        height: 22,
-        offset: { x: 0, y: 2 },
-        type: KINEMATIC,
-        tags: [Tag.Enemy]
-      }));
-
-      final minX = gridToWorld(item.f_Path[0].cx, gridSize);
-      final maxX = gridToWorld(item.f_Path[1].cx, gridSize);
-      entity.addComponent(new CPatrol(minX, maxX, 20, 1));
-
-      var walk = new Animation('walk', atlas, ['robot_00', 'robot_01', 'robot_02'], 0.15, LOOP);
-      var anim = entity.addComponent(new CAnimation([walk]));
-      anim.play('walk');
-    }
-  }
-
-  function createFlyers(data: Array<Ldtk.Entity_Flyer>, gridSize: Int) {
-    final atlas = Aeons.assets.getAtlas('sprites');
-
-    for (item in data) {
-      var entity = addEntity(new Entity());
-      entity.addComponent(new CTransform({
-        x: item.pixelX,
-        y: item.pixelY
-      }));
-
-      entity.addComponent(new CSprite({
-        atlas: atlas,
-        frameName: 'flyer_00'
-      }));
-      
-      entity.addComponent(new CSimpleBody({
-        width: 12,
-        height: 12,
-        offset: { x: 0, y: 0 },
-        type: KINEMATIC,
-        tags: [Tag.Enemy]
-      }));
-
-      final minX = gridToWorld(item.f_Path[0].cx, gridSize);
-      final maxX = gridToWorld(item.f_Path[1].cx, gridSize);
-      entity.addComponent(new CPatrol(minX, maxX, 20, 1));
-
-      var fly = new Animation('fly', atlas, ['flyer_00', 'flyer_01', 'flyer_02'], 0.15, LOOP);
-      var anim = entity.addComponent(new CAnimation([fly]));
-      anim.play('fly');
-    }
-  }
-
-  function createSpikeys(data: Array<Ldtk.Entity_Spikey>, gridSize: Int) {
-    final atlas = Aeons.assets.getAtlas('sprites');
-
-    for (item in data) {
-      var entity = addEntity(new Entity());
-      entity.addComponent(new CTransform({
-        x: item.pixelX,
-        y: item.pixelY
-      }));
-
-      entity.addComponent(new CSprite({
-        atlas: atlas,
-        frameName: 'spikey_00'
-      }));
-
-      entity.addComponent(new CSimpleBody({
-        width: 12,
-        height: 16,
-        offset: { x: 0, y: 4 },
-        type: KINEMATIC,
-        isTrigger: true,
-        tags: [Tag.Death]
-      }));
-
-      final minX = gridToWorld(item.f_Path[0].cx, gridSize);
-      final maxX = gridToWorld(item.f_Path[1].cx, gridSize);
-      entity.addComponent(new CPatrol(minX, maxX, 20, 1));
-
-      var walk = new Animation('walk', atlas, ['spikey_00', 'spikey_01', 'spikey_02'], 0.15, LOOP);
-      var anim = entity.addComponent(new CAnimation([walk]));
-      anim.play('walk');
-    }
-  }
-
-  function createSpikeBall(data: Array<Ldtk.Entity_Spike_ball>, gridSize: Int) {
-    final atlas = Aeons.assets.getAtlas('sprites');
-
-    for (item in data) {
-      var entity = addEntity(new Entity());
-      entity.addComponent(new CTransform({
-        x: item.pixelX,
-        y: item.pixelY
-      }));
-
-      entity.addComponent(new CSprite({
-        atlas: atlas,
-        frameName: 'spike_ball'
-      }));
-
-      entity.addComponent(new CSimpleBody({
-        width: 16,
-        height: 16,
-        offset: { x: 0, y: 0 },
-        type: STATIC,
-        isTrigger: true,
-        tags: [Tag.Death]
-      }));
-    }
-  }
-
   function keyDown(event: KeyboardEvent) {
     if (event.key == Q) {
       debug.enabled = !debug.enabled;
       fpsEntity.active = debug.enabled;
     }
-  }
-
-  function gridToWorld(gridPos, gridSize): Float {
-    return gridPos * gridSize + gridSize * 0.5;
   }
 
   function createFPS(camera: ECamera) {
