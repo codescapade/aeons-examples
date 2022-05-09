@@ -1,19 +1,5 @@
 package scenes;
 
-import entities.ESpikeBall;
-import entities.ESpikey;
-import entities.EFlyer;
-import entities.EBigRobot;
-import entities.ESmallRobot;
-import components.CGameOverText;
-import systems.HealthSystem;
-import components.CHealthIcon;
-import aeons.math.AeMath;
-import components.CFPSUpdate;
-import aeons.components.CAnimation;
-import aeons.graphics.animation.Animation;
-import systems.EnemyPatrol;
-import components.CPatrol;
 import aeons.Aeons;
 import aeons.components.CLdtkTilemap;
 import aeons.components.CSimpleBody;
@@ -25,6 +11,7 @@ import aeons.core.Entity;
 import aeons.core.Scene;
 import aeons.events.input.KeyboardEvent;
 import aeons.graphics.Color;
+import aeons.math.AeMath;
 import aeons.math.Rect;
 import aeons.systems.AnimationSystem;
 import aeons.systems.DebugRenderSystem;
@@ -35,15 +22,26 @@ import aeons.tilemap.Tileset;
 import aeons.tilemap.ldtk.LdtkLayer;
 
 import components.CCoinCounter;
+import components.CFPSUpdate;
+import components.CGameOverText;
+import components.CHealthIcon;
+
+import entities.EBigRobot;
 import entities.ECamera;
 import entities.ECoin;
 import entities.EFlag;
+import entities.EFlyer;
 import entities.EPlayer;
+import entities.ESmallRobot;
+import entities.ESpikeBall;
+import entities.ESpikey;
+
+import systems.EnemyPatrol;
+import systems.HealthSystem;
 import systems.PhysicsInteractions;
 import systems.PlayerMovement;
 
 class GameScene extends Scene {
-
   var debug: DebugRenderSystem;
 
   var fpsEntity: Entity;
@@ -111,9 +109,9 @@ class GameScene extends Scene {
     final camera = addEntity(new ECamera(player.transform, bounds));
 
     final camX = AeMath.clamp(playerData.pixelX, 0 + Aeons.display.viewWidth * 0.5,
-        level.pxWid - Aeons.display.viewWidth * 0.5);
+      level.pxWid - Aeons.display.viewWidth * 0.5);
     final camY = AeMath.clamp(playerData.pixelY, 0 + Aeons.display.viewHeight * 0.5,
-        level.pxHei - Aeons.display.viewHeight * 0.5);
+      level.pxHei - Aeons.display.viewHeight * 0.5);
 
     camera.setPosition(camX, camY);
 
@@ -235,7 +233,13 @@ class GameScene extends Scene {
     final transform = fpsEntity.addComponent(new CTransform({ x: Aeons.display.viewWidth - 50, y: 6, zIndex: 5 }));
     camera.addChild(transform);
 
-    fpsEntity.addComponent(new CText({ font: font, fontSize: 12, anchorX: 0, text: 'FPS: 0', hasBackground: true }));
+    fpsEntity.addComponent(new CText({
+      font: font,
+      fontSize: 12,
+      anchorX: 0,
+      text: 'FPS: 0',
+      hasBackground: true
+    }));
     fpsEntity.addComponent(new CFPSUpdate());
     fpsEntity.active = false;
   }
@@ -245,7 +249,13 @@ class GameScene extends Scene {
     final entity = addEntity(new Entity());
     final transform = entity.addComponent(new CTransform({ x: Aeons.display.viewCenterX, y: 120, zIndex: 5 }));
     camera.addChild(transform);
-    entity.addComponent(new CText({ font: font, fontSize: 30, text: 'Game Over', anchorX: 0.5, color: Color.Black }));
+    entity.addComponent(new CText({
+      font: font,
+      fontSize: 30,
+      text: 'Game Over',
+      anchorX: 0.5,
+      color: Color.Black
+    }));
     entity.addComponent(new CGameOverText());
     entity.active = false;
   }

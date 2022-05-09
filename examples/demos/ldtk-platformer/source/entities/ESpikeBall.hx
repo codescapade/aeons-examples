@@ -7,7 +7,6 @@ import aeons.components.CTransform;
 import aeons.core.Entity;
 
 class ESpikeBall extends Entity {
-
   final levelData: Ldtk.Entity_Spike_ball;
 
   var transform: CTransform;

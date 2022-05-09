@@ -1,13 +1,13 @@
 package entities;
 
-import components.CCameraFollow;
-import aeons.math.Rect;
 import aeons.components.CCamera;
 import aeons.components.CTransform;
 import aeons.core.Entity;
+import aeons.math.Rect;
+
+import components.CCameraFollow;
 
 class ECamera extends Entity {
-  
   var target: CTransform;
 
   var bounds: Rect;

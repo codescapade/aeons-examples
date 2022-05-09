@@ -1,21 +1,21 @@
 package systems;
 
-import aeons.components.CAudio;
-import aeons.systems.SimplePhysicsSystem;
-import aeons.math.Vector2;
-import aeons.components.CAnimation;
 import aeons.Aeons;
-import aeons.events.input.KeyboardEvent;
-import aeons.input.KeyCode;
-import components.CPlayer;
+import aeons.components.CAnimation;
+import aeons.components.CAudio;
 import aeons.components.CSimpleBody;
 import aeons.components.CTransform;
 import aeons.core.Bundle;
 import aeons.core.System;
 import aeons.core.Updatable;
+import aeons.events.input.KeyboardEvent;
+import aeons.input.KeyCode;
+import aeons.math.Vector2;
+import aeons.systems.SimplePhysicsSystem;
+
+import components.CPlayer;
 
 class PlayerMovement extends System implements Updatable {
-
   @:bundle
   var playerBundles: Bundle<CTransform, CSimpleBody, CPlayer, CAnimation, CAudio>;
 

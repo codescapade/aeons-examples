@@ -1,28 +1,30 @@
 package scenes;
 
-import transitions.SquaresTransition;
-import aeons.events.SceneEvent;
-import aeons.events.input.KeyboardEvent;
-import components.CTextBlink;
-import aeons.components.CAnimation;
-import aeons.graphics.Color;
-import aeons.components.CText;
 import aeons.Aeons;
-import entities.ECamera;
-import aeons.math.Rect;
-import entities.EPlayer;
-import entities.EFlag;
-import aeons.systems.AnimationSystem;
-import aeons.systems.RenderSystem;
+import aeons.components.CAnimation;
 import aeons.components.CLdtkTilemap;
+import aeons.components.CText;
 import aeons.components.CTransform;
 import aeons.core.Entity;
-import aeons.tilemap.ldtk.LdtkLayer;
-import aeons.tilemap.Tileset;
 import aeons.core.Scene;
+import aeons.events.SceneEvent;
+import aeons.events.input.KeyboardEvent;
+import aeons.graphics.Color;
+import aeons.math.Rect;
+import aeons.systems.AnimationSystem;
+import aeons.systems.RenderSystem;
+import aeons.tilemap.Tileset;
+import aeons.tilemap.ldtk.LdtkLayer;
+
+import components.CTextBlink;
+
+import entities.ECamera;
+import entities.EFlag;
+import entities.EPlayer;
+
+import transitions.SquaresTransition;
 
 class IntroScene extends Scene {
-
   public override function init() {
     final world = new Ldtk();
     final level = world.getLevel('Menu');
@@ -70,15 +72,30 @@ class IntroScene extends Scene {
 
     final title = addEntity(new Entity());
     title.addComponent(new CTransform({ x: 224, y: 44 }));
-    title.addComponent(new CText({ font: font, fontSize: 36, text: 'LDtk Platformer', color: Color.Black }));
+    title.addComponent(new CText({
+      font: font,
+      fontSize: 36,
+      text: 'LDtk Platformer',
+      color: Color.Black
+    }));
 
     final demo = addEntity(new Entity());
     demo.addComponent(new CTransform({ x: 200, y: 90 }));
-    demo.addComponent(new CText({ font: font, fontSize: 36, text: 'Demo', color: Color.Black }));
+    demo.addComponent(new CText({
+      font: font,
+      fontSize: 36,
+      text: 'Demo',
+      color: Color.Black
+    }));
 
     final demo = addEntity(new Entity());
     demo.addComponent(new CTransform({ x: 190, y: 206 }));
-    demo.addComponent(new CText({ font: font, fontSize: 24, text: 'Press Spacebar', color: Color.Black }));
+    demo.addComponent(new CText({
+      font: font,
+      fontSize: 24,
+      text: 'Press Spacebar',
+      color: Color.Black
+    }));
     demo.addComponent(new CTextBlink());
   }
 

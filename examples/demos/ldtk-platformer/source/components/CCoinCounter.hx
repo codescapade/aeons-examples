@@ -7,7 +7,6 @@ import aeons.core.Component;
  * This component updates the text that shows how many coins you have collected.
  */
 class CCoinCounter extends Component {
-
   /**
    * The text component reference.
    */
@@ -49,7 +48,7 @@ class CCoinCounter extends Component {
   /**
    * This component needs a text component to work.
    */
-  override function get_requiredComponents():Array<Class<Component>> {
+  override function get_requiredComponents(): Array<Class<Component>> {
     return [CText];
   }
 }

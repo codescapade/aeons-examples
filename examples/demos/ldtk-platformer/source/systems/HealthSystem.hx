@@ -1,20 +1,23 @@
 package systems;
 
-import components.CGameOverText;
-import components.CPlayer;
 import aeons.Aeons;
-import aeons.graphics.Color;
-import scenes.IntroScene;
-import transitions.SquaresTransition;
-import aeons.events.SceneEvent;
-import components.CHealthIcon;
 import aeons.components.CSprite;
 import aeons.core.Bundle;
-import events.HealthEvent;
 import aeons.core.System;
+import aeons.events.SceneEvent;
+import aeons.graphics.Color;
+
+import components.CGameOverText;
+import components.CHealthIcon;
+import components.CPlayer;
+
+import events.HealthEvent;
+
+import scenes.IntroScene;
+
+import transitions.SquaresTransition;
 
 class HealthSystem extends System {
-
   @:bundle
   var iconBundles: Bundle<CHealthIcon, CSprite>;
 
@@ -50,7 +53,7 @@ class HealthSystem extends System {
     final player = playerBundles.get(0).c_player;
     player.health--;
     updateSprites(player.health);
-    
+
     if (player.health == 0) {
       updateSprites(player.health);
       gameOverBundle.get(0).entity.active = true;

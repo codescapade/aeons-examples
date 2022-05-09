@@ -51,7 +51,7 @@ class EPlayer extends Entity {
     addComponent(new CSimpleBody({
       width: 16,
       height: 22,
-      offset: { x: 0, y: 1},
+      offset: { x: 0, y: 1 },
       tags: [Tag.Player]
     }));
 

@@ -1,7 +1,7 @@
 package events;
 
-import aeons.events.EventType;
 import aeons.events.Event;
+import aeons.events.EventType;
 
 class HealthEvent extends Event {
   public static final HEALTH_DOWN: EventType<HealthEvent> = 'aeons_health_down';

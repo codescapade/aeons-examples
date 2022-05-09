@@ -1,27 +1,29 @@
 package systems;
 
-import scenes.IntroScene;
-import events.HealthEvent;
-import components.CPatrol;
-import transitions.SquaresTransition;
-import aeons.graphics.Color;
-import aeons.components.CAnimation;
-import aeons.audio.SoundChannel;
-import aeons.components.CAudio;
-import scenes.GameScene;
-import aeons.events.SceneEvent;
-import aeons.components.CTransform;
-import components.CPlayer;
 import aeons.Aeons;
+import aeons.audio.SoundChannel;
+import aeons.components.CAnimation;
+import aeons.components.CAudio;
+import aeons.components.CTransform;
 import aeons.core.Bundle;
 import aeons.core.System;
+import aeons.events.SceneEvent;
+import aeons.graphics.Color;
 import aeons.physics.simple.Body;
 import aeons.systems.SimplePhysicsSystem;
 
 import components.CCoinCounter;
+import components.CPatrol;
+import components.CPlayer;
+
+import events.HealthEvent;
+
+import scenes.GameScene;
+import scenes.IntroScene;
+
+import transitions.SquaresTransition;
 
 class PhysicsInteractions extends System {
-
   var physics: SimplePhysicsSystem;
 
   @:bundle
@@ -46,7 +48,7 @@ class PhysicsInteractions extends System {
 
     final deathSound = Aeons.assets.getSound('dead');
     deadSoundChannel = Aeons.audio.addChannel(deathSound);
-    
+
     final flagSound = Aeons.assets.getSound('flag');
     flagSoundChannel = Aeons.audio.addChannel(flagSound);
 

@@ -9,7 +9,6 @@ import aeons.core.Updatable;
  * This component updates the fps text.
  */
 class CFPSUpdate extends Component implements Updatable {
-
   /**
    * The text component reference.
    */

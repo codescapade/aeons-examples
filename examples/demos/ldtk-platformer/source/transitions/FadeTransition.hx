@@ -1,13 +1,12 @@
 package transitions;
 
-import aeons.graphics.RenderTarget;
 import aeons.Aeons;
-import aeons.graphics.Color;
 import aeons.core.Scene;
 import aeons.core.Transition;
+import aeons.graphics.Color;
+import aeons.graphics.RenderTarget;
 
 class FadeTransition extends Transition {
-
   var color: Color;
 
   var currentColor = Color.Transparent;

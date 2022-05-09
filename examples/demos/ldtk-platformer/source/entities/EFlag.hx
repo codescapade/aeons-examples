@@ -9,7 +9,6 @@ import aeons.core.Entity;
 import aeons.graphics.animation.Animation;
 
 class EFlag extends Entity {
-
   final startX: Float;
   final startY: Float;
   final width: Float;

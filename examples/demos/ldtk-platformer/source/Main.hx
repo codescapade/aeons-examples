@@ -5,7 +5,6 @@ import aeons.core.Game;
 import scenes.LoadScene;
 
 class Main {
-
   static function main() {
     new Game({
       title: 'ldtk-platformer',

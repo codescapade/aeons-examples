@@ -10,7 +10,6 @@ import aeons.core.Entity;
 import aeons.graphics.animation.Animation;
 
 class ECoin extends Entity {
-
   final startX: Float;
 
   final startY: Float;
@@ -37,7 +36,7 @@ class ECoin extends Entity {
       frameName: 'coin_00'
     }));
 
-    final coinAnim = new Animation('coin', atlas, ['coin_00', 'coin_01' ], Aeons.random.float(0.15, 0.3), LOOP);
+    final coinAnim = new Animation('coin', atlas, ['coin_00', 'coin_01'], Aeons.random.float(0.15, 0.3), LOOP);
     final anim = addComponent(new CAnimation([coinAnim]));
     anim.play('coin');
 

@@ -5,7 +5,6 @@ import aeons.components.CText;
 import aeons.core.Component;
 
 class CTextBlink extends Component {
-
   var text: CText;
 
   public function new() {
@@ -21,7 +20,7 @@ class CTextBlink extends Component {
     }, -1, true);
   }
 
-  override function get_requiredComponents():Array<Class<Component>> {
+  override function get_requiredComponents(): Array<Class<Component>> {
     return [CText];
   }
 }

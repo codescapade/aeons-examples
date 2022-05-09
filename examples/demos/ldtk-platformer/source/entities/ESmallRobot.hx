@@ -1,16 +1,16 @@
 package entities;
 
+import aeons.Aeons;
 import aeons.components.CAnimation;
-import aeons.graphics.animation.Animation;
-import components.CPatrol;
 import aeons.components.CSimpleBody;
 import aeons.components.CSprite;
-import aeons.Aeons;
 import aeons.components.CTransform;
 import aeons.core.Entity;
+import aeons.graphics.animation.Animation;
+
+import components.CPatrol;
 
 class ESmallRobot extends Entity {
-
   final levelData: Ldtk.Entity_Robot_small;
 
   public function new(levelData: Ldtk.Entity_Robot_small) {
