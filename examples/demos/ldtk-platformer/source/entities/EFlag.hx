@@ -8,19 +8,25 @@ import aeons.components.CTransform;
 import aeons.core.Entity;
 import aeons.graphics.animation.Animation;
 
+/**
+ * The goal flag entity.
+ */
 class EFlag extends Entity {
+  // Store the position here so we can use it in init.
   final startX: Float;
-  final startY: Float;
-  final width: Float;
-  final height: Float;
 
-  public function new(x: Float, y: Float, width: Float, height: Float) {
+  final startY: Float;
+
+  /**
+   * Constructor.
+   * @param x The x position of the flag in pixels.
+   * @param y The y position of the flag in pixels.
+   */
+  public function new(x: Float, y: Float) {
     super();
 
     startX = x;
     startY = y;
-    this.width = width;
-    this.height = height;
   }
 
   public override function init(id: Int) {
@@ -39,15 +45,14 @@ class EFlag extends Entity {
     }));
 
     addComponent(new CSimpleBody({
-      width: width,
-      height: height,
+      width: 18,
+      height: 36,
       type: STATIC,
       tags: [Tag.Flag],
       isTrigger: true
     }));
 
-    final flagAnim = new Animation('flag', atlas, ['flag_00', 'flag_01'], 0.2, LOOP);
-    final anim = addComponent(new CAnimation([flagAnim]));
-    anim.play('flag');
+    final waveAnim = new Animation('wave', atlas, ['flag_00', 'flag_01'], 0.2, LOOP);
+    addComponent(new CAnimation([waveAnim])).play('wave');
   }
 }

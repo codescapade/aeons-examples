@@ -12,7 +12,11 @@ import aeons.math.Vector2;
 
 import components.CPlayer;
 
+/**
+ * The player entity.
+ */
 class EPlayer extends Entity {
+  // Making the transform component public so it can be followed by the camera.
   public var transform(default, null): CTransform;
 
   final startX: Float;
@@ -43,10 +47,7 @@ class EPlayer extends Entity {
 
     final atlas = Aeons.assets.getAtlas('sprites');
 
-    addComponent(new CSprite({
-      atlas: atlas,
-      frameName: 'orange_alien_00'
-    }));
+    addComponent(new CSprite({ atlas: atlas, frameName: 'orange_alien_00' }));
 
     addComponent(new CSimpleBody({
       width: 16,

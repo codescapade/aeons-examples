@@ -10,6 +10,9 @@ import aeons.graphics.animation.Animation;
 
 import components.CPatrol;
 
+/**
+ * The enemy with a spike on his back entity.
+ */
 class ESpikey extends Entity {
   final levelData: Ldtk.Entity_Spikey;
 

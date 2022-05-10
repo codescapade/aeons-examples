@@ -6,6 +6,9 @@ import aeons.components.CSprite;
 import aeons.components.CTransform;
 import aeons.core.Entity;
 
+/**
+ * The spikeball enemy entity.
+ */
 class ESpikeBall extends Entity {
   final levelData: Ldtk.Entity_Spike_ball;
 
@@ -40,6 +43,7 @@ class ESpikeBall extends Entity {
     moveUp();
   }
 
+  // These tweens move the enemy up and down repeatedly.
   function moveUp() {
     Aeons.tweens.create(transform, 0.3, { y: minY }).setOnComplete(moveDown);
   }

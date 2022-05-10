@@ -10,6 +10,9 @@ import aeons.graphics.animation.Animation;
 
 import components.CPatrol;
 
+/**
+ * The flyer enemy entity.
+ */
 class EFlyer extends Entity {
   final levelData: Ldtk.Entity_Flyer;
 
@@ -33,6 +36,7 @@ class EFlyer extends Entity {
       tags: [Tag.Enemy]
     }));
 
+    // Get the world position of the min an max patrol positions.
     final minX = GridHelper.gridToWorld(levelData.f_Path[0].cx);
     final maxX = GridHelper.gridToWorld(levelData.f_Path[1].cx);
     addComponent(new CPatrol(minX, maxX, 20));

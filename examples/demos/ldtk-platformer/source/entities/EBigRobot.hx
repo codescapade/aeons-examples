@@ -10,6 +10,9 @@ import aeons.graphics.animation.Animation;
 
 import components.CPatrol;
 
+/**
+ * Big robot enemy entity.
+ */
 class EBigRobot extends Entity {
   final levelData: Ldtk.Entity_Robot_big;
 
@@ -18,9 +21,14 @@ class EBigRobot extends Entity {
     this.levelData = levelData;
   }
 
+  /**
+   * Initialize the component. This is called automatically.
+   * @param id The entity for this id.
+   */
   public override function init(id: Int) {
     super.init(id);
 
+    // Add component doesn't work in the constructor.
     addComponent(new CTransform({ x: levelData.pixelX, y: levelData.pixelY }));
 
     final atlas = Aeons.assets.getAtlas('sprites');

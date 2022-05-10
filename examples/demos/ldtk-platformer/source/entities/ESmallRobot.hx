@@ -10,6 +10,9 @@ import aeons.graphics.animation.Animation;
 
 import components.CPatrol;
 
+/**
+ * The small robot enemy entity.
+ */
 class ESmallRobot extends Entity {
   final levelData: Ldtk.Entity_Robot_small;
 
