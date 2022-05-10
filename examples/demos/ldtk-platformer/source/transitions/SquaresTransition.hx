@@ -9,19 +9,47 @@ import aeons.math.Quaternion;
 
 using aeons.math.FastMatrix4Ex;
 
+/**
+ * This transition creates a number of squares on the screen that get bigger until the screen is fully covered.
+ */
 class SquaresTransition extends Transition {
+  /**
+   * The color of the squares.
+   */
   var color: Color;
 
+  /**
+   * Used to update the transform.
+   */
   var rotation = new Quaternion();
 
+  /**
+   * The initial scale of the squares.
+   */
   var scale = 0.0;
 
+  /**
+   * The size of one square in pixels.
+   */
   var size: Float;
 
+  /**
+   * How many squares per row on the screen.
+   */
   var squaresPerRow: Int;
 
+  /**
+   * How many squares per column on the screen.
+   */
   var squaresPerColumn: Int;
 
+  /**
+   * Constructor.
+   * @param nextScene The scene to start after the transition. 
+   * @param duration How long the full transition takes. 
+   * @param color The square color.
+   * @param squaresPerRow How many squares on screen per row.
+   */
   public function new(nextScene: Scene, duration: Float, color: Color, squaresPerRow = 10) {
     super(nextScene, duration);
 
@@ -43,11 +71,19 @@ class SquaresTransition extends Transition {
     target.present();
   }
 
+  /**
+   * Called at the start of the transition.
+   */
   public override function transitionFromOld() {
+    // Scale the squares up.
     Aeons.tweens.create(this, duration - duration * 0.2, { scale: 1.0 });
   }
 
+  /**
+   * Called after the next scene has loaded in behind the transition.
+   */
   public override function transitionToNew() {
+    // Scale the squares back down.
     Aeons.tweens.create(this, duration, { scale: 0.0 });
   }
 }

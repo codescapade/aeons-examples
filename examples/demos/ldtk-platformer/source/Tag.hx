@@ -1,10 +1,13 @@
 package;
 
+/**
+ * Tags that are used on colliders in the SimplePhysicsSystem.
+ */
 enum abstract Tag(String) to String {
-  var Player;
   var Coin;
-  var Ground;
   var Death;
-  var Flag;
   var Enemy;
+  var Flag;
+  var Ground;
+  var Player;
 }

@@ -1,7 +1,10 @@
 package;
 
+/**
+ * The animation names used for the player.
+ */
 enum abstract PlayerAnims(String) to String {
-  var Walk;
   var Idle;
   var Jump;
+  var Walk;
 }
