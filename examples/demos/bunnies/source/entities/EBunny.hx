@@ -13,7 +13,6 @@ import components.CBunnyMove;
  * make a new entity. It is a bit like a prefab.
  */
 class EBunny extends Entity {
-
   public function new() {
     super();
   }

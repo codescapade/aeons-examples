@@ -9,13 +9,13 @@ import aeons.systems.RenderSystem;
 import entities.EBunny;
 import entities.ECamera;
 import entities.EText;
+
 import systems.BunnySystem;
 
 /**
  * The is the scene where the bunnies live.
  */
 class GameScene extends Scene {
-
   var fps: EText;
 
   var bunnyCount: EText;
@@ -43,10 +43,10 @@ class GameScene extends Scene {
     addEntity(new ECamera());
 
     // Add a text entity to the scene to display the FPS.
-    fps = addEntity(new EText({ x: 10, y: 10, text: 'FPS: 60' }));
+    fps = addEntity(new EText(10, 10, 'FPS: 60'));
 
     // Add another text entity to dislay the bunny count.
-    bunnyCount = addEntity(new EText({ x: 10, y: 40, text: 'Bunnies: 0' }));
+    bunnyCount = addEntity(new EText(10, 40, 'Bunnies: 0'));
 
     // Create the first bunny.
     createBunny();

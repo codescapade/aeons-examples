@@ -1,0 +1,13 @@
+{
+  "haxe.exclude": [
+    "kha",
+    "zpp_nape"
+  ],
+    "[haxe]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true
+  }
+}

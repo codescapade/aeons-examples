@@ -9,7 +9,6 @@ import aeons.core.Updatable;
 import components.CBunnyMove;
 
 class BunnySystem extends System implements Updatable {
-
   final gravity = 0.5;
 
   final maxX = Aeons.display.viewWidth;
@@ -59,7 +58,7 @@ class BunnySystem extends System implements Updatable {
         if (Aeons.random.float() > 0.5) {
           move.speedY -= 3 + Aeons.random.float(0, 4);
         }
-      // Hit the top. Reset the vertical speed.
+        // Hit the top. Reset the vertical speed.
       } else if (transform.y < 0) {
         transform.y = 0;
         move.speedY = 0;

@@ -8,6 +8,7 @@ import aeons.core.Component;
  */
 class CBunnyMove extends Component {
   public var speedX: Float;
+
   public var speedY: Float;
 
   public var rotationSpeed: Float;
