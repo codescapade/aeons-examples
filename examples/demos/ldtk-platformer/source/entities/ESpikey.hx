@@ -34,7 +34,8 @@ class ESpikey extends Entity {
       height: 16,
       offset: { x: 0, y: 4 },
       type: KINEMATIC,
-      tags: [Tag.Death]
+      tags: [Tag.Death],
+      isTrigger: true
     }));
 
     final minX = GridHelper.gridToWorld(levelData.f_Path[0].cx);

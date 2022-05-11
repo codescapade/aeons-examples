@@ -37,7 +37,8 @@ class ESpikeBall extends Entity {
       width: 16,
       height: 16,
       type: KINEMATIC,
-      tags: [Tag.Death]
+      tags: [Tag.Death],
+      isTrigger: true
     }));
 
     moveUp();

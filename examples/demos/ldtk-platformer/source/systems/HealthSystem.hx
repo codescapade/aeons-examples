@@ -38,15 +38,6 @@ class HealthSystem extends System {
   public override function init() {
     iconBundles.onAdded(bundleAdded);
     Aeons.events.on(HealthEvent.HEALTH_DOWN, healthDown);
-    Aeons.events.on(HealthEvent.HEALTH_UP, healthUp);
-  }
-
-  function healthUp(event: HealthEvent) {
-    final player = playerBundles.get(0).c_player;
-    if (player.health < iconBundles.count) {
-      player.health++;
-      updateSprites(player.health);
-    }
   }
 
   function healthDown(event: HealthEvent) {

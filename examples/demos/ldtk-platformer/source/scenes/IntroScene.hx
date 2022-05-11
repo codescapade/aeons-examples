@@ -35,7 +35,7 @@ class IntroScene extends Scene {
     createTilemap(level);
 
     final flagData = levelEntities.all_Flag[0];
-    addEntity(new EFlag(flagData.pixelX, flagData.pixelY, flagData.width, flagData.height));
+    addEntity(new EFlag(flagData.pixelX, flagData.pixelY));
 
     final playerData = levelEntities.all_Player[0];
     final player = addEntity(new EPlayer(playerData.pixelX, playerData.pixelY, playerData.f_Flipped, 0));

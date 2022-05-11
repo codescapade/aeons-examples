@@ -91,7 +91,7 @@ var Main = function() { };
 $hxClasses["Main"] = Main;
 Main.__name__ = "Main";
 Main.main = function() {
-	new aeons_core_Game({ title : "bunnies", preload : true, startScene : scenes_GameScene, designWidth : 800, designHeight : 600});
+	new aeons_core_Game({ title : "bunnies", preload : true, startScene : new scenes_GameScene(), designWidth : 800, designHeight : 600});
 };
 Math.__name__ = "Math";
 var Reflect = function() { };
@@ -245,6 +245,7 @@ aeons_core_Display.__isInterface__ = true;
 aeons_core_Display.prototype = {
 	viewWidth: null
 	,viewHeight: null
+	,pixelArt: null
 	,init: null
 	,scaleToWindow: null
 	,__class__: aeons_core_Display
@@ -254,16 +255,14 @@ $hxClasses["aeons.core.Entities"] = aeons_core_Entities;
 aeons_core_Entities.__name__ = "aeons.core.Entities";
 aeons_core_Entities.__isInterface__ = true;
 aeons_core_Entities.prototype = {
-	addEntity: null
-	,removeEntity: null
-	,updateAddRemove: null
-	,addComponent: null
+	addComponent: null
 	,getComponent: null
 	,getUpdateComponents: null
 	,getRenderComponents: null
 	,getDebugRenderComponents: null
 	,hasComponent: null
 	,hasBundleComponents: null
+	,getAllComponentsForEntity: null
 	,__class__: aeons_core_Entities
 };
 var aeons_events_Events = function() { };
@@ -274,6 +273,10 @@ aeons_events_Events.prototype = {
 	on: null
 	,emit: null
 	,pushSceneList: null
+	,popSceneList: null
+	,replaceSceneList: null
+	,resetIndex: null
+	,setIndex: null
 	,__class__: aeons_events_Events
 };
 var aeons_math_Random = function() { };
@@ -285,16 +288,14 @@ aeons_math_Random.prototype = {
 	,float: null
 	,__class__: aeons_math_Random
 };
+var aeons_utils_Storage = function() { };
+$hxClasses["aeons.utils.Storage"] = aeons_utils_Storage;
+aeons_utils_Storage.__name__ = "aeons.utils.Storage";
+aeons_utils_Storage.__isInterface__ = true;
 var aeons_core_Systems = function() { };
 $hxClasses["aeons.core.Systems"] = aeons_core_Systems;
 aeons_core_Systems.__name__ = "aeons.core.Systems";
 aeons_core_Systems.__isInterface__ = true;
-aeons_core_Systems.prototype = {
-	add: null
-	,update: null
-	,render: null
-	,__class__: aeons_core_Systems
-};
 var aeons_utils_TimeStep = function() { };
 $hxClasses["aeons.utils.TimeStep"] = aeons_utils_TimeStep;
 aeons_utils_TimeStep.__name__ = "aeons.utils.TimeStep";
@@ -311,18 +312,10 @@ var aeons_utils_Timers = function() { };
 $hxClasses["aeons.utils.Timers"] = aeons_utils_Timers;
 aeons_utils_Timers.__name__ = "aeons.utils.Timers";
 aeons_utils_Timers.__isInterface__ = true;
-aeons_utils_Timers.prototype = {
-	update: null
-	,__class__: aeons_utils_Timers
-};
 var aeons_tween_Tweens = function() { };
 $hxClasses["aeons.tween.Tweens"] = aeons_tween_Tweens;
 aeons_tween_Tweens.__name__ = "aeons.tween.Tweens";
 aeons_tween_Tweens.__isInterface__ = true;
-aeons_tween_Tweens.prototype = {
-	update: null
-	,__class__: aeons_tween_Tweens
-};
 var aeons_Aeons = function() { };
 $hxClasses["aeons.Aeons"] = aeons_Aeons;
 aeons_Aeons.__name__ = "aeons.Aeons";
@@ -343,6 +336,9 @@ aeons_Aeons.provideEvents = function(events) {
 };
 aeons_Aeons.provideRandom = function(random) {
 	aeons_Aeons._random = random;
+};
+aeons_Aeons.provideStorage = function(storage) {
+	aeons_Aeons._storage = storage;
 };
 aeons_Aeons.provideSystems = function(systems) {
 	aeons_Aeons._systems = systems;
@@ -365,35 +361,16 @@ aeons_assets_services_InternalAssets.__interfaces__ = [aeons_assets_Assets];
 aeons_assets_services_InternalAssets.prototype = {
 	atlasses: null
 	,getFont: function(name) {
-		try {
-			return kha_Assets.fonts.get(name);
-		} catch( _g ) {
-			haxe_Log.trace("Font " + name + " is not loaded.",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 57, className : "aeons.assets.services.InternalAssets", methodName : "getFont"});
-			return null;
-		}
+		return kha_Assets.fonts.get(name);
 	}
 	,loadAtlas: function(name) {
-		var image;
-		try {
-			image = kha_Assets.images.get(name);
-		} catch( _g ) {
-			haxe_Log.trace("Image " + name + " is not loaded.",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 39, className : "aeons.assets.services.InternalAssets", methodName : "getImage"});
-			image = null;
-		}
-		var image1 = image;
-		var name1 = "" + name + "_json";
-		var data;
-		try {
-			data = kha_Assets.blobs.get(name1);
-		} catch( _g ) {
-			haxe_Log.trace("Blob " + name1 + " is not loaded.",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 76, className : "aeons.assets.services.InternalAssets", methodName : "getBlob"});
-			data = null;
-		}
-		if(image1 == null || data == null) {
-			haxe_Log.trace("Unable to load atlas " + name + ".",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 124, className : "aeons.assets.services.InternalAssets", methodName : "loadAtlas"});
+		var image = kha_Assets.images.get(name);
+		var data = kha_Assets.blobs.get("" + name + "_json");
+		if(image == null || data == null) {
+			haxe_Log.trace("Unable to load atlas " + name + ".",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 132, className : "aeons.assets.services.InternalAssets", methodName : "loadAtlas"});
 			return null;
 		}
-		var atlas = new aeons_graphics_atlas_Atlas(image1,data.toString());
+		var atlas = new aeons_graphics_atlas_Atlas(image,data.toString());
 		this.atlasses.h[name] = atlas;
 		return atlas;
 	}
@@ -476,9 +453,6 @@ aeons_core_Component.prototype = {
 			}
 		}
 	}
-	,put: function() {
-		this.entityId = -1;
-	}
 	,cleanup: function() {
 		this.entityId = -1;
 	}
@@ -487,41 +461,6 @@ aeons_core_Component.prototype = {
 	}
 	,__class__: aeons_core_Component
 	,__properties__: {get_requiredComponents:"get_requiredComponents"}
-};
-var aeons_utils_Pool = function(type) {
-	this.pool = new haxe_ds_List();
-	this.classType = type;
-};
-$hxClasses["aeons.utils.Pool"] = aeons_utils_Pool;
-aeons_utils_Pool.__name__ = "aeons.utils.Pool";
-aeons_utils_Pool.prototype = {
-	pool: null
-	,classType: null
-	,get: function(options) {
-		if(this.pool.length > 0) {
-			var item = this.pool.pop();
-			return item;
-		} else if(options == null) {
-			return Type.createInstance(this.classType,[]);
-		} else {
-			return Type.createInstance(this.classType,[options]);
-		}
-	}
-	,put: function(object) {
-		if(object != null) {
-			var _g_head = this.pool.h;
-			while(_g_head != null) {
-				var val = _g_head.item;
-				_g_head = _g_head.next;
-				var item = val;
-				if(item == object) {
-					return;
-				}
-			}
-			this.pool.push(object);
-		}
-	}
-	,__class__: aeons_utils_Pool
 };
 var aeons_components_CCamera = function(options) {
 	this.worldPosition = new aeons_math_Vector2();
@@ -571,14 +510,8 @@ aeons_components_CCamera.prototype = $extend(aeons_core_Component.prototype,{
 		this.matrix = new kha_math_FastMatrix4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 		this.bounds = new aeons_math_Rect();
 		this.updateBuffer();
-		var _this = this.transform;
-		var value = this.viewWidth * 0.5;
-		_this.changed = true;
-		_this.x = value;
-		var _this = this.transform;
-		var value = this.viewHeight * 0.5;
-		_this.changed = true;
-		_this.y = value;
+		this.transform.set_x(this.viewWidth * 0.5);
+		this.transform.set_y(this.viewHeight * 0.5);
 		this.transform.isCameraTransform = true;
 		this.updateBounds();
 		if(aeons_components_CCamera.main == null) {
@@ -597,11 +530,11 @@ aeons_components_CCamera.prototype = $extend(aeons_core_Component.prototype,{
 		var _this__00 = 1;
 		var _this__10 = 0;
 		var _this__20 = 0;
-		var _this__30 = -this.worldPosition.x + this.viewWidth;
+		var _this__30 = this.viewWidth * 0.5;
 		var _this__01 = 0;
 		var _this__11 = 1;
 		var _this__21 = 0;
-		var _this__31 = -this.worldPosition.y + this.viewHeight;
+		var _this__31 = this.viewHeight * 0.5;
 		var _this__02 = 0;
 		var _this__12 = 0;
 		var _this__22 = 1;
@@ -680,11 +613,11 @@ aeons_components_CCamera.prototype = $extend(aeons_core_Component.prototype,{
 		var m__00 = 1;
 		var m__10 = 0;
 		var m__20 = 0;
-		var m__30 = -this.viewWidth * 0.5;
+		var m__30 = -this.worldPosition.x;
 		var m__01 = 0;
 		var m__11 = 1;
 		var m__21 = 0;
-		var m__31 = -this.viewHeight * 0.5;
+		var m__31 = -this.worldPosition.y;
 		var m__02 = 0;
 		var m__12 = 0;
 		var m__22 = 1;
@@ -726,13 +659,6 @@ aeons_components_CCamera.prototype = $extend(aeons_core_Component.prototype,{
 		_this._23 = m__231;
 		_this._33 = m__331;
 	}
-	,put: function() {
-		aeons_core_Component.prototype.put.call(this);
-		if(aeons_components_CCamera.main == this) {
-			aeons_components_CCamera.main = null;
-		}
-		aeons_components_CCamera.pool.put(this);
-	}
 	,updateBuffer: function() {
 		if(this.viewWidth != 0 && this.viewHeight != 0) {
 			this.renderTarget = new aeons_graphics_RenderTarget(this.viewWidth,this.viewHeight);
@@ -759,9 +685,6 @@ aeons_components_CDebugRender.prototype = $extend(aeons_core_Component.prototype
 		aeons_core_Component.prototype.init.call(this,entityId);
 		this.components = aeons_Aeons._entities.getDebugRenderComponents(entityId);
 	}
-	,put: function() {
-		aeons_components_CDebugRender.pool.put(this);
-	}
 	,__class__: aeons_components_CDebugRender
 });
 var aeons_components_CRender = function() {
@@ -776,7 +699,7 @@ aeons_components_CRender.prototype = $extend(aeons_core_Component.prototype,{
 		aeons_core_Component.prototype.init.call(this,entityId);
 		this.components = aeons_Aeons._entities.getRenderComponents(entityId);
 	}
-	,render: function(target,cameraBounds) {
+	,render: function(target) {
 		var _g = 0;
 		var _g1 = this.components;
 		while(_g < _g1.length) {
@@ -784,12 +707,22 @@ aeons_components_CRender.prototype = $extend(aeons_core_Component.prototype,{
 			++_g;
 			var comp = component;
 			if(comp.active) {
-				component.render(target,cameraBounds);
+				component.render(target);
 			}
 		}
 	}
-	,put: function() {
-		aeons_components_CRender.pool.put(this);
+	,inCameraBounds: function(cameraBounds) {
+		var inBounds = false;
+		var _g = 0;
+		var _g1 = this.components;
+		while(_g < _g1.length) {
+			var component = _g1[_g];
+			++_g;
+			if(component.inCameraBounds(cameraBounds)) {
+				inBounds = true;
+			}
+		}
+		return inBounds;
 	}
 	,__class__: aeons_components_CRender
 });
@@ -799,6 +732,7 @@ aeons_core_Renderable.__name__ = "aeons.core.Renderable";
 aeons_core_Renderable.__isInterface__ = true;
 aeons_core_Renderable.prototype = {
 	render: null
+	,inCameraBounds: null
 	,__class__: aeons_core_Renderable
 };
 var aeons_components_CSprite = function(options) {
@@ -822,11 +756,18 @@ aeons_components_CSprite.prototype = $extend(aeons_core_Component.prototype,{
 	,anchorY: null
 	,color: null
 	,frame: null
-	,render: function(target,cameraBounds) {
+	,render: function(target) {
 		if(!this.active || this.atlas == null || this.frame == null) {
 			return;
 		}
 		target.drawImageSection(-(this.frame.sourceSize.width * this.anchorX) + this.frame.sourceRect.x,-(this.frame.sourceSize.height * this.anchorY) + this.frame.sourceRect.y,this.frame.frame.x,this.frame.frame.y,this.frame.frame.width,this.frame.frame.height,this.atlas.image,this.color);
+	}
+	,inCameraBounds: function(cameraBounds) {
+		if(cameraBounds.x > -cameraBounds.width - this.frame.sourceSize.width * 2 && cameraBounds.y > -cameraBounds.height - this.frame.sourceSize.height * 2 && cameraBounds.x < this.frame.sourceSize.width * 2) {
+			return cameraBounds.y < this.frame.sourceSize.height * 2;
+		} else {
+			return false;
+		}
 	}
 	,setFrame: function(frameName,atlas) {
 		if(atlas != null) {
@@ -836,9 +777,6 @@ aeons_components_CSprite.prototype = $extend(aeons_core_Component.prototype,{
 			throw haxe_Exception.thrown("No sprite sheet assigned");
 		}
 		this.frame = this.atlas.getFrame(frameName);
-	}
-	,put: function() {
-		aeons_components_CSprite.pool.put(this);
 	}
 	,__class__: aeons_components_CSprite
 });
@@ -855,6 +793,8 @@ var aeons_components_CText = function(options) {
 		this.color = -1;
 		this.anchorX = 0.5;
 		this.anchorY = 0.5;
+		this.hasBackground = false;
+		this.backgroundColor = -16777216;
 	} else {
 		var value = options.text == null ? "" : options.text;
 		this.text = value;
@@ -871,13 +811,14 @@ var aeons_components_CText = function(options) {
 		if(options.fontSize != null) {
 			this.fontSize = options.fontSize;
 		}
-		if(options.color != null) {
-			this.color = options.color;
-		} else {
-			this.color = -1;
+		this.color = options.color == null ? -1 : options.color;
+		this.backgroundColor = options.backgroundColor == null ? -16777216 : options.backgroundColor;
+		if(options.hasBackground != null) {
+			this.hasBackground = options.hasBackground;
 		}
 		this.anchorX = options.anchorX == null ? 0.5 : options.anchorX;
 		this.anchorY = options.anchorY == null ? 0.5 : options.anchorY;
+		this.width = this.font.width(this.fontSize,this.text);
 	}
 };
 $hxClasses["aeons.components.CText"] = aeons_components_CText;
@@ -889,17 +830,33 @@ aeons_components_CText.prototype = $extend(aeons_core_Component.prototype,{
 	,fontSize: null
 	,text: null
 	,color: null
+	,hasBackground: null
+	,backgroundColor: null
 	,width: null
 	,anchorX: null
 	,anchorY: null
-	,render: function(target,cameraBounds) {
+	,render: function(target) {
 		if(this.font == null) {
 			return;
 		}
+		if(this.hasBackground) {
+			var x = -(this.width * this.anchorX) - 2;
+			var y = -(this.font == null ? 0 : this.font.height(this.fontSize)) * this.anchorY - 1;
+			var width = this.width + 4;
+			var height = this.font == null ? 0 : this.font.height(this.fontSize);
+			var color = this.backgroundColor;
+			target.imageRenderer.present();
+			target.textRenderer.present();
+			target.shapeRenderer.drawSolidRect(x,y,width,height + 2,target.transform,color);
+		}
 		target.drawString(-this.width * this.anchorX,-(this.font == null ? 0 : this.font.height(this.fontSize)) * this.anchorY,this.text,this.font,this.fontSize,this.color);
 	}
-	,put: function() {
-		aeons_components_CText.pool.put(this);
+	,inCameraBounds: function(cameraBounds) {
+		if(cameraBounds.x > -cameraBounds.width - this.width * 2 && cameraBounds.y > -cameraBounds.height - (this.font == null ? 0 : this.font.height(this.fontSize)) * 2 && cameraBounds.x < this.width * 2) {
+			return cameraBounds.y < (this.font == null ? 0 : this.font.height(this.fontSize)) * 2;
+		} else {
+			return false;
+		}
 	}
 	,__class__: aeons_components_CText
 });
@@ -914,38 +871,20 @@ var aeons_components_CTransform = function(options) {
 	this.worldAngle = 0;
 	this.isCameraTransform = false;
 	if(options != null) {
-		var value = options.x == null ? 0.0 : options.x;
-		this.changed = true;
-		this.x = value;
-		var value = options.y == null ? 0.0 : options.y;
-		this.changed = true;
-		this.y = value;
-		var value = options.angle == null ? 0.0 : options.angle;
-		this.changed = true;
-		this.angle = value;
-		var value = options.scaleX == null ? 1.0 : options.scaleX;
-		this.changed = true;
-		this.scaleX = value;
-		var value = options.scaleY == null ? 1.0 : options.scaleY;
-		this.changed = true;
-		this.scaleY = value;
+		this.set_x(options.x == null ? 0.0 : options.x);
+		this.set_y(options.y == null ? 0.0 : options.y);
+		this.set_angle(options.angle == null ? 0.0 : options.angle);
+		this.set_scaleX(options.scaleX == null ? 1.0 : options.scaleX);
+		this.set_scaleY(options.scaleY == null ? 1.0 : options.scaleY);
 		this.parent = options.parent == null ? null : options.parent;
-		var value = options.zIndex == null ? 0.0 : options.zIndex;
-		this.zIndex = value;
-		aeons_events_SortEvent.emit("aeons_sort_z");
+		this.set_zIndex(options.zIndex == null ? 0.0 : options.zIndex);
 	} else {
-		this.changed = true;
-		this.x = 0.0;
-		this.changed = true;
-		this.y = 0.0;
-		this.changed = true;
-		this.angle = 0.0;
-		this.changed = true;
-		this.scaleX = 1.0;
-		this.changed = true;
-		this.scaleY = 1.0;
-		this.zIndex = 0.0;
-		aeons_events_SortEvent.emit("aeons_sort_z");
+		this.set_x(0.0);
+		this.set_y(0.0);
+		this.set_angle(0.0);
+		this.set_scaleX(1.0);
+		this.set_scaleY(1.0);
+		this.set_zIndex(0.0);
 		this.parent = null;
 	}
 	this.changed = true;
@@ -1123,10 +1062,38 @@ aeons_components_CTransform.prototype = $extend(aeons_core_Component.prototype,{
 		}
 		return this.changed;
 	}
-	,put: function() {
-		aeons_components_CTransform.pool.put(this);
+	,set_x: function(value) {
+		this.changed = true;
+		this.x = value;
+		return value;
+	}
+	,set_y: function(value) {
+		this.changed = true;
+		this.y = value;
+		return value;
+	}
+	,set_angle: function(value) {
+		this.changed = true;
+		this.angle = value;
+		return value;
+	}
+	,set_scaleX: function(value) {
+		this.changed = true;
+		this.scaleX = value;
+		return value;
+	}
+	,set_scaleY: function(value) {
+		this.changed = true;
+		this.scaleY = value;
+		return value;
+	}
+	,set_zIndex: function(value) {
+		this.zIndex = value;
+		aeons_events_SortEvent.emit("aeons_sort_z");
+		return value;
 	}
 	,__class__: aeons_components_CTransform
+	,__properties__: $extend(aeons_core_Component.prototype.__properties__,{set_scaleY:"set_scaleY",set_scaleX:"set_scaleX",set_angle:"set_angle",set_zIndex:"set_zIndex",set_y:"set_y",set_x:"set_x"})
 });
 var aeons_components_CUpdate = function() {
 	aeons_core_Component.call(this);
@@ -1140,9 +1107,6 @@ aeons_components_CUpdate.prototype = $extend(aeons_core_Component.prototype,{
 		aeons_core_Component.prototype.init.call(this,entityId);
 		this.components = aeons_Aeons._entities.getUpdateComponents(entityId);
 	}
-	,put: function() {
-		aeons_components_CUpdate.pool.put(this);
-	}
 	,__class__: aeons_components_CUpdate
 });
 var aeons_core_BundleList = function() {
@@ -1155,7 +1119,7 @@ aeons_core_BundleList.prototype = {
 	,bundleAdded: null
 	,bundleRemoved: null
 	,addBundle: function(bundle) {
-		this.bundles.unshift(bundle);
+		this.bundles.push(bundle);
 		if(this.bundleAdded != null) {
 			this.bundleAdded(bundle);
 		}
@@ -1194,18 +1158,32 @@ $hxClasses["aeons.core.DebugRenderable"] = aeons_core_DebugRenderable;
 aeons_core_DebugRenderable.__name__ = "aeons.core.DebugRenderable";
 aeons_core_DebugRenderable.__isInterface__ = true;
 var aeons_core_Entity = function() {
+	this.active = true;
 };
 $hxClasses["aeons.core.Entity"] = aeons_core_Entity;
 aeons_core_Entity.__name__ = "aeons.core.Entity";
 aeons_core_Entity.prototype = {
 	id: null
+	,active: null
 	,init: function(id) {
 		this.id = id;
 	}
 	,cleanup: function() {
 		this.id = -1;
 	}
+	,set_active: function(value) {
+		this.active = value;
+		var components = aeons_Aeons._entities.getAllComponentsForEntity(this.id);
+		var _g = 0;
+		while(_g < components.length) {
+			var component = components[_g];
+			++_g;
+			component.active = value;
+		}
+		return value;
+	}
 	,__class__: aeons_core_Entity
+	,__properties__: {set_active:"set_active"}
 };
 var aeons_core_Game = function(options) {
 	this.scenes = [];
@@ -1218,8 +1196,9 @@ var aeons_core_Game = function(options) {
 	this.updateRate = options.updateFrequency == null ? kha_Display.get_primary().get_frequency() : options.updateFrequency;
 	this.loadFinished = options.loadFinished;
 	this.startScene = options.startScene;
+	var pixelArt = options.pixelArt == null ? false : options.pixelArt;
 	aeons_Aeons.provideDisplay(new aeons_core_services_InternalDisplay());
-	aeons_Aeons._display.init(designWidth,designHeight);
+	aeons_Aeons._display.init(designWidth,designHeight,pixelArt);
 	kha_System.start(new kha_SystemOptions(options.title,windowWidth,windowHeight,null,new kha_FramebufferOptions(60,true,32,16,8,2)),function(_) {
 		if(options.preload != null && options.preload) {
 			kha_Assets.loadEverything($bind(_gthis,_gthis.preloadComplete));
@@ -1248,13 +1227,14 @@ aeons_core_Game.prototype = {
 		aeons_Aeons.provideAudio(new aeons_audio_services_InternalAudio());
 		aeons_Aeons.provideEvents(new aeons_events_services_InternalEvents());
 		aeons_Aeons.provideRandom(new aeons_math_services_InternalRandom());
+		aeons_Aeons.provideStorage(new aeons_utils_services_InternalStorage());
 		aeons_Aeons.provideTimeStep(new aeons_utils_services_InternalTimeStep());
 		this.input = new aeons_input_Input();
 		aeons_Aeons._events.pushSceneList();
 		aeons_Aeons._events.on("aeons_push_scene",$bind(this,this.pushScene),true,0,true);
-		aeons_Aeons._events.on("aeons_pop_scene",$bind(this,this.pushScene),true,0,true);
-		aeons_Aeons._events.on("aeons_replace_scene",$bind(this,this.pushScene),true,0,true);
-		this.createScene(this.startScene,null);
+		aeons_Aeons._events.on("aeons_pop_scene",$bind(this,this.popScene),true,0,true);
+		aeons_Aeons._events.on("aeons_replace_scene",$bind(this,this.replaceScene),true,0,true);
+		this.addScene(this.startScene);
 		kha_System.notifyOnApplicationState($bind(this,this.toForeground),$bind(this,this.willResume),$bind(this,this.willPause),$bind(this,this.toBackground),$bind(this,this.shutdown));
 		kha_Scheduler.addTimeTask($bind(this,this.update),0,1.0 / this.updateRate);
 		kha_System.notifyOnFrames($bind(this,this.render));
@@ -1268,6 +1248,39 @@ aeons_core_Game.prototype = {
 	}
 	,render: function(frames) {
 		aeons_Aeons._timeStep.render();
+		var _this = this.renderTarget.transform;
+		var m__00 = 1;
+		var m__10 = 0;
+		var m__20 = 0;
+		var m__30 = 0;
+		var m__01 = 0;
+		var m__11 = 1;
+		var m__21 = 0;
+		var m__31 = 0;
+		var m__02 = 0;
+		var m__12 = 0;
+		var m__22 = 1;
+		var m__32 = 0;
+		var m__03 = 0;
+		var m__13 = 0;
+		var m__23 = 0;
+		var m__33 = 1;
+		_this._00 = m__00;
+		_this._10 = m__10;
+		_this._20 = m__20;
+		_this._30 = m__30;
+		_this._01 = m__01;
+		_this._11 = m__11;
+		_this._21 = m__21;
+		_this._31 = m__31;
+		_this._02 = m__02;
+		_this._12 = m__12;
+		_this._22 = m__22;
+		_this._32 = m__32;
+		_this._03 = m__03;
+		_this._13 = m__13;
+		_this._23 = m__23;
+		_this._33 = m__33;
 		if(this.currentScene.isSubScene && this.currentSceneIndex > 0) {
 			this.scenes[this.currentSceneIndex - 1].render(this.renderTarget);
 		}
@@ -1275,7 +1288,7 @@ aeons_core_Game.prototype = {
 		var mainBuffer = frames[0].get_g2();
 		mainBuffer.set_color(-1);
 		mainBuffer.begin();
-		mainBuffer.set_imageScaleQuality(1);
+		mainBuffer.set_imageScaleQuality(aeons_Aeons._display.pixelArt ? 0 : 1);
 		kha_Scaler.scale(this.renderTarget.image,frames[0],kha_System.get_screenRotation());
 		mainBuffer.end();
 	}
@@ -1294,44 +1307,101 @@ aeons_core_Game.prototype = {
 	}
 	,shutdown: function() {
 	}
+	,popScene: function(event) {
+		event.canceled = true;
+		if(this.scenes.length > 1) {
+			this.scenes.pop().cleanup();
+			aeons_Aeons._events.popSceneList();
+			this.currentSceneIndex--;
+			this.currentScene = this.scenes[this.currentSceneIndex];
+			this.currentScene.setProviders();
+			this.currentScene.willResume();
+		}
+	}
 	,pushScene: function(event) {
 		event.canceled = true;
 		this.currentScene.willPause();
 		this.currentSceneIndex++;
 		aeons_Aeons._events.pushSceneList();
-		this.createScene(event.sceneType,event.userData);
+		this.addScene(event.newScene);
 	}
-	,createScene: function(sceneType,userData) {
-		var scene = Type.createInstance(sceneType,[userData]);
-		this.scenes.push(scene);
-		this.currentScene = scene;
+	,replaceScene: function(event) {
+		event.canceled = true;
+		if(event.clearAll) {
+			while(this.scenes.length > 0) {
+				this.scenes.pop().cleanup();
+				aeons_Aeons._events.popSceneList();
+			}
+			aeons_Aeons._events.resetIndex();
+			this.currentSceneIndex = 0;
+			aeons_Aeons._events.pushSceneList();
+			this.addScene(event.newScene);
+		} else if(event.below) {
+			if(this.scenes.length > 1) {
+				this.scenes[this.scenes.length - 2].cleanup();
+				aeons_Aeons._events.replaceSceneList(this.scenes.length - 2);
+				this.addScene(event.newScene,true);
+			}
+		} else {
+			this.scenes.pop().cleanup();
+			aeons_Aeons._events.popSceneList();
+			aeons_Aeons._events.pushSceneList();
+			this.addScene(event.newScene);
+		}
+	}
+	,addScene: function(scene,below) {
+		if(below == null) {
+			below = false;
+		}
+		if(below) {
+			this.scenes[this.scenes.length - 2] = scene;
+			aeons_Aeons._events.setIndex(this.scenes.length - 2);
+		} else {
+			this.scenes.push(scene);
+			this.currentScene = scene;
+		}
+		scene.setProviders();
 		scene.init();
+		aeons_Aeons._events.setIndex(this.scenes.length - 1);
+		this.currentScene.setProviders();
 	}
 	,__class__: aeons_core_Game
 };
 var aeons_core_Scene = function(userData) {
 	this.isSubScene = false;
 	this.userData = userData;
-	aeons_Aeons.provideEntities(new aeons_core_services_InternalEntities());
-	aeons_Aeons.provideSystems(new aeons_core_services_InternalSystems());
-	aeons_Aeons.provideTimers(new aeons_utils_services_InternalTimers());
-	aeons_Aeons.provideTweens(new aeons_tween_services_InternalTweens());
+	this.sceneProviders = { entities : new aeons_core_services_InternalEntities(), systems : new aeons_core_services_InternalSystems(), timers : new aeons_utils_services_InternalTimers(), tweens : new aeons_tween_services_InternalTweens()};
+	this.setProviders();
 };
 $hxClasses["aeons.core.Scene"] = aeons_core_Scene;
 aeons_core_Scene.__name__ = "aeons.core.Scene";
 aeons_core_Scene.prototype = {
 	isSubScene: null
 	,userData: null
+	,sceneProviders: null
 	,init: function() {
 	}
+	,cleanup: function() {
+		this.sceneProviders.entities.cleanup();
+		aeons_Aeons.provideEntities(null);
+		aeons_Aeons.provideSystems(null);
+		aeons_Aeons.provideTimers(null);
+		aeons_Aeons.provideTweens(null);
+	}
+	,setProviders: function() {
+		aeons_Aeons.provideEntities(this.sceneProviders.entities);
+		aeons_Aeons.provideSystems(this.sceneProviders.systems);
+		aeons_Aeons.provideTimers(this.sceneProviders.timers);
+		aeons_Aeons.provideTweens(this.sceneProviders.tweens);
+	}
 	,update: function(dt) {
-		aeons_Aeons._entities.updateAddRemove();
-		aeons_Aeons._tweens.update(dt);
-		aeons_Aeons._timers.update(dt);
-		aeons_Aeons._systems.update(dt);
+		this.sceneProviders.entities.updateRemoved();
+		this.sceneProviders.tweens.update(dt);
+		this.sceneProviders.timers.update(dt);
+		this.sceneProviders.systems.update(dt);
 	}
 	,render: function(target) {
-		aeons_Aeons._systems.render(target);
+		this.sceneProviders.systems.render(target);
 	}
 	,willPause: function() {
 	}
@@ -1376,11 +1446,13 @@ aeons_core_services_InternalDisplay.__interfaces__ = [aeons_core_Display];
 aeons_core_services_InternalDisplay.prototype = {
 	viewWidth: null
 	,viewHeight: null
+	,pixelArt: null
 	,designWidth: null
 	,designHeight: null
-	,init: function(designWidth,designHeight) {
+	,init: function(designWidth,designHeight,pixelArt) {
 		this.designWidth = designWidth;
 		this.designHeight = designHeight;
+		this.pixelArt = pixelArt;
 	}
 	,scaleToWindow: function() {
 		var designRatio = this.designWidth / this.designHeight;
@@ -1402,7 +1474,6 @@ var aeons_core_services_InternalEntities = function() {
 	this.renderComponents = [];
 	this.updateComponents = [];
 	this.componentsToRemove = [];
-	this.componentsToAdd = [];
 	this.entitiesToRemove = [];
 	this.entities = [];
 	this.components = new haxe_ds_StringMap();
@@ -1414,7 +1485,6 @@ aeons_core_services_InternalEntities.prototype = {
 	components: null
 	,entities: null
 	,entitiesToRemove: null
-	,componentsToAdd: null
 	,componentsToRemove: null
 	,updateComponents: null
 	,renderComponents: null
@@ -1427,11 +1497,9 @@ aeons_core_services_InternalEntities.prototype = {
 		entity.init(id);
 		return entity;
 	}
-	,removeEntity: function(entity,pool) {
-		if(pool == null) {
-			pool = false;
-		}
-		this.entitiesToRemove.push(new aeons_core_services_EntityRemovedInfo(entity,pool));
+	,removeEntity: function(entity) {
+		entity.set_active(false);
+		this.entitiesToRemove.push(entity);
 	}
 	,addComponent: function(entity,component) {
 		var componentClass = js_Boot.getClass(component);
@@ -1448,7 +1516,7 @@ aeons_core_services_InternalEntities.prototype = {
 		}
 		this.components.h[name][entity.id] = component;
 		component.init(entity.id);
-		this.componentsToAdd.push(aeons_events_ComponentEvent.get(eventType,entity));
+		aeons_events_ComponentEvent.emit(eventType,entity);
 		if(js_Boot.__implements(component,aeons_core_Updatable)) {
 			if(this.updateComponents[entity.id] == null) {
 				this.updateComponents[entity.id] = [component];
@@ -1462,7 +1530,7 @@ aeons_core_services_InternalEntities.prototype = {
 					this.components.h[updateCompName][entity.id] = updateComp;
 					updateComp.init(entity.id);
 					var updateEventType = "aeons_" + updateCompName + "_added";
-					this.componentsToAdd.push(aeons_events_ComponentEvent.get(updateEventType,entity));
+					aeons_events_ComponentEvent.emit(updateEventType,entity);
 				}
 			} else {
 				this.updateComponents[entity.id].push(component);
@@ -1481,7 +1549,7 @@ aeons_core_services_InternalEntities.prototype = {
 					this.components.h[renderCompName][entity.id] = renderComp;
 					renderComp.init(entity.id);
 					var renderEventType = "aeons_" + renderCompName + "_added";
-					this.componentsToAdd.push(aeons_events_ComponentEvent.get(renderEventType,entity));
+					aeons_events_ComponentEvent.emit(renderEventType,entity);
 				}
 			} else {
 				this.renderComponents[entity.id].push(component);
@@ -1500,7 +1568,7 @@ aeons_core_services_InternalEntities.prototype = {
 					this.components.h[renderCompName][entity.id] = renderComp;
 					renderComp.init(entity.id);
 					var renderEventType = "aeons_" + renderCompName + "_added";
-					this.componentsToAdd.push(aeons_events_ComponentEvent.get(renderEventType,entity));
+					aeons_events_ComponentEvent.emit(renderEventType,entity);
 				}
 			} else {
 				this.debugRenderComponents[entity.id].push(component);
@@ -1573,58 +1641,59 @@ aeons_core_services_InternalEntities.prototype = {
 		}
 		return entityComponents;
 	}
-	,updateAddRemove: function() {
+	,cleanup: function() {
+		var _g = 0;
+		var _g1 = this.entities;
+		while(_g < _g1.length) {
+			var entity = _g1[_g];
+			++_g;
+			this.removeEntity(entity);
+		}
+		this.updateRemoved();
+	}
+	,updateRemoved: function() {
 		while(this.entitiesToRemove.length > 0) {
-			var entityInfo = this.entitiesToRemove.pop();
-			this.freeIds.push(entityInfo.entity.id);
-			var allComponents = this.getAllComponentsForEntity(entityInfo.entity.id);
+			var entity = this.entitiesToRemove.pop();
+			this.freeIds.push(entity.id);
+			var allComponents = this.getAllComponentsForEntity(entity.id);
 			var _g = 0;
 			while(_g < allComponents.length) {
 				var component = allComponents[_g];
 				++_g;
 				var c = js_Boot.getClass(component);
 				var name = c.__name__;
-				this.components.h[name][entityInfo.entity.id] = null;
+				this.components.h[name][entity.id] = null;
 				if(js_Boot.__implements(component,aeons_core_Updatable)) {
-					HxOverrides.remove(this.updateComponents[entityInfo.entity.id],component);
-					if(this.updateComponents[entityInfo.entity.id].length == 0) {
-						this.updateComponents[entityInfo.entity.id] = null;
+					HxOverrides.remove(this.updateComponents[entity.id],component);
+					if(this.updateComponents[entity.id].length == 0) {
+						this.updateComponents[entity.id] = null;
 					}
 				}
 				if(js_Boot.__implements(component,aeons_core_Renderable)) {
-					HxOverrides.remove(this.renderComponents[entityInfo.entity.id],component);
-					if(this.renderComponents[entityInfo.entity.id].length == 0) {
-						this.renderComponents[entityInfo.entity.id] = null;
+					HxOverrides.remove(this.renderComponents[entity.id],component);
+					if(this.renderComponents[entity.id].length == 0) {
+						this.renderComponents[entity.id] = null;
 					}
 				}
 				if(js_Boot.__implements(component,aeons_core_DebugRenderable)) {
-					HxOverrides.remove(this.debugRenderComponents[entityInfo.entity.id],component);
-					if(this.debugRenderComponents[entityInfo.entity.id].length == 0) {
-						this.debugRenderComponents[entityInfo.entity.id] = null;
+					HxOverrides.remove(this.debugRenderComponents[entity.id],component);
+					if(this.debugRenderComponents[entity.id].length == 0) {
+						this.debugRenderComponents[entity.id] = null;
 					}
 				}
 				var eventType = "aeons_" + name + "_removed";
-				aeons_events_ComponentEvent.emit(eventType,entityInfo.entity);
-				if(entityInfo.pool) {
-					component.put();
-				} else {
-					component.cleanup();
-				}
+				aeons_events_ComponentEvent.emit(eventType,entity);
+				component.cleanup();
 			}
-			entityInfo.entity.cleanup();
-			HxOverrides.remove(this.entities,entityInfo.entity);
+			entity.cleanup();
+			HxOverrides.remove(this.entities,entity);
 		}
-		while(this.componentsToAdd.length > 0) aeons_Aeons._events.emit(this.componentsToAdd.pop());
 		while(this.componentsToRemove.length > 0) {
 			var update = this.componentsToRemove.pop();
 			var eventType = "aeons_" + update.componentName + "_removed";
 			this.components.h[update.componentName][update.entity.id] = null;
 			aeons_events_ComponentEvent.emit(eventType,update.entity);
-			if(update.pool) {
-				update.component.put();
-			} else {
-				update.component.cleanup();
-			}
+			update.component.cleanup();
 			if(js_Boot.__implements(update.component,aeons_core_Updatable)) {
 				HxOverrides.remove(this.updateComponents[update.entity.id],update.component);
 				if(this.updateComponents[update.entity.id].length == 0) {
@@ -1674,11 +1743,10 @@ aeons_core_services_InternalEntities.prototype = {
 	}
 	,__class__: aeons_core_services_InternalEntities
 };
-var aeons_core_services_ComponentRemovedInfo = function(entity,component,componentName,pool) {
+var aeons_core_services_ComponentRemovedInfo = function(entity,component,componentName) {
 	this.entity = entity;
 	this.component = component;
 	this.componentName = componentName;
-	this.pool = pool;
 };
 $hxClasses["aeons.core.services.ComponentRemovedInfo"] = aeons_core_services_ComponentRemovedInfo;
 aeons_core_services_ComponentRemovedInfo.__name__ = "aeons.core.services.ComponentRemovedInfo";
@@ -1686,19 +1754,7 @@ aeons_core_services_ComponentRemovedInfo.prototype = {
 	entity: null
 	,component: null
 	,componentName: null
-	,pool: null
 	,__class__: aeons_core_services_ComponentRemovedInfo
-};
-var aeons_core_services_EntityRemovedInfo = function(entity,pool) {
-	this.entity = entity;
-	this.pool = pool;
-};
-$hxClasses["aeons.core.services.EntityRemovedInfo"] = aeons_core_services_EntityRemovedInfo;
-aeons_core_services_EntityRemovedInfo.__name__ = "aeons.core.services.EntityRemovedInfo";
-aeons_core_services_EntityRemovedInfo.prototype = {
-	entity: null
-	,pool: null
-	,__class__: aeons_core_services_EntityRemovedInfo
 };
 var aeons_core_services_InternalSystems = function() {
 	this.debugRenderSystems = [];
@@ -1742,13 +1798,13 @@ aeons_core_services_InternalSystems.prototype = {
 			system.update(dt);
 		}
 	}
-	,render: function(target,cameraBounds) {
+	,render: function(target) {
 		var _g = 0;
 		var _g1 = this.renderSystems;
 		while(_g < _g1.length) {
 			var system = _g1[_g];
 			++_g;
-			system.render(target,cameraBounds);
+			system.render(target);
 		}
 	}
 	,__class__: aeons_core_services_InternalSystems
@@ -1766,6 +1822,41 @@ aeons_events_Event.prototype = {
 		this.canceled = false;
 	}
 	,__class__: aeons_events_Event
+};
+var aeons_utils_Pool = function(type) {
+	this.pool = new haxe_ds_List();
+	this.classType = type;
+};
+$hxClasses["aeons.utils.Pool"] = aeons_utils_Pool;
+aeons_utils_Pool.__name__ = "aeons.utils.Pool";
+aeons_utils_Pool.prototype = {
+	pool: null
+	,classType: null
+	,get: function(options) {
+		if(this.pool.length > 0) {
+			var item = this.pool.pop();
+			return item;
+		} else if(options == null) {
+			return Type.createInstance(this.classType,[]);
+		} else {
+			return Type.createInstance(this.classType,[options]);
+		}
+	}
+	,put: function(object) {
+		if(object != null) {
+			var _g_head = this.pool.h;
+			while(_g_head != null) {
+				var val = _g_head.item;
+				_g_head = _g_head.next;
+				var item = val;
+				if(item == object) {
+					return;
+				}
+			}
+			this.pool.push(object);
+		}
+	}
+	,__class__: aeons_utils_Pool
 };
 var aeons_events_ComponentEvent = function() {
 	aeons_events_Event.call(this);
@@ -1808,15 +1899,18 @@ aeons_events_EventHandler.prototype = {
 	,__class__: aeons_events_EventHandler
 };
 var aeons_events_SceneEvent = function() {
-	this.userData = null;
+	this.below = false;
+	this.clearAll = false;
+	this.newScene = null;
 	aeons_events_Event.call(this);
 };
 $hxClasses["aeons.events.SceneEvent"] = aeons_events_SceneEvent;
 aeons_events_SceneEvent.__name__ = "aeons.events.SceneEvent";
 aeons_events_SceneEvent.__super__ = aeons_events_Event;
 aeons_events_SceneEvent.prototype = $extend(aeons_events_Event.prototype,{
-	sceneType: null
-	,userData: null
+	newScene: null
+	,clearAll: null
+	,below: null
 	,put: function() {
 		aeons_events_Event.prototype.put.call(this);
 		aeons_events_SceneEvent.pool.put(this);
@@ -2136,6 +2230,24 @@ aeons_events_services_InternalEvents.prototype = {
 		this.sceneHandlers.push(new haxe_ds_StringMap());
 		this.sceneIndex++;
 	}
+	,popSceneList: function() {
+		this.sceneHandlers.pop().h = Object.create(null);
+		this.sceneIndex--;
+	}
+	,replaceSceneList: function(index) {
+		var list = this.sceneHandlers[index];
+		list.h = Object.create(null);
+		HxOverrides.remove(this.sceneHandlers,list);
+		var _this = this.sceneHandlers;
+		var x = new haxe_ds_StringMap();
+		_this.splice(index,0,x);
+	}
+	,resetIndex: function() {
+		this.sceneIndex = -1;
+	}
+	,setIndex: function(index) {
+		this.sceneIndex = index;
+	}
 	,processHandlers: function(event,handlers) {
 		var _g = 0;
 		while(_g < handlers.length) {
@@ -2424,7 +2536,8 @@ aeons_graphics_renderers_ImageRenderer.prototype = $extend(aeons_graphics_render
 		this.g4.setVertexBuffer(this.vertexBuffer);
 		this.g4.setIndexBuffer(this.indexBuffer);
 		this.g4.setTexture(this.pipeline.textureLocation,this.currentImage);
-		this.g4.setTextureParameters(this.pipeline.textureLocation,2,2,1,1,0);
+		var filter = aeons_Aeons._display.pixelArt ? 0 : 1;
+		this.g4.setTextureParameters(this.pipeline.textureLocation,2,2,filter,filter,0);
 		this.g4.setMatrix(this.pipeline.projectionLocation,this.projection);
 		this.g4.drawIndexedVertices(0,this.bufferIndex * this.indicesPerQuad);
 		this.g4.setTexture(this.pipeline.textureLocation,null);
@@ -2516,6 +2629,7 @@ aeons_graphics_renderers_ImageRenderer.prototype = $extend(aeons_graphics_render
 });
 var aeons_graphics_renderers_ShapeRenderer = function(g4) {
 	this.verticesPerTri = 3;
+	this.offset = 21;
 	aeons_graphics_renderers_BaseRenderer.call(this,g4);
 	this.p1 = new kha_math_FastVector3();
 	this.p2 = new kha_math_FastVector3();
@@ -2544,7 +2658,8 @@ $hxClasses["aeons.graphics.renderers.ShapeRenderer"] = aeons_graphics_renderers_
 aeons_graphics_renderers_ShapeRenderer.__name__ = "aeons.graphics.renderers.ShapeRenderer";
 aeons_graphics_renderers_ShapeRenderer.__super__ = aeons_graphics_renderers_BaseRenderer;
 aeons_graphics_renderers_ShapeRenderer.prototype = $extend(aeons_graphics_renderers_BaseRenderer.prototype,{
-	p1: null
+	offset: null
+	,p1: null
 	,p2: null
 	,p3: null
 	,verticesPerTri: null
@@ -2561,9 +2676,66 @@ aeons_graphics_renderers_ShapeRenderer.prototype = $extend(aeons_graphics_render
 		this.vertices = this.vertexBuffer.lock(0);
 		this.bufferIndex = 0;
 	}
+	,drawSolidTriangle: function(x1,y1,x2,y2,x3,y3,transform,color) {
+		if(this.bufferIndex >= this.bufferSize) {
+			this.present();
+		}
+		aeons_math_FastVector3Ex.mulVec3Val(this.p1,transform,x1,y1,0);
+		aeons_math_FastVector3Ex.mulVec3Val(this.p2,transform,x2,y2,0);
+		aeons_math_FastVector3Ex.mulVec3Val(this.p3,transform,x3,y3,0);
+		this.setVertices(this.p1.x,this.p1.y,this.p2.x,this.p2.y,this.p3.x,this.p3.y);
+		this.setColor(color,color,color);
+		this.bufferIndex++;
+	}
+	,drawSolidRect: function(x,y,width,height,transform,color) {
+		if(this.bufferIndex >= this.bufferSize) {
+			this.present();
+		}
+		this.drawSolidTriangle(x,y,x + width,y,x,y + height,transform,color);
+		this.drawSolidTriangle(x,y + height,x + width,y,x + width,y + height,transform,color);
+	}
 	,createDefaultPipeline: function() {
 		var pl = new aeons_graphics_Pipeline(kha_Shaders.painter_colored_vert,kha_Shaders.painter_colored_frag,false);
 		return pl;
+	}
+	,setVertices: function(x1,y1,x2,y2,x3,y3) {
+		var index = this.bufferIndex * this.offset;
+		this.vertices.setFloat32(index * 4,x1,true);
+		this.vertices.setFloat32((index + 1) * 4,y1,true);
+		this.vertices.setFloat32((index + 2) * 4,-5.0,true);
+		this.vertices.setFloat32((index + 7) * 4,x2,true);
+		this.vertices.setFloat32((index + 8) * 4,y2,true);
+		this.vertices.setFloat32((index + 9) * 4,-5.0,true);
+		this.vertices.setFloat32((index + 14) * 4,x3,true);
+		this.vertices.setFloat32((index + 15) * 4,y3,true);
+		this.vertices.setFloat32((index + 16) * 4,-5.0,true);
+	}
+	,setColor: function(color1,color2,color3) {
+		var index = this.bufferIndex * this.offset;
+		var v = ((color1 & 16711680) >>> 16) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 3) * 4,v,true);
+		var v = ((color1 & 65280) >>> 8) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 4) * 4,v,true);
+		var v = (color1 & 255) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 5) * 4,v,true);
+		var v = (color1 >>> 24) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 6) * 4,v,true);
+		var v = ((color2 & 16711680) >>> 16) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 10) * 4,v,true);
+		var v = ((color2 & 65280) >>> 8) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 11) * 4,v,true);
+		var v = (color2 & 255) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 12) * 4,v,true);
+		var v = (color2 >>> 24) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 13) * 4,v,true);
+		var v = ((color3 & 16711680) >>> 16) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 17) * 4,v,true);
+		var v = ((color3 & 65280) >>> 8) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 18) * 4,v,true);
+		var v = (color3 & 255) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 19) * 4,v,true);
+		var v = (color3 >>> 24) * 0.00392156862745098;
+		this.vertices.setFloat32((index + 20) * 4,v,true);
 	}
 	,__class__: aeons_graphics_renderers_ShapeRenderer
 });
@@ -2859,6 +3031,22 @@ aeons_input_Input.prototype = {
 	}
 	,__class__: aeons_input_Input
 };
+var aeons_math_AeMath = function() { };
+$hxClasses["aeons.math.AeMath"] = aeons_math_AeMath;
+aeons_math_AeMath.__name__ = "aeons.math.AeMath";
+aeons_math_AeMath.clampInt = function(value,min,max) {
+	if(min > max) {
+		var temp = max;
+		max = min;
+		min = temp;
+	}
+	var lower = value < min ? min : value;
+	if(lower > max) {
+		return max;
+	} else {
+		return lower;
+	}
+};
 var aeons_math_FastMatrix4Ex = function() { };
 $hxClasses["aeons.math.FastMatrix4Ex"] = aeons_math_FastMatrix4Ex;
 aeons_math_FastMatrix4Ex.__name__ = "aeons.math.FastMatrix4Ex";
@@ -2999,34 +3187,7 @@ aeons_math_Vector2.prototype = {
 var aeons_math_services_InternalRandom = function() {
 	this.internalSeed = 1.0;
 	this.initialSeed = 1;
-	var value = Math.random() * 2147483647 | 0;
-	var min = 1;
-	var max = 2147483646;
-	if(min > max) {
-		var temp = max;
-		max = min;
-		min = temp;
-	}
-	var lower = value < min ? min : value;
-	var seed = lower > max ? max : lower;
-	var min = 1;
-	var max = 2147483646;
-	if(min > max) {
-		var temp = max;
-		max = min;
-		min = temp;
-	}
-	var lower = seed < min ? min : seed;
-	var seed = lower > max ? max : lower;
-	var min = 1;
-	var max = 2147483646;
-	if(min > max) {
-		var temp = max;
-		max = min;
-		min = temp;
-	}
-	var lower = seed < min ? min : seed;
-	this.initialSeed = (this.internalSeed = lower > max ? max : lower) | 0;
+	this.initialSeed = (this.internalSeed = aeons_math_AeMath.clampInt(aeons_math_AeMath.clampInt(aeons_math_AeMath.clampInt(Math.random() * 2147483647 | 0,1,2147483646),1,2147483646),1,2147483646)) | 0;
 };
 $hxClasses["aeons.math.services.InternalRandom"] = aeons_math_services_InternalRandom;
 aeons_math_services_InternalRandom.__name__ = "aeons.math.services.InternalRandom";
@@ -3080,6 +3241,7 @@ var aeons_systems_RenderSystem = function() {
 	this.sortZ = false;
 	var _gthis = this;
 	aeons_core_System.call(this);
+	aeons_Aeons._events.on("aeons_sort_z",$bind(this,this.sortListener));
 	this.cameraBundles = new aeons_core_BundleList();
 	aeons_Aeons._events.on("aeons_" + "aeons.components.CCamera" + "_added",function(event) {
 		if(aeons_Aeons._entities.hasBundleComponents(event.entity.id,["aeons.components.CCamera","aeons.components.CTransform"])) {
@@ -3143,9 +3305,10 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 	cameraBundles: null
 	,renderBundles: null
 	,sortZ: null
-	,render: function(target,cameraBounds) {
+	,render: function(target) {
 		if(this.sortZ) {
 			aeons_utils_TimSort.timSort(this.renderBundles.bundles,$bind(this,this.sort));
+			this.sortZ = false;
 		}
 		var _g_current = 0;
 		var _g_array = this.renderBundles.bundles;
@@ -3187,49 +3350,54 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 					_this._13 = m._13;
 					_this._23 = m._23;
 					_this._33 = m._33;
+					renderable.c_render.render(camTarget);
 				} else {
-					var _this1 = camTarget.transform;
-					var _this2 = camera.matrix;
-					var m1 = renderable.c_transform.matrix;
-					var m__00 = _this2._00 * m1._00 + _this2._10 * m1._01 + _this2._20 * m1._02 + _this2._30 * m1._03;
-					var m__10 = _this2._00 * m1._10 + _this2._10 * m1._11 + _this2._20 * m1._12 + _this2._30 * m1._13;
-					var m__20 = _this2._00 * m1._20 + _this2._10 * m1._21 + _this2._20 * m1._22 + _this2._30 * m1._23;
-					var m__30 = _this2._00 * m1._30 + _this2._10 * m1._31 + _this2._20 * m1._32 + _this2._30 * m1._33;
-					var m__01 = _this2._01 * m1._00 + _this2._11 * m1._01 + _this2._21 * m1._02 + _this2._31 * m1._03;
-					var m__11 = _this2._01 * m1._10 + _this2._11 * m1._11 + _this2._21 * m1._12 + _this2._31 * m1._13;
-					var m__21 = _this2._01 * m1._20 + _this2._11 * m1._21 + _this2._21 * m1._22 + _this2._31 * m1._23;
-					var m__31 = _this2._01 * m1._30 + _this2._11 * m1._31 + _this2._21 * m1._32 + _this2._31 * m1._33;
-					var m__02 = _this2._02 * m1._00 + _this2._12 * m1._01 + _this2._22 * m1._02 + _this2._32 * m1._03;
-					var m__12 = _this2._02 * m1._10 + _this2._12 * m1._11 + _this2._22 * m1._12 + _this2._32 * m1._13;
-					var m__22 = _this2._02 * m1._20 + _this2._12 * m1._21 + _this2._22 * m1._22 + _this2._32 * m1._23;
-					var m__32 = _this2._02 * m1._30 + _this2._12 * m1._31 + _this2._22 * m1._32 + _this2._32 * m1._33;
-					var m__03 = _this2._03 * m1._00 + _this2._13 * m1._01 + _this2._23 * m1._02 + _this2._33 * m1._03;
-					var m__13 = _this2._03 * m1._10 + _this2._13 * m1._11 + _this2._23 * m1._12 + _this2._33 * m1._13;
-					var m__23 = _this2._03 * m1._20 + _this2._13 * m1._21 + _this2._23 * m1._22 + _this2._33 * m1._23;
-					var m__33 = _this2._03 * m1._30 + _this2._13 * m1._31 + _this2._23 * m1._32 + _this2._33 * m1._33;
-					_this1._00 = m__00;
-					_this1._10 = m__10;
-					_this1._20 = m__20;
-					_this1._30 = m__30;
-					_this1._01 = m__01;
-					_this1._11 = m__11;
-					_this1._21 = m__21;
-					_this1._31 = m__31;
-					_this1._02 = m__02;
-					_this1._12 = m__12;
-					_this1._22 = m__22;
-					_this1._32 = m__32;
-					_this1._03 = m__03;
-					_this1._13 = m__13;
-					_this1._23 = m__23;
-					_this1._33 = m__33;
+					boundsPos.x = camera.bounds.x;
+					boundsPos.y = camera.bounds.y;
+					renderable.c_transform.worldToLocalPosition(boundsPos);
+					boundsPos.x -= renderable.c_transform.x;
+					boundsPos.y -= renderable.c_transform.y;
+					localBounds.x = boundsPos.x;
+					localBounds.y = boundsPos.y;
+					if(renderable.c_render.inCameraBounds(localBounds)) {
+						var _this1 = camTarget.transform;
+						var _this2 = camera.matrix;
+						var m1 = renderable.c_transform.matrix;
+						var m__00 = _this2._00 * m1._00 + _this2._10 * m1._01 + _this2._20 * m1._02 + _this2._30 * m1._03;
+						var m__10 = _this2._00 * m1._10 + _this2._10 * m1._11 + _this2._20 * m1._12 + _this2._30 * m1._13;
+						var m__20 = _this2._00 * m1._20 + _this2._10 * m1._21 + _this2._20 * m1._22 + _this2._30 * m1._23;
+						var m__30 = _this2._00 * m1._30 + _this2._10 * m1._31 + _this2._20 * m1._32 + _this2._30 * m1._33;
+						var m__01 = _this2._01 * m1._00 + _this2._11 * m1._01 + _this2._21 * m1._02 + _this2._31 * m1._03;
+						var m__11 = _this2._01 * m1._10 + _this2._11 * m1._11 + _this2._21 * m1._12 + _this2._31 * m1._13;
+						var m__21 = _this2._01 * m1._20 + _this2._11 * m1._21 + _this2._21 * m1._22 + _this2._31 * m1._23;
+						var m__31 = _this2._01 * m1._30 + _this2._11 * m1._31 + _this2._21 * m1._32 + _this2._31 * m1._33;
+						var m__02 = _this2._02 * m1._00 + _this2._12 * m1._01 + _this2._22 * m1._02 + _this2._32 * m1._03;
+						var m__12 = _this2._02 * m1._10 + _this2._12 * m1._11 + _this2._22 * m1._12 + _this2._32 * m1._13;
+						var m__22 = _this2._02 * m1._20 + _this2._12 * m1._21 + _this2._22 * m1._22 + _this2._32 * m1._23;
+						var m__32 = _this2._02 * m1._30 + _this2._12 * m1._31 + _this2._22 * m1._32 + _this2._32 * m1._33;
+						var m__03 = _this2._03 * m1._00 + _this2._13 * m1._01 + _this2._23 * m1._02 + _this2._33 * m1._03;
+						var m__13 = _this2._03 * m1._10 + _this2._13 * m1._11 + _this2._23 * m1._12 + _this2._33 * m1._13;
+						var m__23 = _this2._03 * m1._20 + _this2._13 * m1._21 + _this2._23 * m1._22 + _this2._33 * m1._23;
+						var m__33 = _this2._03 * m1._30 + _this2._13 * m1._31 + _this2._23 * m1._32 + _this2._33 * m1._33;
+						_this1._00 = m__00;
+						_this1._10 = m__10;
+						_this1._20 = m__20;
+						_this1._30 = m__30;
+						_this1._01 = m__01;
+						_this1._11 = m__11;
+						_this1._21 = m__21;
+						_this1._31 = m__31;
+						_this1._02 = m__02;
+						_this1._12 = m__12;
+						_this1._22 = m__22;
+						_this1._32 = m__32;
+						_this1._03 = m__03;
+						_this1._13 = m__13;
+						_this1._23 = m__23;
+						_this1._33 = m__33;
+						renderable.c_render.render(camTarget);
+					}
 				}
-				boundsPos.x = camera.bounds.x;
-				boundsPos.y = camera.bounds.y;
-				renderable.c_transform.worldToLocalPosition(boundsPos);
-				localBounds.x = boundsPos.x;
-				localBounds.y = boundsPos.y;
-				renderable.c_render.render(camTarget,localBounds);
 			}
 			aeons_math_Vector2.pool.put(boundsPos);
 			camTarget.present();
@@ -3249,6 +3417,9 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 			target.drawImage(camera.viewX,camera.viewY,camera.renderTarget.image,-1);
 		}
 		target.present();
+	}
+	,sortListener: function(event) {
+		this.sortZ = true;
 	}
 	,sort: function(a,b) {
 		if(a.c_transform.zIndex > b.c_transform.zIndex) {
@@ -3412,7 +3583,6 @@ aeons_utils_TimSort.timSort = function(array,compare,lo,hi) {
 	if(remaining < 2) {
 		return;
 	}
-	var l = array.length;
 	var runLength = 0;
 	if(remaining < 32) {
 		runLength = aeons_utils_TimSort.makeAscendingRun(array,lo,hi,compare);
@@ -4000,6 +4170,14 @@ aeons_utils_Timer.prototype = {
 	}
 	,__class__: aeons_utils_Timer
 };
+var aeons_utils_services_InternalStorage = function() {
+};
+$hxClasses["aeons.utils.services.InternalStorage"] = aeons_utils_services_InternalStorage;
+aeons_utils_services_InternalStorage.__name__ = "aeons.utils.services.InternalStorage";
+aeons_utils_services_InternalStorage.__interfaces__ = [aeons_utils_Storage];
+aeons_utils_services_InternalStorage.prototype = {
+	__class__: aeons_utils_services_InternalStorage
+};
 var aeons_utils_services_InternalTimeStep = function() {
 	this.frameTimes = [];
 	this.fpsUpdateInterval = 0.5;
@@ -4086,9 +4264,6 @@ components_CBunnyMove.prototype = $extend(aeons_core_Component.prototype,{
 	speedX: null
 	,speedY: null
 	,rotationSpeed: null
-	,put: function() {
-		components_CBunnyMove.pool.put(this);
-	}
 	,__class__: components_CBunnyMove
 });
 var entities_EBunny = function() {
@@ -4127,22 +4302,26 @@ entities_ECamera.prototype = $extend(aeons_core_Entity.prototype,{
 	}
 	,__class__: entities_ECamera
 });
-var entities_EText = function(options) {
+var entities_EText = function(x,y,text) {
 	aeons_core_Entity.call(this);
-	this.options = options;
+	this.x = x;
+	this.y = y;
+	this.text = text;
 };
 $hxClasses["entities.EText"] = entities_EText;
 entities_EText.__name__ = "entities.EText";
 entities_EText.__super__ = aeons_core_Entity;
 entities_EText.prototype = $extend(aeons_core_Entity.prototype,{
 	cText: null
-	,options: null
+	,x: null
+	,y: null
+	,text: null
 	,init: function(id) {
 		aeons_core_Entity.prototype.init.call(this,id);
-		var font = aeons_Aeons._assets.getFont("pixelFont");
-		var component = new aeons_components_CTransform({ x : this.options.x, y : this.options.y, zIndex : 1});
+		var component = new aeons_components_CTransform({ x : this.x, y : this.y, zIndex : 1});
 		aeons_Aeons._entities.addComponent(this,component);
-		var component = new aeons_components_CText({ font : font, fontSize : 20, text : this.options.text, anchorX : 0, anchorY : 0});
+		var font = aeons_Aeons._assets.getFont("pixelFont");
+		var component = new aeons_components_CText({ font : font, fontSize : 20, text : this.text, anchorX : 0, anchorY : 0});
 		this.cText = aeons_Aeons._entities.addComponent(this,component);
 	}
 	,setText: function(text) {
@@ -24239,16 +24418,16 @@ scenes_GameScene.prototype = $extend(aeons_core_Scene.prototype,{
 	,removeBunnies: null
 	,init: function() {
 		var system = new aeons_systems_RenderSystem();
-		aeons_Aeons._systems.add(system);
+		this.sceneProviders.systems.add(system);
 		var system = new systems_BunnySystem();
-		aeons_Aeons._systems.add(system);
+		this.sceneProviders.systems.add(system);
 		aeons_Aeons._assets.loadAtlas("atlas");
 		var entity = new entities_ECamera();
-		aeons_Aeons._entities.addEntity(entity);
-		var entity = new entities_EText({ x : 10, y : 10, text : "FPS: 60"});
-		this.fps = aeons_Aeons._entities.addEntity(entity);
-		var entity = new entities_EText({ x : 10, y : 40, text : "Bunnies: 0"});
-		this.bunnyCount = aeons_Aeons._entities.addEntity(entity);
+		this.sceneProviders.entities.addEntity(entity);
+		var entity = new entities_EText(10,10,"FPS: 60");
+		this.fps = this.sceneProviders.entities.addEntity(entity);
+		var entity = new entities_EText(10,40,"Bunnies: 0");
+		this.bunnyCount = this.sceneProviders.entities.addEntity(entity);
 		this.createBunny();
 		aeons_Aeons._events.on("aeons_mouse_down",$bind(this,this.mouseDown));
 		aeons_Aeons._events.on("aeons_mouse_up",$bind(this,this.mouseUp));
@@ -24283,7 +24462,7 @@ scenes_GameScene.prototype = $extend(aeons_core_Scene.prototype,{
 				var i = _g++;
 				if(this.bunnies.length > 0) {
 					var bunny = this.bunnies.pop();
-					aeons_Aeons._entities.removeEntity(bunny,false);
+					this.sceneProviders.entities.removeEntity(bunny);
 					this.bunnyCount.setText("Bunnies: " + this.bunnies.length);
 				}
 			}
@@ -24291,7 +24470,7 @@ scenes_GameScene.prototype = $extend(aeons_core_Scene.prototype,{
 	}
 	,createBunny: function() {
 		var entity = new entities_EBunny();
-		var bunny = aeons_Aeons._entities.addEntity(entity);
+		var bunny = this.sceneProviders.entities.addEntity(entity);
 		this.bunnies.push(bunny);
 		this.bunnyCount.setText("Bunnies: " + this.bunnies.length);
 	}
@@ -24312,8 +24491,8 @@ scenes_GameScene.prototype = $extend(aeons_core_Scene.prototype,{
 	,__class__: scenes_GameScene
 });
 var systems_BunnySystem = function() {
-	this.maxY = 600;
-	this.maxX = 800;
+	this.maxY = aeons_Aeons._display.viewHeight;
+	this.maxX = aeons_Aeons._display.viewWidth;
 	this.gravity = 0.5;
 	var _gthis = this;
 	aeons_core_System.call(this);
@@ -24361,37 +24540,25 @@ systems_BunnySystem.prototype = $extend(aeons_core_System.prototype,{
 			var bunny = _g_array[_g_current++];
 			var transform = bunny.c_transform;
 			var move = bunny.c_bunny_move;
-			var value = transform.x + move.speedX;
-			transform.changed = true;
-			transform.x = value;
-			var value1 = transform.y + move.speedY;
-			transform.changed = true;
-			transform.y = value1;
-			var value2 = transform.angle + move.rotationSpeed;
-			transform.changed = true;
-			transform.angle = value2;
+			transform.set_x(transform.x + move.speedX);
+			transform.set_y(transform.y + move.speedY);
+			transform.set_angle(transform.angle + move.rotationSpeed);
 			move.speedY += this.gravity;
 			if(transform.x > this.maxX) {
-				var value3 = this.maxX;
-				transform.changed = true;
-				transform.x = value3;
+				transform.set_x(this.maxX);
 				move.speedX *= -1;
 			} else if(transform.x < 0) {
-				transform.changed = true;
-				transform.x = 0;
+				transform.set_x(0);
 				move.speedX *= -1;
 			}
 			if(transform.y > this.maxY) {
-				var value4 = this.maxY;
-				transform.changed = true;
-				transform.y = value4;
+				transform.set_y(this.maxY);
 				move.speedY *= -0.8;
 				if(aeons_Aeons._random.float() > 0.5) {
 					move.speedY -= 3 + aeons_Aeons._random.float(0,4);
 				}
 			} else if(transform.y < 0) {
-				transform.changed = true;
-				transform.y = 0;
+				transform.set_y(0);
 				move.speedY = 0;
 			}
 		}
@@ -24422,13 +24589,6 @@ js_Boot.__toStr = ({ }).toString;
 if(ArrayBuffer.prototype.slice == null) {
 	ArrayBuffer.prototype.slice = js_lib__$ArrayBuffer_ArrayBufferCompat.sliceImpl;
 }
-aeons_components_CCamera.pool = new aeons_utils_Pool(aeons_components_CCamera);
-aeons_components_CDebugRender.pool = new aeons_utils_Pool(aeons_components_CDebugRender);
-aeons_components_CRender.pool = new aeons_utils_Pool(aeons_components_CRender);
-aeons_components_CSprite.pool = new aeons_utils_Pool(aeons_components_CSprite);
-aeons_components_CText.pool = new aeons_utils_Pool(aeons_components_CText);
-aeons_components_CTransform.pool = new aeons_utils_Pool(aeons_components_CTransform);
-aeons_components_CUpdate.pool = new aeons_utils_Pool(aeons_components_CUpdate);
 aeons_events_ComponentEvent.pool = new aeons_utils_Pool(aeons_events_ComponentEvent);
 aeons_events_SceneEvent.pool = new aeons_utils_Pool(aeons_events_SceneEvent);
 aeons_events_SortEvent.pool = new aeons_utils_Pool(aeons_events_SortEvent);
@@ -24438,7 +24598,6 @@ aeons_events_input_MouseEvent.pool = new aeons_utils_Pool(aeons_events_input_Mou
 aeons_events_input_TouchEvent.pool = new aeons_utils_Pool(aeons_events_input_TouchEvent);
 aeons_math_Vector2.pool = new aeons_utils_Pool(aeons_math_Vector2);
 aeons_tween_Tween.pool = new aeons_utils_Pool(aeons_tween_Tween);
-components_CBunnyMove.pool = new aeons_utils_Pool(components_CBunnyMove);
 haxe_Unserializer.DEFAULT_RESOLVER = new haxe__$Unserializer_DefaultResolver();
 haxe_Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe_io_FPHelper.helper = new DataView(new ArrayBuffer(8));
