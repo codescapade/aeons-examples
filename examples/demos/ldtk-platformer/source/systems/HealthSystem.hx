@@ -41,7 +41,7 @@ class HealthSystem extends System {
   }
 
   function healthDown(event: HealthEvent) {
-    final player = playerBundles.get(0).c_player;
+    final player = playerBundles.get(0).cPlayer;
     player.health--;
     updateSprites(player.health);
 
@@ -57,14 +57,14 @@ class HealthSystem extends System {
   function updateSprites(health: Int) {
     for (index => bundle in iconBundles.bundles) {
       if (index < health) {
-        bundle.c_sprite.setFrame(fullHeart);
+        bundle.cSprite.setFrame(fullHeart);
       } else {
-        bundle.c_sprite.setFrame(emptyHeart);
+        bundle.cSprite.setFrame(emptyHeart);
       }
     }
   }
 
   function bundleAdded(bundle: aeons.bundles.BundleCHealthIconCSprite) {
-    updateSprites(playerBundles.get(0).c_player.health);
+    updateSprites(playerBundles.get(0).cPlayer.health);
   }
 }

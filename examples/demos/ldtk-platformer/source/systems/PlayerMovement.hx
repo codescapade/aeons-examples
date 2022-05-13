@@ -86,10 +86,10 @@ class PlayerMovement extends System implements Updatable {
       return;
     }
 
-    final player = bundle.c_player;
-    final transform = bundle.c_transform;
-    final body = bundle.c_simple_body;
-    final animation = bundle.c_animation;
+    final player = bundle.cPlayer;
+    final transform = bundle.cTransform;
+    final body = bundle.cSimpleBody;
+    final animation = bundle.cAnimation;
 
     if (player.dead && transform.y > physics.worldY + physics.worldHeight && player.health != 0) {
       transform.setPosition(player.spawnPosition.x, player.spawnPosition.y);
@@ -170,21 +170,21 @@ class PlayerMovement extends System implements Updatable {
 
   function onPlayerAdded(bundle: aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimationCAudio) {
     this.bundle = bundle;
-    bundle.c_animation.play(PlayerAnims.Idle);
+    bundle.cAnimation.play(PlayerAnims.Idle);
 
-    bundle.c_simple_body.maxVelocity.x = xVelocity;
-    bundle.c_simple_body.drag.x = drag;
+    bundle.cSimpleBody.maxVelocity.x = xVelocity;
+    bundle.cSimpleBody.drag.x = drag;
     hasPlayer = true;
   }
 
   function keyDown(event: KeyboardEvent) {
-    if (!hasPlayer || bundle.c_player.dead) {
+    if (!hasPlayer || bundle.cPlayer.dead) {
       return;
     }
 
-    final body = bundle.c_simple_body;
-    final transform = bundle.c_transform;
-    final audio = bundle.c_audio;
+    final body = bundle.cSimpleBody;
+    final transform = bundle.cTransform;
+    final audio = bundle.cAudio;
 
     if (leftKeys.contains(event.key)) {
       goingLeft = true;
@@ -213,13 +213,13 @@ class PlayerMovement extends System implements Updatable {
   }
 
   function keyUp(event: KeyboardEvent) {
-    if (!hasPlayer || bundle.c_player.dead) {
+    if (!hasPlayer || bundle.cPlayer.dead) {
       goingLeft = false;
       goingRight = false;
       return;
     }
 
-    final body = bundle.c_simple_body;
+    final body = bundle.cSimpleBody;
 
     if (leftKeys.contains(event.key)) {
       goingLeft = false;

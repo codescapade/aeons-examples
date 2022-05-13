@@ -1478,7 +1478,7 @@ aeons_assets_services_InternalAssets.prototype = {
 		var image = kha_Assets.images.get(name);
 		var data = kha_Assets.blobs.get("" + name + "_json");
 		if(image == null || data == null) {
-			haxe_Log.trace("Unable to load atlas " + name + ".",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 132, className : "aeons.assets.services.InternalAssets", methodName : "loadAtlas"});
+			haxe_Log.trace("Unable to load atlas " + name + ".",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 152, className : "aeons.assets.services.InternalAssets", methodName : "loadAtlas"});
 			return null;
 		}
 		var atlas = new aeons_graphics_atlas_Atlas(image,data.toString());
@@ -1543,195 +1543,195 @@ aeons_core_BundleBase.prototype = {
 };
 var aeons_bundles_BundleCAnimationCSprite = function(entity) {
 	this.entity = entity;
-	this.c_animation = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CAnimation);
-	this.c_sprite = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSprite);
+	this.cAnimation = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CAnimation);
+	this.cSprite = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSprite);
 };
 $hxClasses["aeons.bundles.BundleCAnimationCSprite"] = aeons_bundles_BundleCAnimationCSprite;
 aeons_bundles_BundleCAnimationCSprite.__name__ = "aeons.bundles.BundleCAnimationCSprite";
 aeons_bundles_BundleCAnimationCSprite.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCAnimationCSprite.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_animation: null
-	,c_sprite: null
+	cAnimation: null
+	,cSprite: null
 	,__class__: aeons_bundles_BundleCAnimationCSprite
 });
 var aeons_bundles_BundleCCameraCTransform = function(entity) {
 	this.entity = entity;
-	this.c_camera = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CCamera);
-	this.c_transform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cCamera = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CCamera);
+	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
 };
 $hxClasses["aeons.bundles.BundleCCameraCTransform"] = aeons_bundles_BundleCCameraCTransform;
 aeons_bundles_BundleCCameraCTransform.__name__ = "aeons.bundles.BundleCCameraCTransform";
 aeons_bundles_BundleCCameraCTransform.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCCameraCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_camera: null
-	,c_transform: null
+	cCamera: null
+	,cTransform: null
 	,__class__: aeons_bundles_BundleCCameraCTransform
 });
 var aeons_bundles_BundleCCoinCounter = function(entity) {
 	this.entity = entity;
-	this.c_coin_counter = aeons_Aeons._entities.getComponent(entity.id,components_CCoinCounter);
+	this.cCoinCounter = aeons_Aeons._entities.getComponent(entity.id,components_CCoinCounter);
 };
 $hxClasses["aeons.bundles.BundleCCoinCounter"] = aeons_bundles_BundleCCoinCounter;
 aeons_bundles_BundleCCoinCounter.__name__ = "aeons.bundles.BundleCCoinCounter";
 aeons_bundles_BundleCCoinCounter.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCCoinCounter.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_coin_counter: null
+	cCoinCounter: null
 	,__class__: aeons_bundles_BundleCCoinCounter
 });
 var aeons_bundles_BundleCDebugRenderCTransform = function(entity) {
 	this.entity = entity;
-	this.c_debug_render = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CDebugRender);
-	this.c_transform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cDebugRender = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CDebugRender);
+	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
 };
 $hxClasses["aeons.bundles.BundleCDebugRenderCTransform"] = aeons_bundles_BundleCDebugRenderCTransform;
 aeons_bundles_BundleCDebugRenderCTransform.__name__ = "aeons.bundles.BundleCDebugRenderCTransform";
 aeons_bundles_BundleCDebugRenderCTransform.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCDebugRenderCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_debug_render: null
-	,c_transform: null
+	cDebugRender: null
+	,cTransform: null
 	,__class__: aeons_bundles_BundleCDebugRenderCTransform
 });
 var aeons_bundles_BundleCGameOverText = function(entity) {
 	this.entity = entity;
-	this.c_game_over_text = aeons_Aeons._entities.getComponent(entity.id,components_CGameOverText);
+	this.cGameOverText = aeons_Aeons._entities.getComponent(entity.id,components_CGameOverText);
 };
 $hxClasses["aeons.bundles.BundleCGameOverText"] = aeons_bundles_BundleCGameOverText;
 aeons_bundles_BundleCGameOverText.__name__ = "aeons.bundles.BundleCGameOverText";
 aeons_bundles_BundleCGameOverText.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCGameOverText.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_game_over_text: null
+	cGameOverText: null
 	,__class__: aeons_bundles_BundleCGameOverText
 });
 var aeons_bundles_BundleCHealthIconCSprite = function(entity) {
 	this.entity = entity;
-	this.c_health_icon = aeons_Aeons._entities.getComponent(entity.id,components_CHealthIcon);
-	this.c_sprite = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSprite);
+	this.cHealthIcon = aeons_Aeons._entities.getComponent(entity.id,components_CHealthIcon);
+	this.cSprite = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSprite);
 };
 $hxClasses["aeons.bundles.BundleCHealthIconCSprite"] = aeons_bundles_BundleCHealthIconCSprite;
 aeons_bundles_BundleCHealthIconCSprite.__name__ = "aeons.bundles.BundleCHealthIconCSprite";
 aeons_bundles_BundleCHealthIconCSprite.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCHealthIconCSprite.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_health_icon: null
-	,c_sprite: null
+	cHealthIcon: null
+	,cSprite: null
 	,__class__: aeons_bundles_BundleCHealthIconCSprite
 });
 var aeons_bundles_BundleCPlayer = function(entity) {
 	this.entity = entity;
-	this.c_player = aeons_Aeons._entities.getComponent(entity.id,components_CPlayer);
+	this.cPlayer = aeons_Aeons._entities.getComponent(entity.id,components_CPlayer);
 };
 $hxClasses["aeons.bundles.BundleCPlayer"] = aeons_bundles_BundleCPlayer;
 aeons_bundles_BundleCPlayer.__name__ = "aeons.bundles.BundleCPlayer";
 aeons_bundles_BundleCPlayer.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCPlayer.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_player: null
+	cPlayer: null
 	,__class__: aeons_bundles_BundleCPlayer
 });
 var aeons_bundles_BundleCRenderCTransform = function(entity) {
 	this.entity = entity;
-	this.c_render = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CRender);
-	this.c_transform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cRender = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CRender);
+	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
 };
 $hxClasses["aeons.bundles.BundleCRenderCTransform"] = aeons_bundles_BundleCRenderCTransform;
 aeons_bundles_BundleCRenderCTransform.__name__ = "aeons.bundles.BundleCRenderCTransform";
 aeons_bundles_BundleCRenderCTransform.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCRenderCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_render: null
-	,c_transform: null
+	cRender: null
+	,cTransform: null
 	,__class__: aeons_bundles_BundleCRenderCTransform
 });
 var aeons_bundles_BundleCSimpleBodyCTransform = function(entity) {
 	this.entity = entity;
-	this.c_simple_body = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSimpleBody);
-	this.c_transform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cSimpleBody = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSimpleBody);
+	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
 };
 $hxClasses["aeons.bundles.BundleCSimpleBodyCTransform"] = aeons_bundles_BundleCSimpleBodyCTransform;
 aeons_bundles_BundleCSimpleBodyCTransform.__name__ = "aeons.bundles.BundleCSimpleBodyCTransform";
 aeons_bundles_BundleCSimpleBodyCTransform.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCSimpleBodyCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_simple_body: null
-	,c_transform: null
+	cSimpleBody: null
+	,cTransform: null
 	,__class__: aeons_bundles_BundleCSimpleBodyCTransform
 });
 var aeons_bundles_BundleCSimpleTilemapCollider = function(entity) {
 	this.entity = entity;
-	this.c_simple_tilemap_collider = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSimpleTilemapCollider);
+	this.cSimpleTilemapCollider = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSimpleTilemapCollider);
 };
 $hxClasses["aeons.bundles.BundleCSimpleTilemapCollider"] = aeons_bundles_BundleCSimpleTilemapCollider;
 aeons_bundles_BundleCSimpleTilemapCollider.__name__ = "aeons.bundles.BundleCSimpleTilemapCollider";
 aeons_bundles_BundleCSimpleTilemapCollider.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCSimpleTilemapCollider.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_simple_tilemap_collider: null
+	cSimpleTilemapCollider: null
 	,__class__: aeons_bundles_BundleCSimpleTilemapCollider
 });
 var aeons_bundles_BundleCTransformCCamera = function(entity) {
 	this.entity = entity;
-	this.c_transform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
-	this.c_camera = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CCamera);
+	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cCamera = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CCamera);
 };
 $hxClasses["aeons.bundles.BundleCTransformCCamera"] = aeons_bundles_BundleCTransformCCamera;
 aeons_bundles_BundleCTransformCCamera.__name__ = "aeons.bundles.BundleCTransformCCamera";
 aeons_bundles_BundleCTransformCCamera.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCTransformCCamera.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_transform: null
-	,c_camera: null
+	cTransform: null
+	,cCamera: null
 	,__class__: aeons_bundles_BundleCTransformCCamera
 });
 var aeons_bundles_BundleCTransformCPlayer = function(entity) {
 	this.entity = entity;
-	this.c_transform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
-	this.c_player = aeons_Aeons._entities.getComponent(entity.id,components_CPlayer);
+	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cPlayer = aeons_Aeons._entities.getComponent(entity.id,components_CPlayer);
 };
 $hxClasses["aeons.bundles.BundleCTransformCPlayer"] = aeons_bundles_BundleCTransformCPlayer;
 aeons_bundles_BundleCTransformCPlayer.__name__ = "aeons.bundles.BundleCTransformCPlayer";
 aeons_bundles_BundleCTransformCPlayer.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCTransformCPlayer.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_transform: null
-	,c_player: null
+	cTransform: null
+	,cPlayer: null
 	,__class__: aeons_bundles_BundleCTransformCPlayer
 });
 var aeons_bundles_BundleCTransformCSimpleBodyCPatrol = function(entity) {
 	this.entity = entity;
-	this.c_transform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
-	this.c_simple_body = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSimpleBody);
-	this.c_patrol = aeons_Aeons._entities.getComponent(entity.id,components_CPatrol);
+	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cSimpleBody = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSimpleBody);
+	this.cPatrol = aeons_Aeons._entities.getComponent(entity.id,components_CPatrol);
 };
 $hxClasses["aeons.bundles.BundleCTransformCSimpleBodyCPatrol"] = aeons_bundles_BundleCTransformCSimpleBodyCPatrol;
 aeons_bundles_BundleCTransformCSimpleBodyCPatrol.__name__ = "aeons.bundles.BundleCTransformCSimpleBodyCPatrol";
 aeons_bundles_BundleCTransformCSimpleBodyCPatrol.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCTransformCSimpleBodyCPatrol.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_transform: null
-	,c_simple_body: null
-	,c_patrol: null
+	cTransform: null
+	,cSimpleBody: null
+	,cPatrol: null
 	,__class__: aeons_bundles_BundleCTransformCSimpleBodyCPatrol
 });
 var aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio = function(entity) {
 	this.entity = entity;
-	this.c_transform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
-	this.c_simple_body = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSimpleBody);
-	this.c_player = aeons_Aeons._entities.getComponent(entity.id,components_CPlayer);
-	this.c_animation = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CAnimation);
-	this.c_audio = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CAudio);
+	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cSimpleBody = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CSimpleBody);
+	this.cPlayer = aeons_Aeons._entities.getComponent(entity.id,components_CPlayer);
+	this.cAnimation = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CAnimation);
+	this.cAudio = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CAudio);
 };
 $hxClasses["aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimationCAudio"] = aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio;
 aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio.__name__ = "aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimationCAudio";
 aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_transform: null
-	,c_simple_body: null
-	,c_player: null
-	,c_animation: null
-	,c_audio: null
+	cTransform: null
+	,cSimpleBody: null
+	,cPlayer: null
+	,cAnimation: null
+	,cAudio: null
 	,__class__: aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio
 });
 var aeons_bundles_BundleCUpdate = function(entity) {
 	this.entity = entity;
-	this.c_update = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CUpdate);
+	this.cUpdate = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CUpdate);
 };
 $hxClasses["aeons.bundles.BundleCUpdate"] = aeons_bundles_BundleCUpdate;
 aeons_bundles_BundleCUpdate.__name__ = "aeons.bundles.BundleCUpdate";
 aeons_bundles_BundleCUpdate.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCUpdate.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_update: null
+	cUpdate: null
 	,__class__: aeons_bundles_BundleCUpdate
 });
 var aeons_core_Component = function() {
@@ -5853,10 +5853,10 @@ aeons_systems_AnimationSystem.prototype = $extend(aeons_core_System.prototype,{
 		var _g_array = this.animBundles.bundles;
 		while(_g_current < _g_array.length) {
 			var bundle = _g_array[_g_current++];
-			var anim = bundle.c_animation;
+			var anim = bundle.cAnimation;
 			anim.updateAnim(dt);
 			if(anim.currentFrame != null) {
-				bundle.c_sprite.setFrame(anim.currentFrame,anim.anim == null ? null : anim.anim.atlas);
+				bundle.cSprite.setFrame(anim.currentFrame,anim.anim == null ? null : anim.anim.atlas);
 			}
 		}
 	}
@@ -5941,9 +5941,9 @@ aeons_systems_DebugRenderSystem.prototype = $extend(aeons_core_System.prototype,
 		var _g_array = this.cameraBundles.bundles;
 		while(_g_current < _g_array.length) {
 			var camBundle = _g_array[_g_current++];
-			var camera = camBundle.c_camera;
+			var camera = camBundle.cCamera;
 			camera.updateMatrix();
-			var camTransform = camBundle.c_transform;
+			var camTransform = camBundle.cTransform;
 			var camTarget = camera.renderTarget;
 			var localBounds = new aeons_math_Rect(0,0,camera.bounds.width,camera.bounds.height);
 			var boundsPos = aeons_math_Vector2.get();
@@ -5983,9 +5983,9 @@ aeons_systems_DebugRenderSystem.prototype = $extend(aeons_core_System.prototype,
 			var _g2_array = this.debugRenderBundles.bundles;
 			while(_g2_current < _g2_array.length) {
 				var renderable = _g2_array[_g2_current++];
-				if(renderable.c_transform.containsParent(camTransform)) {
+				if(renderable.cTransform.containsParent(camTransform)) {
 					var _this1 = camTarget.transform;
-					var m1 = renderable.c_transform.matrix;
+					var m1 = renderable.cTransform.matrix;
 					_this1._00 = m1._00;
 					_this1._10 = m1._10;
 					_this1._20 = m1._20;
@@ -6002,19 +6002,19 @@ aeons_systems_DebugRenderSystem.prototype = $extend(aeons_core_System.prototype,
 					_this1._13 = m1._13;
 					_this1._23 = m1._23;
 					_this1._33 = m1._33;
-					renderable.c_debug_render.render(camTarget);
+					renderable.cDebugRender.render(camTarget);
 				} else {
 					boundsPos.x = camera.bounds.x;
 					boundsPos.y = camera.bounds.y;
-					renderable.c_transform.worldToLocalPosition(boundsPos);
-					boundsPos.x -= renderable.c_transform.x;
-					boundsPos.y -= renderable.c_transform.y;
+					renderable.cTransform.worldToLocalPosition(boundsPos);
+					boundsPos.x -= renderable.cTransform.x;
+					boundsPos.y -= renderable.cTransform.y;
 					localBounds.x = boundsPos.x;
 					localBounds.y = boundsPos.y;
-					if(renderable.c_debug_render.inCameraBounds(localBounds)) {
+					if(renderable.cDebugRender.inCameraBounds(localBounds)) {
 						var _this2 = camTarget.transform;
 						var _this3 = camera.matrix;
-						var m2 = renderable.c_transform.matrix;
+						var m2 = renderable.cTransform.matrix;
 						var m__00 = _this3._00 * m2._00 + _this3._10 * m2._01 + _this3._20 * m2._02 + _this3._30 * m2._03;
 						var m__10 = _this3._00 * m2._10 + _this3._10 * m2._11 + _this3._20 * m2._12 + _this3._30 * m2._13;
 						var m__20 = _this3._00 * m2._20 + _this3._10 * m2._21 + _this3._20 * m2._22 + _this3._30 * m2._23;
@@ -6047,7 +6047,7 @@ aeons_systems_DebugRenderSystem.prototype = $extend(aeons_core_System.prototype,
 						_this2._13 = m__13;
 						_this2._23 = m__23;
 						_this2._33 = m__33;
-						renderable.c_debug_render.render(camTarget);
+						renderable.cDebugRender.render(camTarget);
 					}
 				}
 			}
@@ -6059,7 +6059,7 @@ aeons_systems_DebugRenderSystem.prototype = $extend(aeons_core_System.prototype,
 		var _g1_array = this.cameraBundles.bundles;
 		while(_g1_current < _g1_array.length) {
 			var camBundle = _g1_array[_g1_current++];
-			var camera = camBundle.c_camera;
+			var camera = camBundle.cCamera;
 			target.drawImage(camera.viewX,camera.viewY,camera.renderTarget.image,-1);
 		}
 		target.present();
@@ -6143,15 +6143,15 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 		var _g_array = this.renderBundles.bundles;
 		while(_g_current < _g_array.length) {
 			var renderable = _g_array[_g_current++];
-			renderable.c_transform.updateMatrix();
+			renderable.cTransform.updateMatrix();
 		}
 		var _g1_current = 0;
 		var _g1_array = this.cameraBundles.bundles;
 		while(_g1_current < _g1_array.length) {
 			var camBundle = _g1_array[_g1_current++];
-			var camera = camBundle.c_camera;
+			var camera = camBundle.cCamera;
 			camera.updateMatrix();
-			var camTransform = camBundle.c_transform;
+			var camTransform = camBundle.cTransform;
 			var camTarget = camera.renderTarget;
 			var localBounds = new aeons_math_Rect(0,0,camera.bounds.width,camera.bounds.height);
 			var boundsPos = aeons_math_Vector2.get();
@@ -6160,9 +6160,9 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 			var _g1_array1 = this.renderBundles.bundles;
 			while(_g1_current1 < _g1_array1.length) {
 				var renderable = _g1_array1[_g1_current1++];
-				if(renderable.c_transform.containsParent(camTransform)) {
+				if(renderable.cTransform.containsParent(camTransform)) {
 					var _this = camTarget.transform;
-					var m = renderable.c_transform.matrix;
+					var m = renderable.cTransform.matrix;
 					_this._00 = m._00;
 					_this._10 = m._10;
 					_this._20 = m._20;
@@ -6179,19 +6179,19 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 					_this._13 = m._13;
 					_this._23 = m._23;
 					_this._33 = m._33;
-					renderable.c_render.render(camTarget);
+					renderable.cRender.render(camTarget);
 				} else {
 					boundsPos.x = camera.bounds.x;
 					boundsPos.y = camera.bounds.y;
-					renderable.c_transform.worldToLocalPosition(boundsPos);
-					boundsPos.x -= renderable.c_transform.x;
-					boundsPos.y -= renderable.c_transform.y;
+					renderable.cTransform.worldToLocalPosition(boundsPos);
+					boundsPos.x -= renderable.cTransform.x;
+					boundsPos.y -= renderable.cTransform.y;
 					localBounds.x = boundsPos.x;
 					localBounds.y = boundsPos.y;
-					if(renderable.c_render.inCameraBounds(localBounds)) {
+					if(renderable.cRender.inCameraBounds(localBounds)) {
 						var _this1 = camTarget.transform;
 						var _this2 = camera.matrix;
-						var m1 = renderable.c_transform.matrix;
+						var m1 = renderable.cTransform.matrix;
 						var m__00 = _this2._00 * m1._00 + _this2._10 * m1._01 + _this2._20 * m1._02 + _this2._30 * m1._03;
 						var m__10 = _this2._00 * m1._10 + _this2._10 * m1._11 + _this2._20 * m1._12 + _this2._30 * m1._13;
 						var m__20 = _this2._00 * m1._20 + _this2._10 * m1._21 + _this2._20 * m1._22 + _this2._30 * m1._23;
@@ -6224,7 +6224,7 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 						_this1._13 = m__13;
 						_this1._23 = m__23;
 						_this1._33 = m__33;
-						renderable.c_render.render(camTarget);
+						renderable.cRender.render(camTarget);
 					}
 				}
 			}
@@ -6235,14 +6235,14 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 		var _g2_array = this.renderBundles.bundles;
 		while(_g2_current < _g2_array.length) {
 			var renderable = _g2_array[_g2_current++];
-			renderable.c_transform.resetChanged();
+			renderable.cTransform.resetChanged();
 		}
 		target.start();
 		var _g3_current = 0;
 		var _g3_array = this.cameraBundles.bundles;
 		while(_g3_current < _g3_array.length) {
 			var camBundle = _g3_array[_g3_current++];
-			var camera = camBundle.c_camera;
+			var camera = camBundle.cCamera;
 			target.drawImage(camera.viewX,camera.viewY,camera.renderTarget.image,-1);
 		}
 		target.present();
@@ -6251,9 +6251,9 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 		this.sortZ = true;
 	}
 	,sort: function(a,b) {
-		if(a.c_transform.zIndex > b.c_transform.zIndex) {
+		if(a.cTransform.zIndex > b.cTransform.zIndex) {
 			return 1;
-		} else if(a.c_transform.zIndex < b.c_transform.zIndex) {
+		} else if(a.cTransform.zIndex < b.cTransform.zIndex) {
 			return -1;
 		}
 		return 0;
@@ -6357,7 +6357,7 @@ aeons_systems_SimplePhysicsSystem.prototype = $extend(aeons_core_System.prototyp
 		var _g_array = this.tilemapBundles.bundles;
 		while(_g_current < _g_array.length) {
 			var tilemap = _g_array[_g_current++];
-			var collider = tilemap.c_simple_tilemap_collider;
+			var collider = tilemap.cSimpleTilemapCollider;
 			if(!collider.active) {
 				continue;
 			}
@@ -6374,10 +6374,10 @@ aeons_systems_SimplePhysicsSystem.prototype = $extend(aeons_core_System.prototyp
 		var _g1_array = this.bundles.bundles;
 		while(_g1_current < _g1_array.length) {
 			var bundle = _g1_array[_g1_current++];
-			if(!bundle.entity.active || !bundle.c_simple_body.active || !bundle.c_transform.active) {
+			if(!bundle.entity.active || !bundle.cSimpleBody.active || !bundle.cTransform.active) {
 				continue;
 			}
-			var body = bundle.c_simple_body.body;
+			var body = bundle.cSimpleBody.body;
 			this.updatePastInteractions(body);
 			body.touchingPrevious = body.touching;
 			body.touching = 0;
@@ -6419,10 +6419,10 @@ aeons_systems_SimplePhysicsSystem.prototype = $extend(aeons_core_System.prototyp
 		var _g2_array = this.bundles.bundles;
 		while(_g2_current < _g2_array.length) {
 			var bundle = _g2_array[_g2_current++];
-			if(!bundle.entity.active || !bundle.c_simple_body.active || !bundle.c_transform.active) {
+			if(!bundle.entity.active || !bundle.cSimpleBody.active || !bundle.cTransform.active) {
 				continue;
 			}
-			var body = bundle.c_simple_body.body;
+			var body = bundle.cSimpleBody.body;
 			while(this.treeList.length > 0) this.treeList.pop();
 			this.tree.getBodyList(body,this.treeList);
 			var _g = 0;
@@ -6438,10 +6438,10 @@ aeons_systems_SimplePhysicsSystem.prototype = $extend(aeons_core_System.prototyp
 		var _g3_array = this.bundles.bundles;
 		while(_g3_current < _g3_array.length) {
 			var bundle = _g3_array[_g3_current++];
-			if(!bundle.entity.active || !bundle.c_simple_body.active || !bundle.c_transform.active) {
+			if(!bundle.entity.active || !bundle.cSimpleBody.active || !bundle.cTransform.active) {
 				continue;
 			}
-			var body = bundle.c_simple_body.body;
+			var body = bundle.cSimpleBody.body;
 			var _g = 0;
 			var _g1 = body.wasCollidingwith;
 			while(_g < _g1.length) {
@@ -6505,11 +6505,11 @@ aeons_systems_SimplePhysicsSystem.prototype = $extend(aeons_core_System.prototyp
 		while(_g_current < _g_array.length) {
 			var tilemap = _g_array[_g_current++];
 			var _g = 0;
-			var _g1 = tilemap.c_simple_tilemap_collider.bodies;
+			var _g1 = tilemap.cSimpleTilemapCollider.bodies;
 			while(_g < _g1.length) {
 				var body = _g1[_g];
 				++_g;
-				if(!tilemap.c_simple_tilemap_collider.active) {
+				if(!tilemap.cSimpleTilemapCollider.active) {
 					continue;
 				}
 				var bounds = body.bounds;
@@ -6531,10 +6531,10 @@ aeons_systems_SimplePhysicsSystem.prototype = $extend(aeons_core_System.prototyp
 		var _g1_array = this.bundles.bundles;
 		while(_g1_current < _g1_array.length) {
 			var bundle = _g1_array[_g1_current++];
-			if(!bundle.c_simple_body.active) {
+			if(!bundle.cSimpleBody.active) {
 				continue;
 			}
-			var body = bundle.c_simple_body.body;
+			var body = bundle.cSimpleBody.body;
 			var bounds = body.bounds;
 			if(body.type == aeons_physics_simple_BodyType.STATIC) {
 				var x = bounds.x;
@@ -6691,8 +6691,8 @@ aeons_systems_SimplePhysicsSystem.prototype = $extend(aeons_core_System.prototyp
 		}
 	}
 	,updateBodyBounds: function(bundle) {
-		var worldPos = bundle.c_transform.getWorldPosition();
-		var body = bundle.c_simple_body.body;
+		var worldPos = bundle.cTransform.getWorldPosition();
+		var body = bundle.cSimpleBody.body;
 		body.bounds.x = worldPos.x - body.bounds.width * 0.5 + body.offset.x;
 		body.bounds.y = worldPos.y - body.bounds.height * 0.5 + body.offset.y;
 		body.lastX = body.bounds.x;
@@ -6700,12 +6700,12 @@ aeons_systems_SimplePhysicsSystem.prototype = $extend(aeons_core_System.prototyp
 		aeons_math_Vector2.pool.put(worldPos);
 	}
 	,updateBodyTransform: function(bundle) {
-		var body = bundle.c_simple_body.body;
+		var body = bundle.cSimpleBody.body;
 		if(body.type == aeons_physics_simple_BodyType.STATIC) {
 			return;
 		}
 		var worldPos = aeons_math_Vector2.get(body.bounds.x + body.bounds.width * 0.5 - body.offset.x,body.bounds.y + body.bounds.height * 0.5 - body.offset.y);
-		bundle.c_transform.setWorldPosition(worldPos);
+		bundle.cTransform.setWorldPosition(worldPos);
 		aeons_math_Vector2.pool.put(worldPos);
 	}
 	,updatePastInteractions: function(body) {
@@ -6745,7 +6745,7 @@ aeons_systems_UpdateSystem.prototype = $extend(aeons_core_System.prototype,{
 		var _g_array = this.updateComps.bundles;
 		while(_g_current < _g_array.length) {
 			var comp = _g_array[_g_current++];
-			comp.c_update.update(dt);
+			comp.cUpdate.update(dt);
 		}
 	}
 	,__class__: aeons_systems_UpdateSystem
@@ -9650,7 +9650,7 @@ haxe_io_Input.__name__ = "haxe.io.Input";
 haxe_io_Input.prototype = {
 	bigEndian: null
 	,readByte: function() {
-		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/Kha/Tools/haxe/std/haxe/io/Input.hx", lineNumber : 53, className : "haxe.io.Input", methodName : "readByte"});
+		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/Kha/Tools/windows_x64/std/haxe/io/Input.hx", lineNumber : 53, className : "haxe.io.Input", methodName : "readByte"});
 	}
 	,readBytes: function(s,pos,len) {
 		var k = len;
@@ -9782,7 +9782,7 @@ haxe_io_Output.__name__ = "haxe.io.Output";
 haxe_io_Output.prototype = {
 	bigEndian: null
 	,writeByte: function(c) {
-		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/Kha/Tools/haxe/std/haxe/io/Output.hx", lineNumber : 47, className : "haxe.io.Output", methodName : "writeByte"});
+		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/Kha/Tools/windows_x64/std/haxe/io/Output.hx", lineNumber : 47, className : "haxe.io.Output", methodName : "writeByte"});
 	}
 	,writeBytes: function(s,pos,len) {
 		if(pos < 0 || len < 0 || pos + len > s.length) {
@@ -12068,19 +12068,6 @@ kha_SystemImpl.init2 = function(defaultWidth,defaultHeight,backbufferFormat) {
 			}
 		}
 	}
-	if(kha_SystemImpl.ie) {
-		kha_SystemImpl.pressedKeys = [];
-		var _g = 0;
-		while(_g < 256) {
-			var i = _g++;
-			kha_SystemImpl.pressedKeys.push(false);
-		}
-		var _g = 0;
-		while(_g < 256) {
-			var i = _g++;
-			kha_SystemImpl.pressedKeys.push(null);
-		}
-	}
 	var onCopy = function(e) {
 		if(kha_System.copyListener != null) {
 			var data = kha_System.copyListener();
@@ -12185,7 +12172,7 @@ kha_SystemImpl.loadFinished = function(defaultWidth,defaultHeight) {
 		kha_SystemImpl.gl2 = true;
 		kha_Shaders.init();
 	} catch( _g ) {
-		haxe_Log.trace("Could not initialize WebGL 2, falling back to WebGL.",{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 378, className : "kha.SystemImpl", methodName : "loadFinished"});
+		haxe_Log.trace("Could not initialize WebGL 2, falling back to WebGL.",{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 384, className : "kha.SystemImpl", methodName : "loadFinished"});
 	}
 	if(!kha_SystemImpl.gl2) {
 		try {
@@ -12207,7 +12194,7 @@ kha_SystemImpl.loadFinished = function(defaultWidth,defaultHeight) {
 			gl = true;
 			kha_Shaders.init();
 		} catch( _g ) {
-			haxe_Log.trace("Could not initialize WebGL, falling back to <canvas>.",{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 406, className : "kha.SystemImpl", methodName : "loadFinished"});
+			haxe_Log.trace("Could not initialize WebGL, falling back to <canvas>.",{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 412, className : "kha.SystemImpl", methodName : "loadFinished"});
 		}
 	}
 	kha_SystemImpl.setCanvas(canvas);
@@ -12248,9 +12235,8 @@ kha_SystemImpl.loadFinished = function(defaultWidth,defaultHeight) {
 	}
 	canvas.onblur = kha_SystemImpl.onBlur;
 	canvas.onfocus = kha_SystemImpl.onFocus;
-	canvas.onmousewheel = canvas.onwheel = kha_SystemImpl.mouseWheel;
 	canvas.onmouseleave = kha_SystemImpl.mouseLeave;
-	canvas.addEventListener("wheel mousewheel",kha_SystemImpl.mouseWheel,false);
+	canvas.addEventListener("wheel",kha_SystemImpl.mouseWheel,false);
 	canvas.addEventListener("touchstart",kha_SystemImpl.touchDown,false);
 	canvas.addEventListener("touchend",kha_SystemImpl.touchUp,false);
 	canvas.addEventListener("touchmove",kha_SystemImpl.touchMove,false);
@@ -12334,7 +12320,7 @@ kha_SystemImpl.initAnimate = function(callback) {
 				kha_SystemImpl.lastCanvasClientHeight = canvas.clientHeight;
 			}
 			kha_System.render([kha_SystemImpl.frame]);
-			if(kha_SystemImpl.gl != null) {
+			if(kha_SystemImpl.ie && kha_SystemImpl.gl != null) {
 				kha_SystemImpl.gl.clearColor(1,1,1,1);
 				kha_SystemImpl.gl.colorMask(false,false,false,true);
 				kha_SystemImpl.gl.clear(16384);
@@ -12463,7 +12449,7 @@ kha_SystemImpl.unlockSound = function() {
 			context.resume().then(function(c) {
 				kha_SystemImpl.soundEnabled = true;
 			}).catch(function(err) {
-				haxe_Log.trace(err,{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 700, className : "kha.SystemImpl", methodName : "unlockSound"});
+				haxe_Log.trace(err,{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 706, className : "kha.SystemImpl", methodName : "unlockSound"});
 			});
 		}
 		kha_audio2_Audio.wakeChannels();
@@ -12726,31 +12712,9 @@ kha_SystemImpl.onFocus = function() {
 kha_SystemImpl.keyDown = function(event) {
 	kha_SystemImpl.insideInputEvent = true;
 	kha_SystemImpl.unlockSound();
-	var _g = kha_input_Keyboard.keyBehavior;
-	switch(_g._hx_index) {
-	case 0:
-		kha_SystemImpl.defaultKeyBlock(event);
-		break;
-	case 1:
-		event.preventDefault();
-		break;
-	case 2:
-		break;
-	case 3:
-		var func = _g.func;
-		if(func(event.keyCode)) {
-			event.preventDefault();
-		}
-		break;
-	}
+	kha_SystemImpl.preventDefaultKeyBehavior(event);
 	event.stopPropagation();
-	if(kha_SystemImpl.ie) {
-		if(kha_SystemImpl.pressedKeys[event.keyCode]) {
-			event.preventDefault();
-			return;
-		}
-		kha_SystemImpl.pressedKeys[event.keyCode] = true;
-	} else if(event.repeat) {
+	if(event.repeat) {
 		event.preventDefault();
 		return;
 	}
@@ -12770,6 +12734,25 @@ kha_SystemImpl.fixedKeyCode = function(event) {
 		return 173;
 	default:
 		return event.keyCode;
+	}
+};
+kha_SystemImpl.preventDefaultKeyBehavior = function(event) {
+	var _g = kha_input_Keyboard.keyBehavior;
+	switch(_g._hx_index) {
+	case 0:
+		kha_SystemImpl.defaultKeyBlock(event);
+		break;
+	case 1:
+		event.preventDefault();
+		break;
+	case 2:
+		break;
+	case 3:
+		var func = _g.func;
+		if(func(event.keyCode)) {
+			event.preventDefault();
+		}
+		break;
 	}
 };
 kha_SystemImpl.defaultKeyBlock = function(e) {
@@ -12794,11 +12777,8 @@ kha_SystemImpl.defaultKeyBlock = function(e) {
 kha_SystemImpl.keyUp = function(event) {
 	kha_SystemImpl.insideInputEvent = true;
 	kha_SystemImpl.unlockSound();
-	event.preventDefault();
+	kha_SystemImpl.preventDefaultKeyBehavior(event);
 	event.stopPropagation();
-	if(kha_SystemImpl.ie) {
-		kha_SystemImpl.pressedKeys[event.keyCode] = false;
-	}
 	var keyCode = kha_SystemImpl.fixedKeyCode(event);
 	kha_SystemImpl.keyboard.sendUpEvent(keyCode);
 	kha_SystemImpl.insideInputEvent = false;
@@ -12809,7 +12789,7 @@ kha_SystemImpl.keyPress = function(event) {
 	if(event.which == 0) {
 		return;
 	}
-	event.preventDefault();
+	kha_SystemImpl.preventDefaultKeyBehavior(event);
 	event.stopPropagation();
 	var code = event.which;
 	kha_SystemImpl.keyboard.sendPressEvent(String.fromCodePoint(code));
@@ -13603,13 +13583,12 @@ kha_audio2_Audio1._playAgain = function(channel) {
 	}
 };
 var kha_audio2_AudioChannel = function(looping) {
-	this.looping = false;
+	this.data = null;
+	this.looping = looping;
 	this.stopped = false;
 	this.paused = false;
 	this.myPosition = 0;
 	this.myVolume = 1;
-	this.data = null;
-	this.looping = looping;
 };
 $hxClasses["kha.audio2.AudioChannel"] = kha_audio2_AudioChannel;
 kha_audio2_AudioChannel.__name__ = "kha.audio2.AudioChannel";
@@ -18008,6 +17987,9 @@ kha_graphics2_Graphics.prototype = {
 	}
 	,popTransformation: function() {
 		this.transformationIndex--;
+		if(this.transformationIndex == -1) {
+			throw haxe_Exception.thrown("There is no transformation matrix to remove, check your push/popTransformation code");
+		}
 		this.setTransformation(this.transformations[this.transformationIndex]);
 		return this.transformations[this.transformationIndex + 1];
 	}
@@ -29638,19 +29620,19 @@ systems_EnemyPatrol.prototype = $extend(aeons_core_System.prototype,{
 		var _g_array = this.patrolBundles.bundles;
 		while(_g_current < _g_array.length) {
 			var bundle = _g_array[_g_current++];
-			if(bundle.c_patrol.dead) {
-				bundle.c_simple_body.body.velocity.x = 0;
+			if(bundle.cPatrol.dead) {
+				bundle.cSimpleBody.body.velocity.x = 0;
 				continue;
 			}
-			if(bundle.c_transform.x > bundle.c_patrol.maxX) {
-				bundle.c_transform.set_x(bundle.c_patrol.maxX);
-				bundle.c_patrol.direction = -1;
-			} else if(bundle.c_transform.x < bundle.c_patrol.minX) {
-				bundle.c_transform.set_x(bundle.c_patrol.minX);
-				bundle.c_patrol.direction = 1;
+			if(bundle.cTransform.x > bundle.cPatrol.maxX) {
+				bundle.cTransform.set_x(bundle.cPatrol.maxX);
+				bundle.cPatrol.direction = -1;
+			} else if(bundle.cTransform.x < bundle.cPatrol.minX) {
+				bundle.cTransform.set_x(bundle.cPatrol.minX);
+				bundle.cPatrol.direction = 1;
 			}
-			bundle.c_simple_body.body.velocity.x = bundle.c_patrol.speed * bundle.c_patrol.direction;
-			bundle.c_transform.set_scaleX(-bundle.c_patrol.direction);
+			bundle.cSimpleBody.body.velocity.x = bundle.cPatrol.speed * bundle.cPatrol.direction;
+			bundle.cTransform.set_scaleX(-bundle.cPatrol.direction);
 		}
 	}
 	,__class__: systems_EnemyPatrol
@@ -29730,7 +29712,7 @@ systems_HealthSystem.prototype = $extend(aeons_core_System.prototype,{
 		aeons_Aeons._events.on(events_HealthEvent.HEALTH_DOWN,$bind(this,this.healthDown));
 	}
 	,healthDown: function(event) {
-		var player = this.playerBundles.bundles[0].c_player;
+		var player = this.playerBundles.bundles[0].cPlayer;
 		player.health--;
 		this.updateSprites(player.health);
 		if(player.health == 0) {
@@ -29750,14 +29732,14 @@ systems_HealthSystem.prototype = $extend(aeons_core_System.prototype,{
 			var index = _g1_key;
 			var bundle = _g1_value;
 			if(index < health) {
-				bundle.c_sprite.setFrame(this.fullHeart);
+				bundle.cSprite.setFrame(this.fullHeart);
 			} else {
-				bundle.c_sprite.setFrame(this.emptyHeart);
+				bundle.cSprite.setFrame(this.emptyHeart);
 			}
 		}
 	}
 	,bundleAdded: function(bundle) {
-		this.updateSprites(this.playerBundles.bundles[0].c_player.health);
+		this.updateSprites(this.playerBundles.bundles[0].cPlayer.health);
 	}
 	,__class__: systems_HealthSystem
 });
@@ -29830,7 +29812,7 @@ systems_PhysicsInteractions.prototype = $extend(aeons_core_System.prototype,{
 		this.physics.addInteractionListener(aeons_physics_simple_InteractionType.COLLISION_START,"Player","Enemy",$bind(this,this.hitEnemy));
 	}
 	,collectCoin: function(player,coin) {
-		this.counterBundle.bundles[0].c_coin_counter.addCoin();
+		this.counterBundle.bundles[0].cCoinCounter.addCoin();
 		var entity = aeons_Aeons._entities.getEntityById(coin.component.entityId);
 		aeons_Aeons._entities.getComponent(entity.id,aeons_components_CAudio).channel.channel.play();
 		entity.set_active(false);
@@ -29843,13 +29825,13 @@ systems_PhysicsInteractions.prototype = $extend(aeons_core_System.prototype,{
 	}
 	,hitFlag: function(player,flag) {
 		var _gthis = this;
-		var player = this.playerBundle.bundles[0].c_player;
+		var player = this.playerBundle.bundles[0].cPlayer;
 		player.complete = true;
 		this.flagSoundChannel.channel.play();
 		aeons_Aeons._timers.create(1,function() {
 			if(_gthis.level < 3) {
 				_gthis.level++;
-				var coins = _gthis.counterBundle.bundles[0].c_coin_counter.collected;
+				var coins = _gthis.counterBundle.bundles[0].cCoinCounter.collected;
 				var data = { level : _gthis.level, health : player.health, coins : coins};
 				aeons_events_SceneEvent.emit("aeons_push_scene",new transitions_SquaresTransition(new scenes_GameScene(data),1.8,-16777216,12));
 			} else {
@@ -29877,10 +29859,10 @@ systems_PhysicsInteractions.prototype = $extend(aeons_core_System.prototype,{
 	}
 	,die: function(playerBody) {
 		var bundle = this.playerBundle.bundles[0];
-		if(!bundle.c_player.dead) {
+		if(!bundle.cPlayer.dead) {
 			events_HealthEvent.emit(events_HealthEvent.HEALTH_DOWN);
-			bundle.c_player.dead = true;
-			bundle.c_transform.set_scaleY(-1);
+			bundle.cPlayer.dead = true;
+			bundle.cTransform.set_scaleY(-1);
 			var _this = playerBody.velocity;
 			_this.x = 0;
 			_this.y = -100;
@@ -30022,10 +30004,10 @@ systems_PlayerMovement.prototype = $extend(aeons_core_System.prototype,{
 		if(!this.hasPlayer) {
 			return;
 		}
-		var player = this.bundle.c_player;
-		var transform = this.bundle.c_transform;
-		var body = this.bundle.c_simple_body;
-		var animation = this.bundle.c_animation;
+		var player = this.bundle.cPlayer;
+		var transform = this.bundle.cTransform;
+		var body = this.bundle.cSimpleBody;
+		var animation = this.bundle.cAnimation;
 		if(player.dead && transform.y > this.physics.bounds.y + this.physics.bounds.height && player.health != 0) {
 			var y = player.spawnPosition.y;
 			transform.set_x(player.spawnPosition.x);
@@ -30103,18 +30085,18 @@ systems_PlayerMovement.prototype = $extend(aeons_core_System.prototype,{
 	}
 	,onPlayerAdded: function(bundle) {
 		this.bundle = bundle;
-		bundle.c_animation.play("Idle");
-		bundle.c_simple_body.body.maxVelocity.x = this.xVelocity;
-		bundle.c_simple_body.body.drag.x = this.drag;
+		bundle.cAnimation.play("Idle");
+		bundle.cSimpleBody.body.maxVelocity.x = this.xVelocity;
+		bundle.cSimpleBody.body.drag.x = this.drag;
 		this.hasPlayer = true;
 	}
 	,keyDown: function(event) {
-		if(!this.hasPlayer || this.bundle.c_player.dead) {
+		if(!this.hasPlayer || this.bundle.cPlayer.dead) {
 			return;
 		}
-		var body = this.bundle.c_simple_body;
-		var transform = this.bundle.c_transform;
-		var audio = this.bundle.c_audio;
+		var body = this.bundle.cSimpleBody;
+		var transform = this.bundle.cTransform;
+		var audio = this.bundle.cAudio;
 		if(this.leftKeys.indexOf(event.key) != -1) {
 			this.goingLeft = true;
 		} else if(this.rightKeys.indexOf(event.key) != -1) {
@@ -30145,12 +30127,12 @@ systems_PlayerMovement.prototype = $extend(aeons_core_System.prototype,{
 		}
 	}
 	,keyUp: function(event) {
-		if(!this.hasPlayer || this.bundle.c_player.dead) {
+		if(!this.hasPlayer || this.bundle.cPlayer.dead) {
 			this.goingLeft = false;
 			this.goingRight = false;
 			return;
 		}
-		var body = this.bundle.c_simple_body;
+		var body = this.bundle.cSimpleBody;
 		if(this.leftKeys.indexOf(event.key) != -1) {
 			this.goingLeft = false;
 		} else if(this.rightKeys.indexOf(event.key) != -1) {

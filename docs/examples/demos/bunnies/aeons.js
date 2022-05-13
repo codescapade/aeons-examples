@@ -367,7 +367,7 @@ aeons_assets_services_InternalAssets.prototype = {
 		var image = kha_Assets.images.get(name);
 		var data = kha_Assets.blobs.get("" + name + "_json");
 		if(image == null || data == null) {
-			haxe_Log.trace("Unable to load atlas " + name + ".",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 132, className : "aeons.assets.services.InternalAssets", methodName : "loadAtlas"});
+			haxe_Log.trace("Unable to load atlas " + name + ".",{ fileName : "aeons/assets/services/InternalAssets.hx", lineNumber : 152, className : "aeons.assets.services.InternalAssets", methodName : "loadAtlas"});
 			return null;
 		}
 		var atlas = new aeons_graphics_atlas_Atlas(image,data.toString());
@@ -396,41 +396,41 @@ aeons_core_BundleBase.prototype = {
 };
 var aeons_bundles_BundleCBunnyMoveCTransform = function(entity) {
 	this.entity = entity;
-	this.c_bunny_move = aeons_Aeons._entities.getComponent(entity.id,components_CBunnyMove);
-	this.c_transform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cBunnyMove = aeons_Aeons._entities.getComponent(entity.id,components_CBunnyMove);
+	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
 };
 $hxClasses["aeons.bundles.BundleCBunnyMoveCTransform"] = aeons_bundles_BundleCBunnyMoveCTransform;
 aeons_bundles_BundleCBunnyMoveCTransform.__name__ = "aeons.bundles.BundleCBunnyMoveCTransform";
 aeons_bundles_BundleCBunnyMoveCTransform.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCBunnyMoveCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_bunny_move: null
-	,c_transform: null
+	cBunnyMove: null
+	,cTransform: null
 	,__class__: aeons_bundles_BundleCBunnyMoveCTransform
 });
 var aeons_bundles_BundleCCameraCTransform = function(entity) {
 	this.entity = entity;
-	this.c_camera = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CCamera);
-	this.c_transform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cCamera = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CCamera);
+	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
 };
 $hxClasses["aeons.bundles.BundleCCameraCTransform"] = aeons_bundles_BundleCCameraCTransform;
 aeons_bundles_BundleCCameraCTransform.__name__ = "aeons.bundles.BundleCCameraCTransform";
 aeons_bundles_BundleCCameraCTransform.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCCameraCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_camera: null
-	,c_transform: null
+	cCamera: null
+	,cTransform: null
 	,__class__: aeons_bundles_BundleCCameraCTransform
 });
 var aeons_bundles_BundleCRenderCTransform = function(entity) {
 	this.entity = entity;
-	this.c_render = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CRender);
-	this.c_transform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cRender = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CRender);
+	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
 };
 $hxClasses["aeons.bundles.BundleCRenderCTransform"] = aeons_bundles_BundleCRenderCTransform;
 aeons_bundles_BundleCRenderCTransform.__name__ = "aeons.bundles.BundleCRenderCTransform";
 aeons_bundles_BundleCRenderCTransform.__super__ = aeons_core_BundleBase;
 aeons_bundles_BundleCRenderCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
-	c_render: null
-	,c_transform: null
+	cRender: null
+	,cTransform: null
 	,__class__: aeons_bundles_BundleCRenderCTransform
 });
 var aeons_core_Component = function() {
@@ -3314,15 +3314,15 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 		var _g_array = this.renderBundles.bundles;
 		while(_g_current < _g_array.length) {
 			var renderable = _g_array[_g_current++];
-			renderable.c_transform.updateMatrix();
+			renderable.cTransform.updateMatrix();
 		}
 		var _g1_current = 0;
 		var _g1_array = this.cameraBundles.bundles;
 		while(_g1_current < _g1_array.length) {
 			var camBundle = _g1_array[_g1_current++];
-			var camera = camBundle.c_camera;
+			var camera = camBundle.cCamera;
 			camera.updateMatrix();
-			var camTransform = camBundle.c_transform;
+			var camTransform = camBundle.cTransform;
 			var camTarget = camera.renderTarget;
 			var localBounds = new aeons_math_Rect(0,0,camera.bounds.width,camera.bounds.height);
 			var boundsPos = aeons_math_Vector2.get();
@@ -3331,9 +3331,9 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 			var _g1_array1 = this.renderBundles.bundles;
 			while(_g1_current1 < _g1_array1.length) {
 				var renderable = _g1_array1[_g1_current1++];
-				if(renderable.c_transform.containsParent(camTransform)) {
+				if(renderable.cTransform.containsParent(camTransform)) {
 					var _this = camTarget.transform;
-					var m = renderable.c_transform.matrix;
+					var m = renderable.cTransform.matrix;
 					_this._00 = m._00;
 					_this._10 = m._10;
 					_this._20 = m._20;
@@ -3350,19 +3350,19 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 					_this._13 = m._13;
 					_this._23 = m._23;
 					_this._33 = m._33;
-					renderable.c_render.render(camTarget);
+					renderable.cRender.render(camTarget);
 				} else {
 					boundsPos.x = camera.bounds.x;
 					boundsPos.y = camera.bounds.y;
-					renderable.c_transform.worldToLocalPosition(boundsPos);
-					boundsPos.x -= renderable.c_transform.x;
-					boundsPos.y -= renderable.c_transform.y;
+					renderable.cTransform.worldToLocalPosition(boundsPos);
+					boundsPos.x -= renderable.cTransform.x;
+					boundsPos.y -= renderable.cTransform.y;
 					localBounds.x = boundsPos.x;
 					localBounds.y = boundsPos.y;
-					if(renderable.c_render.inCameraBounds(localBounds)) {
+					if(renderable.cRender.inCameraBounds(localBounds)) {
 						var _this1 = camTarget.transform;
 						var _this2 = camera.matrix;
-						var m1 = renderable.c_transform.matrix;
+						var m1 = renderable.cTransform.matrix;
 						var m__00 = _this2._00 * m1._00 + _this2._10 * m1._01 + _this2._20 * m1._02 + _this2._30 * m1._03;
 						var m__10 = _this2._00 * m1._10 + _this2._10 * m1._11 + _this2._20 * m1._12 + _this2._30 * m1._13;
 						var m__20 = _this2._00 * m1._20 + _this2._10 * m1._21 + _this2._20 * m1._22 + _this2._30 * m1._23;
@@ -3395,7 +3395,7 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 						_this1._13 = m__13;
 						_this1._23 = m__23;
 						_this1._33 = m__33;
-						renderable.c_render.render(camTarget);
+						renderable.cRender.render(camTarget);
 					}
 				}
 			}
@@ -3406,14 +3406,14 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 		var _g2_array = this.renderBundles.bundles;
 		while(_g2_current < _g2_array.length) {
 			var renderable = _g2_array[_g2_current++];
-			renderable.c_transform.resetChanged();
+			renderable.cTransform.resetChanged();
 		}
 		target.start();
 		var _g3_current = 0;
 		var _g3_array = this.cameraBundles.bundles;
 		while(_g3_current < _g3_array.length) {
 			var camBundle = _g3_array[_g3_current++];
-			var camera = camBundle.c_camera;
+			var camera = camBundle.cCamera;
 			target.drawImage(camera.viewX,camera.viewY,camera.renderTarget.image,-1);
 		}
 		target.present();
@@ -3422,9 +3422,9 @@ aeons_systems_RenderSystem.prototype = $extend(aeons_core_System.prototype,{
 		this.sortZ = true;
 	}
 	,sort: function(a,b) {
-		if(a.c_transform.zIndex > b.c_transform.zIndex) {
+		if(a.cTransform.zIndex > b.cTransform.zIndex) {
 			return 1;
-		} else if(a.c_transform.zIndex < b.c_transform.zIndex) {
+		} else if(a.cTransform.zIndex < b.cTransform.zIndex) {
 			return -1;
 		}
 		return 0;
@@ -5101,7 +5101,7 @@ haxe_io_Input.__name__ = "haxe.io.Input";
 haxe_io_Input.prototype = {
 	bigEndian: null
 	,readByte: function() {
-		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/Kha/Tools/haxe/std/haxe/io/Input.hx", lineNumber : 53, className : "haxe.io.Input", methodName : "readByte"});
+		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/Kha/Tools/windows_x64/std/haxe/io/Input.hx", lineNumber : 53, className : "haxe.io.Input", methodName : "readByte"});
 	}
 	,readBytes: function(s,pos,len) {
 		var k = len;
@@ -5233,7 +5233,7 @@ haxe_io_Output.__name__ = "haxe.io.Output";
 haxe_io_Output.prototype = {
 	bigEndian: null
 	,writeByte: function(c) {
-		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/Kha/Tools/haxe/std/haxe/io/Output.hx", lineNumber : 47, className : "haxe.io.Output", methodName : "writeByte"});
+		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "lib/Kha/Tools/windows_x64/std/haxe/io/Output.hx", lineNumber : 47, className : "haxe.io.Output", methodName : "writeByte"});
 	}
 	,writeBytes: function(s,pos,len) {
 		if(pos < 0 || len < 0 || pos + len > s.length) {
@@ -7474,19 +7474,6 @@ kha_SystemImpl.init2 = function(defaultWidth,defaultHeight,backbufferFormat) {
 			}
 		}
 	}
-	if(kha_SystemImpl.ie) {
-		kha_SystemImpl.pressedKeys = [];
-		var _g = 0;
-		while(_g < 256) {
-			var i = _g++;
-			kha_SystemImpl.pressedKeys.push(false);
-		}
-		var _g = 0;
-		while(_g < 256) {
-			var i = _g++;
-			kha_SystemImpl.pressedKeys.push(null);
-		}
-	}
 	var onCopy = function(e) {
 		if(kha_System.copyListener != null) {
 			var data = kha_System.copyListener();
@@ -7591,7 +7578,7 @@ kha_SystemImpl.loadFinished = function(defaultWidth,defaultHeight) {
 		kha_SystemImpl.gl2 = true;
 		kha_Shaders.init();
 	} catch( _g ) {
-		haxe_Log.trace("Could not initialize WebGL 2, falling back to WebGL.",{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 378, className : "kha.SystemImpl", methodName : "loadFinished"});
+		haxe_Log.trace("Could not initialize WebGL 2, falling back to WebGL.",{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 384, className : "kha.SystemImpl", methodName : "loadFinished"});
 	}
 	if(!kha_SystemImpl.gl2) {
 		try {
@@ -7613,7 +7600,7 @@ kha_SystemImpl.loadFinished = function(defaultWidth,defaultHeight) {
 			gl = true;
 			kha_Shaders.init();
 		} catch( _g ) {
-			haxe_Log.trace("Could not initialize WebGL, falling back to <canvas>.",{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 406, className : "kha.SystemImpl", methodName : "loadFinished"});
+			haxe_Log.trace("Could not initialize WebGL, falling back to <canvas>.",{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 412, className : "kha.SystemImpl", methodName : "loadFinished"});
 		}
 	}
 	kha_SystemImpl.setCanvas(canvas);
@@ -7654,9 +7641,8 @@ kha_SystemImpl.loadFinished = function(defaultWidth,defaultHeight) {
 	}
 	canvas.onblur = kha_SystemImpl.onBlur;
 	canvas.onfocus = kha_SystemImpl.onFocus;
-	canvas.onmousewheel = canvas.onwheel = kha_SystemImpl.mouseWheel;
 	canvas.onmouseleave = kha_SystemImpl.mouseLeave;
-	canvas.addEventListener("wheel mousewheel",kha_SystemImpl.mouseWheel,false);
+	canvas.addEventListener("wheel",kha_SystemImpl.mouseWheel,false);
 	canvas.addEventListener("touchstart",kha_SystemImpl.touchDown,false);
 	canvas.addEventListener("touchend",kha_SystemImpl.touchUp,false);
 	canvas.addEventListener("touchmove",kha_SystemImpl.touchMove,false);
@@ -7740,7 +7726,7 @@ kha_SystemImpl.initAnimate = function(callback) {
 				kha_SystemImpl.lastCanvasClientHeight = canvas.clientHeight;
 			}
 			kha_System.render([kha_SystemImpl.frame]);
-			if(kha_SystemImpl.gl != null) {
+			if(kha_SystemImpl.ie && kha_SystemImpl.gl != null) {
 				kha_SystemImpl.gl.clearColor(1,1,1,1);
 				kha_SystemImpl.gl.colorMask(false,false,false,true);
 				kha_SystemImpl.gl.clear(16384);
@@ -7869,7 +7855,7 @@ kha_SystemImpl.unlockSound = function() {
 			context.resume().then(function(c) {
 				kha_SystemImpl.soundEnabled = true;
 			}).catch(function(err) {
-				haxe_Log.trace(err,{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 700, className : "kha.SystemImpl", methodName : "unlockSound"});
+				haxe_Log.trace(err,{ fileName : "lib/Kha/Backends/HTML5/kha/SystemImpl.hx", lineNumber : 706, className : "kha.SystemImpl", methodName : "unlockSound"});
 			});
 		}
 		kha_audio2_Audio.wakeChannels();
@@ -8132,31 +8118,9 @@ kha_SystemImpl.onFocus = function() {
 kha_SystemImpl.keyDown = function(event) {
 	kha_SystemImpl.insideInputEvent = true;
 	kha_SystemImpl.unlockSound();
-	var _g = kha_input_Keyboard.keyBehavior;
-	switch(_g._hx_index) {
-	case 0:
-		kha_SystemImpl.defaultKeyBlock(event);
-		break;
-	case 1:
-		event.preventDefault();
-		break;
-	case 2:
-		break;
-	case 3:
-		var func = _g.func;
-		if(func(event.keyCode)) {
-			event.preventDefault();
-		}
-		break;
-	}
+	kha_SystemImpl.preventDefaultKeyBehavior(event);
 	event.stopPropagation();
-	if(kha_SystemImpl.ie) {
-		if(kha_SystemImpl.pressedKeys[event.keyCode]) {
-			event.preventDefault();
-			return;
-		}
-		kha_SystemImpl.pressedKeys[event.keyCode] = true;
-	} else if(event.repeat) {
+	if(event.repeat) {
 		event.preventDefault();
 		return;
 	}
@@ -8176,6 +8140,25 @@ kha_SystemImpl.fixedKeyCode = function(event) {
 		return 173;
 	default:
 		return event.keyCode;
+	}
+};
+kha_SystemImpl.preventDefaultKeyBehavior = function(event) {
+	var _g = kha_input_Keyboard.keyBehavior;
+	switch(_g._hx_index) {
+	case 0:
+		kha_SystemImpl.defaultKeyBlock(event);
+		break;
+	case 1:
+		event.preventDefault();
+		break;
+	case 2:
+		break;
+	case 3:
+		var func = _g.func;
+		if(func(event.keyCode)) {
+			event.preventDefault();
+		}
+		break;
 	}
 };
 kha_SystemImpl.defaultKeyBlock = function(e) {
@@ -8200,11 +8183,8 @@ kha_SystemImpl.defaultKeyBlock = function(e) {
 kha_SystemImpl.keyUp = function(event) {
 	kha_SystemImpl.insideInputEvent = true;
 	kha_SystemImpl.unlockSound();
-	event.preventDefault();
+	kha_SystemImpl.preventDefaultKeyBehavior(event);
 	event.stopPropagation();
-	if(kha_SystemImpl.ie) {
-		kha_SystemImpl.pressedKeys[event.keyCode] = false;
-	}
 	var keyCode = kha_SystemImpl.fixedKeyCode(event);
 	kha_SystemImpl.keyboard.sendUpEvent(keyCode);
 	kha_SystemImpl.insideInputEvent = false;
@@ -8215,7 +8195,7 @@ kha_SystemImpl.keyPress = function(event) {
 	if(event.which == 0) {
 		return;
 	}
-	event.preventDefault();
+	kha_SystemImpl.preventDefaultKeyBehavior(event);
 	event.stopPropagation();
 	var code = event.which;
 	kha_SystemImpl.keyboard.sendPressEvent(String.fromCodePoint(code));
@@ -8958,13 +8938,12 @@ kha_audio2_Audio1.mix = function(samplesBox,buffer) {
 	}
 };
 var kha_audio2_AudioChannel = function(looping) {
-	this.looping = false;
+	this.data = null;
+	this.looping = looping;
 	this.stopped = false;
 	this.paused = false;
 	this.myPosition = 0;
 	this.myVolume = 1;
-	this.data = null;
-	this.looping = looping;
 };
 $hxClasses["kha.audio2.AudioChannel"] = kha_audio2_AudioChannel;
 kha_audio2_AudioChannel.__name__ = "kha.audio2.AudioChannel";
@@ -13224,6 +13203,9 @@ kha_graphics2_Graphics.prototype = {
 	}
 	,popTransformation: function() {
 		this.transformationIndex--;
+		if(this.transformationIndex == -1) {
+			throw haxe_Exception.thrown("There is no transformation matrix to remove, check your push/popTransformation code");
+		}
 		this.setTransformation(this.transformations[this.transformationIndex]);
 		return this.transformations[this.transformationIndex + 1];
 	}
@@ -24538,8 +24520,8 @@ systems_BunnySystem.prototype = $extend(aeons_core_System.prototype,{
 		var _g_array = this.bunnyBundles.bundles;
 		while(_g_current < _g_array.length) {
 			var bunny = _g_array[_g_current++];
-			var transform = bunny.c_transform;
-			var move = bunny.c_bunny_move;
+			var transform = bunny.cTransform;
+			var move = bunny.cBunnyMove;
 			transform.set_x(transform.x + move.speedX);
 			transform.set_y(transform.y + move.speedY);
 			transform.set_angle(transform.angle + move.rotationSpeed);

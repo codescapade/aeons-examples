@@ -18,21 +18,21 @@ class EnemyPatrol extends System implements Updatable {
 
   public function update(dt: Float) {
     for (bundle in patrolBundles) {
-      if (bundle.c_patrol.dead) {
-        bundle.c_simple_body.velocity.x = 0;
+      if (bundle.cPatrol.dead) {
+        bundle.cSimpleBody.velocity.x = 0;
         continue;
       }
 
-      if (bundle.c_transform.x > bundle.c_patrol.maxX) {
-        bundle.c_transform.x = bundle.c_patrol.maxX;
-        bundle.c_patrol.direction = Direction.Left;
-      } else if (bundle.c_transform.x < bundle.c_patrol.minX) {
-        bundle.c_transform.x = bundle.c_patrol.minX;
-        bundle.c_patrol.direction = Direction.Right;
+      if (bundle.cTransform.x > bundle.cPatrol.maxX) {
+        bundle.cTransform.x = bundle.cPatrol.maxX;
+        bundle.cPatrol.direction = Direction.Left;
+      } else if (bundle.cTransform.x < bundle.cPatrol.minX) {
+        bundle.cTransform.x = bundle.cPatrol.minX;
+        bundle.cPatrol.direction = Direction.Right;
       }
 
-      bundle.c_simple_body.velocity.x = bundle.c_patrol.speed * bundle.c_patrol.direction;
-      bundle.c_transform.scaleX = -bundle.c_patrol.direction;
+      bundle.cSimpleBody.velocity.x = bundle.cPatrol.speed * bundle.cPatrol.direction;
+      bundle.cTransform.scaleX = -bundle.cPatrol.direction;
     }
   }
 }

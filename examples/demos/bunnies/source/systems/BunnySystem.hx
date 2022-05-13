@@ -27,8 +27,8 @@ class BunnySystem extends System implements Updatable {
     // Loop though all the bundles.
     for (bunny in bunnyBundles) {
       // Get the components.
-      final transform = bunny.c_transform;
-      final move = bunny.c_bunny_move;
+      final transform = bunny.cTransform;
+      final move = bunny.cBunnyMove;
 
       // Update the position and rotation.
       transform.x += move.speedX;

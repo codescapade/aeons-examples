@@ -6,7 +6,7 @@ source: https://github.com/codescapade/aeons-examples/tree/main/examples/demos/l
 ---
 
 ### Controls
-Arrow keys to move left and right. Up arrow or space to jump.  
+Arrow keys to move left and right. Up arrow or space to jump. When you are sliding on a wall you only have to press the jump button to jump to the opposite side.  
 Q to toggle the debug view.
 <br>
 <br>

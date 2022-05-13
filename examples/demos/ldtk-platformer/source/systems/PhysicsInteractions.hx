@@ -68,7 +68,7 @@ class PhysicsInteractions extends System {
   }
 
   function collectCoin(player: Body, coin: Body) {
-    counterBundle.get(0).c_coin_counter.addCoin();
+    counterBundle.get(0).cCoinCounter.addCoin();
 
     final entity = Aeons.entities.getEntityById(coin.component.entityId);
     entity.getComponent(CAudio).play();
@@ -85,7 +85,7 @@ class PhysicsInteractions extends System {
   }
 
   function hitFlag(player: Body, flag: Body) {
-    final player = playerBundle.get(0).c_player;
+    final player = playerBundle.get(0).cPlayer;
     player.complete = true;
     flagSoundChannel.play();
 
@@ -93,7 +93,7 @@ class PhysicsInteractions extends System {
       if (level < 3) {
         level++;
 
-        final coins = counterBundle.get(0).c_coin_counter.collected;
+        final coins = counterBundle.get(0).cCoinCounter.collected;
         final data = {
           level: level,
           health: player.health,
@@ -129,10 +129,10 @@ class PhysicsInteractions extends System {
 
   function die(playerBody: Body) {
     var bundle = playerBundle.get(0);
-    if (!bundle.c_player.dead) {
+    if (!bundle.cPlayer.dead) {
       HealthEvent.emit(HealthEvent.HEALTH_DOWN);
-      bundle.c_player.dead = true;
-      bundle.c_transform.scaleY = -1;
+      bundle.cPlayer.dead = true;
+      bundle.cTransform.scaleY = -1;
       playerBody.velocity.set(0, -100);
       playerBody.isTrigger = true;
       deadSoundChannel.play();
