@@ -4751,6 +4751,7 @@ aeons_graphics_renderers_TextRenderer.prototype = $extend(aeons_graphics_rendere
 var aeons_input_Input = function() {
 	this.keyboardEnabled = true;
 	kha_input_Keyboard.get().notify($bind(this,this.keyDown),$bind(this,this.keyUp));
+	kha_input_Keyboard.disableSystemInterventions(kha_input_BlockInterventions.Full);
 	this.mouseEnabled = true;
 	kha_input_Mouse.get().notify($bind(this,this.mouseDown),$bind(this,this.mouseUp),$bind(this,this.mouseMove),$bind(this,this.mouseScroll),$bind(this,this.mouseLeave));
 	this.gamepadEnabled = true;
