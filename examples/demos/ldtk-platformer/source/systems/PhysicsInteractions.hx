@@ -2,10 +2,10 @@ package systems;
 
 import aeons.Aeons;
 import aeons.audio.SoundChannel;
+import aeons.bundles.Bundle;
 import aeons.components.CAnimation;
 import aeons.components.CAudio;
 import aeons.components.CTransform;
-import aeons.core.Bundle;
 import aeons.core.System;
 import aeons.events.SceneEvent;
 import aeons.graphics.Color;

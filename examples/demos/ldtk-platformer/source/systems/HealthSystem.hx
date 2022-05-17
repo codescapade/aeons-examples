@@ -1,8 +1,8 @@
 package systems;
 
 import aeons.Aeons;
+import aeons.bundles.Bundle;
 import aeons.components.CSprite;
-import aeons.core.Bundle;
 import aeons.core.System;
 import aeons.events.SceneEvent;
 import aeons.graphics.Color;
@@ -64,7 +64,7 @@ class HealthSystem extends System {
     }
   }
 
-  function bundleAdded(bundle: aeons.bundles.BundleCHealthIconCSprite) {
+  function bundleAdded(bundle: Bundle<CHealthIcon, CSprite>) {
     updateSprites(playerBundles.get(0).cPlayer.health);
   }
 }

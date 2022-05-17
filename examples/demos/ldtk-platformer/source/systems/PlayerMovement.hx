@@ -1,11 +1,11 @@
 package systems;
 
 import aeons.Aeons;
+import aeons.bundles.Bundle;
 import aeons.components.CAnimation;
 import aeons.components.CAudio;
 import aeons.components.CSimpleBody;
 import aeons.components.CTransform;
-import aeons.core.Bundle;
 import aeons.core.System;
 import aeons.core.Updatable;
 import aeons.events.input.KeyboardEvent;
@@ -19,7 +19,7 @@ class PlayerMovement extends System implements Updatable {
   @:bundle
   var playerBundles: Bundle<CTransform, CSimpleBody, CPlayer, CAnimation, CAudio>;
 
-  var bundle: aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimationCAudio;
+  var bundle: Bundle<CTransform, CSimpleBody, CPlayer, CAnimation, CAudio>;
 
   var grounded = false;
 
@@ -168,10 +168,9 @@ class PlayerMovement extends System implements Updatable {
     }
   }
 
-  function onPlayerAdded(bundle: aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimationCAudio) {
+  function onPlayerAdded(bundle: Bundle<CTransform, CSimpleBody, CPlayer, CAnimation, CAudio>) {
     this.bundle = bundle;
     bundle.cAnimation.play(PlayerAnims.Idle);
-
     bundle.cSimpleBody.maxVelocity.x = xVelocity;
     bundle.cSimpleBody.drag.x = drag;
     hasPlayer = true;

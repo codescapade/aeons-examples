@@ -1534,12 +1534,12 @@ aeons_audio_services_InternalAudio.prototype = {
 	}
 	,__class__: aeons_audio_services_InternalAudio
 };
-var aeons_core_BundleBase = function() { };
-$hxClasses["aeons.core.BundleBase"] = aeons_core_BundleBase;
-aeons_core_BundleBase.__name__ = "aeons.core.BundleBase";
-aeons_core_BundleBase.prototype = {
+var aeons_bundles_BundleBase = function() { };
+$hxClasses["aeons.bundles.BundleBase"] = aeons_bundles_BundleBase;
+aeons_bundles_BundleBase.__name__ = "aeons.bundles.BundleBase";
+aeons_bundles_BundleBase.prototype = {
 	entity: null
-	,__class__: aeons_core_BundleBase
+	,__class__: aeons_bundles_BundleBase
 };
 var aeons_bundles_BundleCAnimationCSprite = function(entity) {
 	this.entity = entity;
@@ -1548,8 +1548,8 @@ var aeons_bundles_BundleCAnimationCSprite = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCAnimationCSprite"] = aeons_bundles_BundleCAnimationCSprite;
 aeons_bundles_BundleCAnimationCSprite.__name__ = "aeons.bundles.BundleCAnimationCSprite";
-aeons_bundles_BundleCAnimationCSprite.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCAnimationCSprite.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCAnimationCSprite.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCAnimationCSprite.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cAnimation: null
 	,cSprite: null
 	,__class__: aeons_bundles_BundleCAnimationCSprite
@@ -1561,8 +1561,8 @@ var aeons_bundles_BundleCCameraCTransform = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCCameraCTransform"] = aeons_bundles_BundleCCameraCTransform;
 aeons_bundles_BundleCCameraCTransform.__name__ = "aeons.bundles.BundleCCameraCTransform";
-aeons_bundles_BundleCCameraCTransform.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCCameraCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCCameraCTransform.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCCameraCTransform.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cCamera: null
 	,cTransform: null
 	,__class__: aeons_bundles_BundleCCameraCTransform
@@ -1573,8 +1573,8 @@ var aeons_bundles_BundleCCoinCounter = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCCoinCounter"] = aeons_bundles_BundleCCoinCounter;
 aeons_bundles_BundleCCoinCounter.__name__ = "aeons.bundles.BundleCCoinCounter";
-aeons_bundles_BundleCCoinCounter.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCCoinCounter.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCCoinCounter.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCCoinCounter.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cCoinCounter: null
 	,__class__: aeons_bundles_BundleCCoinCounter
 });
@@ -1585,8 +1585,8 @@ var aeons_bundles_BundleCDebugRenderCTransform = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCDebugRenderCTransform"] = aeons_bundles_BundleCDebugRenderCTransform;
 aeons_bundles_BundleCDebugRenderCTransform.__name__ = "aeons.bundles.BundleCDebugRenderCTransform";
-aeons_bundles_BundleCDebugRenderCTransform.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCDebugRenderCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCDebugRenderCTransform.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCDebugRenderCTransform.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cDebugRender: null
 	,cTransform: null
 	,__class__: aeons_bundles_BundleCDebugRenderCTransform
@@ -1597,8 +1597,8 @@ var aeons_bundles_BundleCGameOverText = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCGameOverText"] = aeons_bundles_BundleCGameOverText;
 aeons_bundles_BundleCGameOverText.__name__ = "aeons.bundles.BundleCGameOverText";
-aeons_bundles_BundleCGameOverText.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCGameOverText.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCGameOverText.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCGameOverText.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cGameOverText: null
 	,__class__: aeons_bundles_BundleCGameOverText
 });
@@ -1609,8 +1609,8 @@ var aeons_bundles_BundleCHealthIconCSprite = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCHealthIconCSprite"] = aeons_bundles_BundleCHealthIconCSprite;
 aeons_bundles_BundleCHealthIconCSprite.__name__ = "aeons.bundles.BundleCHealthIconCSprite";
-aeons_bundles_BundleCHealthIconCSprite.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCHealthIconCSprite.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCHealthIconCSprite.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCHealthIconCSprite.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cHealthIcon: null
 	,cSprite: null
 	,__class__: aeons_bundles_BundleCHealthIconCSprite
@@ -1621,8 +1621,8 @@ var aeons_bundles_BundleCPlayer = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCPlayer"] = aeons_bundles_BundleCPlayer;
 aeons_bundles_BundleCPlayer.__name__ = "aeons.bundles.BundleCPlayer";
-aeons_bundles_BundleCPlayer.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCPlayer.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCPlayer.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCPlayer.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cPlayer: null
 	,__class__: aeons_bundles_BundleCPlayer
 });
@@ -1633,8 +1633,8 @@ var aeons_bundles_BundleCRenderCTransform = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCRenderCTransform"] = aeons_bundles_BundleCRenderCTransform;
 aeons_bundles_BundleCRenderCTransform.__name__ = "aeons.bundles.BundleCRenderCTransform";
-aeons_bundles_BundleCRenderCTransform.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCRenderCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCRenderCTransform.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCRenderCTransform.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cRender: null
 	,cTransform: null
 	,__class__: aeons_bundles_BundleCRenderCTransform
@@ -1646,8 +1646,8 @@ var aeons_bundles_BundleCSimpleBodyCTransform = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCSimpleBodyCTransform"] = aeons_bundles_BundleCSimpleBodyCTransform;
 aeons_bundles_BundleCSimpleBodyCTransform.__name__ = "aeons.bundles.BundleCSimpleBodyCTransform";
-aeons_bundles_BundleCSimpleBodyCTransform.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCSimpleBodyCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCSimpleBodyCTransform.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCSimpleBodyCTransform.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cSimpleBody: null
 	,cTransform: null
 	,__class__: aeons_bundles_BundleCSimpleBodyCTransform
@@ -1658,8 +1658,8 @@ var aeons_bundles_BundleCSimpleTilemapCollider = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCSimpleTilemapCollider"] = aeons_bundles_BundleCSimpleTilemapCollider;
 aeons_bundles_BundleCSimpleTilemapCollider.__name__ = "aeons.bundles.BundleCSimpleTilemapCollider";
-aeons_bundles_BundleCSimpleTilemapCollider.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCSimpleTilemapCollider.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCSimpleTilemapCollider.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCSimpleTilemapCollider.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cSimpleTilemapCollider: null
 	,__class__: aeons_bundles_BundleCSimpleTilemapCollider
 });
@@ -1670,8 +1670,8 @@ var aeons_bundles_BundleCTransformCCamera = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCTransformCCamera"] = aeons_bundles_BundleCTransformCCamera;
 aeons_bundles_BundleCTransformCCamera.__name__ = "aeons.bundles.BundleCTransformCCamera";
-aeons_bundles_BundleCTransformCCamera.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCTransformCCamera.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCTransformCCamera.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCTransformCCamera.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cTransform: null
 	,cCamera: null
 	,__class__: aeons_bundles_BundleCTransformCCamera
@@ -1683,8 +1683,8 @@ var aeons_bundles_BundleCTransformCPlayer = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCTransformCPlayer"] = aeons_bundles_BundleCTransformCPlayer;
 aeons_bundles_BundleCTransformCPlayer.__name__ = "aeons.bundles.BundleCTransformCPlayer";
-aeons_bundles_BundleCTransformCPlayer.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCTransformCPlayer.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCTransformCPlayer.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCTransformCPlayer.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cTransform: null
 	,cPlayer: null
 	,__class__: aeons_bundles_BundleCTransformCPlayer
@@ -1697,8 +1697,8 @@ var aeons_bundles_BundleCTransformCSimpleBodyCPatrol = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCTransformCSimpleBodyCPatrol"] = aeons_bundles_BundleCTransformCSimpleBodyCPatrol;
 aeons_bundles_BundleCTransformCSimpleBodyCPatrol.__name__ = "aeons.bundles.BundleCTransformCSimpleBodyCPatrol";
-aeons_bundles_BundleCTransformCSimpleBodyCPatrol.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCTransformCSimpleBodyCPatrol.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCTransformCSimpleBodyCPatrol.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCTransformCSimpleBodyCPatrol.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cTransform: null
 	,cSimpleBody: null
 	,cPatrol: null
@@ -1714,8 +1714,8 @@ var aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio = function(
 };
 $hxClasses["aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimationCAudio"] = aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio;
 aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio.__name__ = "aeons.bundles.BundleCTransformCSimpleBodyCPlayerCAnimationCAudio";
-aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCTransformCSimpleBodyCPlayerCAnimationCAudio.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cTransform: null
 	,cSimpleBody: null
 	,cPlayer: null
@@ -1729,8 +1729,8 @@ var aeons_bundles_BundleCUpdate = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCUpdate"] = aeons_bundles_BundleCUpdate;
 aeons_bundles_BundleCUpdate.__name__ = "aeons.bundles.BundleCUpdate";
-aeons_bundles_BundleCUpdate.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCUpdate.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCUpdate.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCUpdate.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cUpdate: null
 	,__class__: aeons_bundles_BundleCUpdate
 });

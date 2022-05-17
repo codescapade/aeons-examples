@@ -1,8 +1,8 @@
 package systems;
 
 import aeons.Aeons;
+import aeons.bundles.Bundle;
 import aeons.components.CTransform;
-import aeons.core.Bundle;
 import aeons.core.System;
 import aeons.core.Updatable;
 

@@ -387,12 +387,12 @@ aeons_audio_services_InternalAudio.__interfaces__ = [aeons_audio_Audio];
 aeons_audio_services_InternalAudio.prototype = {
 	__class__: aeons_audio_services_InternalAudio
 };
-var aeons_core_BundleBase = function() { };
-$hxClasses["aeons.core.BundleBase"] = aeons_core_BundleBase;
-aeons_core_BundleBase.__name__ = "aeons.core.BundleBase";
-aeons_core_BundleBase.prototype = {
+var aeons_bundles_BundleBase = function() { };
+$hxClasses["aeons.bundles.BundleBase"] = aeons_bundles_BundleBase;
+aeons_bundles_BundleBase.__name__ = "aeons.bundles.BundleBase";
+aeons_bundles_BundleBase.prototype = {
 	entity: null
-	,__class__: aeons_core_BundleBase
+	,__class__: aeons_bundles_BundleBase
 };
 var aeons_bundles_BundleCBunnyMoveCTransform = function(entity) {
 	this.entity = entity;
@@ -401,8 +401,8 @@ var aeons_bundles_BundleCBunnyMoveCTransform = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCBunnyMoveCTransform"] = aeons_bundles_BundleCBunnyMoveCTransform;
 aeons_bundles_BundleCBunnyMoveCTransform.__name__ = "aeons.bundles.BundleCBunnyMoveCTransform";
-aeons_bundles_BundleCBunnyMoveCTransform.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCBunnyMoveCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCBunnyMoveCTransform.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCBunnyMoveCTransform.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cBunnyMove: null
 	,cTransform: null
 	,__class__: aeons_bundles_BundleCBunnyMoveCTransform
@@ -414,8 +414,8 @@ var aeons_bundles_BundleCCameraCTransform = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCCameraCTransform"] = aeons_bundles_BundleCCameraCTransform;
 aeons_bundles_BundleCCameraCTransform.__name__ = "aeons.bundles.BundleCCameraCTransform";
-aeons_bundles_BundleCCameraCTransform.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCCameraCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCCameraCTransform.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCCameraCTransform.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cCamera: null
 	,cTransform: null
 	,__class__: aeons_bundles_BundleCCameraCTransform
@@ -427,8 +427,8 @@ var aeons_bundles_BundleCRenderCTransform = function(entity) {
 };
 $hxClasses["aeons.bundles.BundleCRenderCTransform"] = aeons_bundles_BundleCRenderCTransform;
 aeons_bundles_BundleCRenderCTransform.__name__ = "aeons.bundles.BundleCRenderCTransform";
-aeons_bundles_BundleCRenderCTransform.__super__ = aeons_core_BundleBase;
-aeons_bundles_BundleCRenderCTransform.prototype = $extend(aeons_core_BundleBase.prototype,{
+aeons_bundles_BundleCRenderCTransform.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCRenderCTransform.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cRender: null
 	,cTransform: null
 	,__class__: aeons_bundles_BundleCRenderCTransform
