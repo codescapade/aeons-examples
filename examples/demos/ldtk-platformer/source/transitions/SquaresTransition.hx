@@ -5,6 +5,7 @@ import aeons.core.Scene;
 import aeons.core.Transition;
 import aeons.graphics.Color;
 import aeons.graphics.RenderTarget;
+import aeons.math.FastMatrix4;
 import aeons.math.Quaternion;
 
 using aeons.math.FastMatrix4Ex;
@@ -63,8 +64,8 @@ class SquaresTransition extends Transition {
     target.start(false);
     for (x in 0...squaresPerRow) {
       for (y in 0...squaresPerColumn) {
-        target.transform.fromRotationTranslationScaleVal(rotation, x * size + size * 0.5, y * size + size * 0.5, 0,
-          scale, scale, 1);
+        target.transform = FastMatrix4.fromRotationTranslationScaleVal(rotation, x * size + size * 0.5,
+          y * size + size * 0.5, 0, scale, scale, 1);
         target.drawSolidRect(-size * 0.5, -size * 0.5, size, size, color);
       }
     }

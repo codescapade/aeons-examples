@@ -4,8 +4,9 @@ import aeons.components.CCamera;
 import aeons.components.CTransform;
 import aeons.core.Component;
 import aeons.core.Updatable;
-import aeons.math.AeMath;
 import aeons.math.Rect;
+
+using aeons.math.AeMath;
 
 /**
  * This component follows a target and centers the camera on it.
@@ -69,12 +70,12 @@ class CCameraFollow extends Component implements Updatable {
       return;
     }
 
-    var x = AeMath.lerp(transform.x, target.x, speed * dt);
-    var y = AeMath.lerp(transform.y, target.y, speed * dt);
+    var x = Math.lerp(transform.x, target.x, speed * dt);
+    var y = Math.lerp(transform.y, target.y, speed * dt);
 
     // Clamp the position to stay inside the bounds.
-    x = AeMath.clamp(x, bounds.x + camera.viewWidth * 0.5, bounds.width - camera.viewWidth * 0.5);
-    y = AeMath.clamp(y, bounds.y + camera.viewHeight * 0.5, bounds.height - camera.viewHeight * 0.5);
+    x = Math.clamp(x, bounds.x + camera.viewWidth * 0.5, bounds.width - camera.viewWidth * 0.5);
+    y = Math.clamp(y, bounds.y + camera.viewHeight * 0.5, bounds.height - camera.viewHeight * 0.5);
     transform.x = x;
     transform.y = y;
   }

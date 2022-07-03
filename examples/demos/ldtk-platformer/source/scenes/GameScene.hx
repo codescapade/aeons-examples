@@ -11,7 +11,6 @@ import aeons.core.Entity;
 import aeons.core.Scene;
 import aeons.events.input.KeyboardEvent;
 import aeons.graphics.Color;
-import aeons.math.AeMath;
 import aeons.math.Rect;
 import aeons.systems.AnimationSystem;
 import aeons.systems.DebugRenderSystem;
@@ -40,6 +39,8 @@ import systems.EnemyPatrol;
 import systems.HealthSystem;
 import systems.PhysicsInteractions;
 import systems.PlayerMovement;
+
+using aeons.math.AeMath;
 
 class GameScene extends Scene {
   var debug: DebugRenderSystem;
@@ -108,9 +109,9 @@ class GameScene extends Scene {
     final bounds = new Rect(0, 0, level.pxWid, level.pxHei);
     final camera = addEntity(new ECamera(player.transform, bounds));
 
-    final camX = AeMath.clamp(playerData.pixelX, 0 + Aeons.display.viewWidth * 0.5,
+    final camX = Math.clamp(playerData.pixelX, 0 + Aeons.display.viewWidth * 0.5,
       level.pxWid - Aeons.display.viewWidth * 0.5);
-    final camY = AeMath.clamp(playerData.pixelY, 0 + Aeons.display.viewHeight * 0.5,
+    final camY = Math.clamp(playerData.pixelY, 0 + Aeons.display.viewHeight * 0.5,
       level.pxHei - Aeons.display.viewHeight * 0.5);
 
     camera.setPosition(camX, camY);
