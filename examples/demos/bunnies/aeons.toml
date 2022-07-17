@@ -1,0 +1,18 @@
+[aeons]
+projectName = "bunnies"
+
+parameters = ["-dce full"]
+
+[aeons.html5]
+disableContextMenu = true
+canvasId = "aeonsGame"
+scriptName = "aeons"
+
+
+[[atlas]]
+name = "atlas"
+saveFolder = "assets"
+folders = ["atlasImages"]
+trimmed = true
+extrude = 1
+packMethod = "optimal"
