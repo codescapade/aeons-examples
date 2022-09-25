@@ -9,7 +9,7 @@ class Main {
     new Game({
       title: 'bitmap-font',
       preload: true,
-      startScene: new GameScene(),
+      startScene: GameScene,
       designWidth: 800,
       designHeight: 600
     });

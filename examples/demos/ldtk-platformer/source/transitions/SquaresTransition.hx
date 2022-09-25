@@ -37,25 +37,19 @@ class SquaresTransition extends Transition {
   /**
    * How many squares per row on the screen.
    */
-  var squaresPerRow: Int;
+  var squaresPerRow: Int = 10;
 
   /**
    * How many squares per column on the screen.
    */
-  var squaresPerColumn: Int;
+  var squaresPerColumn: Int = 10;
 
-  /**
-   * Constructor.
-   * @param nextScene The scene to start after the transition. 
-   * @param duration How long the full transition takes. 
-   * @param color The square color.
-   * @param squaresPerRow How many squares on screen per row.
-   */
-  public function new(nextScene: Scene, duration: Float, color: Color, squaresPerRow = 10) {
-    super(nextScene, duration);
-
-    this.color = color;
-    this.squaresPerRow = squaresPerRow;
+  public override function create() {
+    super.create();
+    color = userData.color;
+    if (userData.squaresPerRow != null) {
+      squaresPerRow = userData.squaresPerRow;
+    }
     size = Aeons.display.viewWidth / squaresPerRow;
     squaresPerColumn = Math.ceil(Aeons.display.viewHeight / size);
   }
@@ -87,4 +81,12 @@ class SquaresTransition extends Transition {
     // Scale the squares back down.
     Aeons.tweens.create(this, duration, { scale: 0.0 });
   }
+}
+
+typedef SquareTransitionData = {
+  var nextScene: Class<Scene>;
+  var duration: Float;
+  var color: Color;
+  var ?data: Dynamic;
+  var ?squaresPerRow: Int;
 }

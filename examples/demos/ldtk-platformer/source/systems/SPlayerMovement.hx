@@ -11,11 +11,11 @@ import aeons.core.Updatable;
 import aeons.events.input.KeyboardEvent;
 import aeons.input.KeyCode;
 import aeons.math.Vector2;
-import aeons.systems.SimplePhysicsSystem;
+import aeons.systems.SSimplePhysics;
 
 import components.CPlayer;
 
-class PlayerMovement extends System implements Updatable {
+class SPlayerMovement extends System implements Updatable {
   @:bundle
   var playerBundles: Bundle<CTransform, CSimpleBody, CPlayer, CAnimation, CAudio>;
 
@@ -39,25 +39,25 @@ class PlayerMovement extends System implements Updatable {
 
   var hasPlayer = false;
 
-  var acceleration = 10;
+  final acceleration = 10;
 
-  var wallVelocity = 30;
+  final wallVelocity = 30;
 
-  var airVelocity = 600;
+  final airVelocity = 600;
 
-  var drag = 4;
+  final drag = 4;
 
-  var xVelocity = 180;
+  final xVelocity = 180;
 
-  var moveThreshold = 10;
+  final moveThreshold = 10;
 
-  var jumpSpeed = 380;
+  final jumpSpeed = 380;
 
-  var jumpCanceledSpeed = 200;
+  final jumpCanceledSpeed = 200;
 
   var wallJumpSpeed = new Vector2(180, -270);
 
-  var physics: SimplePhysicsSystem;
+  var physics: SSimplePhysics;
 
   var rayStart = new Vector2();
 
@@ -65,15 +65,13 @@ class PlayerMovement extends System implements Updatable {
 
   var rayTags = [Tag.Ground];
 
-  public function new() {
-    super();
-  }
-
-  public override function init() {
-    physics = getSystem(SimplePhysicsSystem);
+  public function create(): SPlayerMovement {
+    physics = getSystem(SSimplePhysics);
     playerBundles.onAdded(onPlayerAdded);
     Aeons.events.on(KeyboardEvent.KEY_DOWN, keyDown);
     Aeons.events.on(KeyboardEvent.KEY_UP, keyUp);
+
+    return this;
   }
 
   public override function cleanup() {

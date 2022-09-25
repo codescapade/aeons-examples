@@ -10,7 +10,7 @@ import aeons.core.System;
 import aeons.events.SceneEvent;
 import aeons.graphics.Color;
 import aeons.physics.simple.Body;
-import aeons.systems.SimplePhysicsSystem;
+import aeons.systems.SSimplePhysics;
 
 import components.CCoinCounter;
 import components.CPatrol;
@@ -23,8 +23,8 @@ import scenes.IntroScene;
 
 import transitions.SquaresTransition;
 
-class PhysicsInteractions extends System {
-  var physics: SimplePhysicsSystem;
+class SPhysicsInteractions extends System {
+  var physics: SSimplePhysics;
 
   @:bundle
   var counterBundle: Bundle<CCoinCounter>;
@@ -38,13 +38,8 @@ class PhysicsInteractions extends System {
 
   var level: Int;
 
-  public function new(level: Int) {
-    super();
+  public function create(level: Int): SPhysicsInteractions {
     this.level = level;
-  }
-
-  public override function init() {
-    super.init();
 
     final deathSound = Aeons.assets.getSound('dead');
     deadSoundChannel = Aeons.audio.addChannel(deathSound);
@@ -52,11 +47,13 @@ class PhysicsInteractions extends System {
     final flagSound = Aeons.assets.getSound('flag');
     flagSoundChannel = Aeons.audio.addChannel(flagSound);
 
-    physics = getSystem(SimplePhysicsSystem);
+    physics = getSystem(SSimplePhysics);
     physics.addInteractionListener(TRIGGER_START, Tag.Player, Tag.Coin, collectCoin);
     physics.addInteractionListener(TRIGGER_START, Tag.Player, Tag.Death, hitDeath);
     physics.addInteractionListener(TRIGGER_START, Tag.Player, Tag.Flag, hitFlag);
     physics.addInteractionListener(COLLISION_START, Tag.Player, Tag.Enemy, hitEnemy);
+
+    return this;
   }
 
   public override function cleanup() {
@@ -90,19 +87,27 @@ class PhysicsInteractions extends System {
     flagSoundChannel.play();
 
     Aeons.timers.create(1, () -> {
+      final data: SquareTransitionData = {
+        nextScene: GameScene,
+        duration: 1.8,
+        color: Color.Black,
+        squaresPerRow: 12
+      };
+
       if (level < 3) {
         level++;
 
         final coins = counterBundle.get(0).cCoinCounter.collected;
-        final data = {
+        data.data = {
           level: level,
           health: player.health,
-          coins: coins,
+          coins: coins
         };
 
-        SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new GameScene(data), 1.8, Color.Black, 12));
+        SceneEvent.emit(SceneEvent.PUSH, SquaresTransition, data);
       } else {
-        SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new IntroScene(), 1.8, Color.Black, 12));
+        data.nextScene = IntroScene;
+        SceneEvent.emit(SceneEvent.PUSH, SquaresTransition, data);
       }
     }, 0, true);
   }

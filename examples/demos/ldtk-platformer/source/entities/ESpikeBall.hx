@@ -10,38 +10,31 @@ import aeons.core.Entity;
  * The spikeball enemy entity.
  */
 class ESpikeBall extends Entity {
-  final levelData: Ldtk.Entity_Spike_ball;
-
   var transform: CTransform;
 
   var minY: Float;
 
   var maxY: Float;
 
-  public function new(levelData: Ldtk.Entity_Spike_ball) {
-    super();
-    this.levelData = levelData;
-  }
-
-  public override function init(id: Int) {
-    super.init(id);
-
-    transform = addComponent(new CTransform({ x: levelData.pixelX, y: levelData.pixelY }));
+  public function create(levelData: Ldtk.Entity_Spike_ball): ESpikeBall {
+    transform = addComponent(CTransform).create({ x: levelData.pixelX, y: levelData.pixelY });
     minY = transform.y - 3;
     maxY = transform.y + 3;
 
     final atlas = Aeons.assets.getAtlas('sprites');
-    addComponent(new CSprite({ atlas: atlas, frameName: 'spike_ball' }));
+    addComponent(CSprite).create({ atlas: atlas, frameName: 'spike_ball' });
 
-    addComponent(new CSimpleBody({
+    addComponent(CSimpleBody).create({
       width: 16,
       height: 16,
       type: KINEMATIC,
       tags: [Tag.Death],
       isTrigger: true
-    }));
+    });
 
     moveUp();
+
+    return this;
   }
 
   // These tweens move the enemy up and down repeatedly.

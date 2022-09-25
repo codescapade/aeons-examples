@@ -8,12 +8,12 @@ import aeons.core.Updatable;
 
 import components.CPatrol;
 
-class EnemyPatrol extends System implements Updatable {
+class SEnemyPatrol extends System implements Updatable {
   @:bundle
   var patrolBundles: Bundle<CTransform, CSimpleBody, CPatrol>;
 
-  public function new() {
-    super();
+  public function create(): SEnemyPatrol {
+    return this;
   }
 
   public function update(dt: Float) {

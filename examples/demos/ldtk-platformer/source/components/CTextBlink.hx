@@ -14,25 +14,17 @@ class CTextBlink extends Component {
   var text: CText;
 
   /**
-   * Constructor.
-   */
-  public function new() {
-    super();
-  }
-
-  /**
    * Initialize the component.
-   * @param entityId The id of the entity for this component.
    */
-  public override function init(entityId: Int) {
-    super.init(entityId);
-
+  public function create(): CTextBlink {
     text = getComponent(CText);
 
     // Create a timer that runs every second forever that turns the text on and off.
     Aeons.timers.create(1.0, () -> {
       text.active = !text.active;
     }, -1, true);
+
+    return this;
   }
 
   /**

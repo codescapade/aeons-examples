@@ -32,9 +32,10 @@ class CPlayer extends Component {
    * @param spawn The start position.
    * @param health The current player health.
    */
-  public function new(spawn: Vector2, health: Int) {
-    super();
+  public function create(spawn: Vector2, health: Int): CPlayer {
     spawnPosition = spawn;
     this.health = health;
+
+    return this;
   }
 }

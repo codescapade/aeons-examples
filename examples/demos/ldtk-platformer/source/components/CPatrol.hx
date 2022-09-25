@@ -37,10 +37,11 @@ class CPatrol extends Component {
    * @param maxX The path right position.
    * @param speed The horizontal velocity.
    */
-  public function new(minX: Float, maxX: Float, speed: Float) {
-    super();
+  public function create(minX: Float, maxX: Float, speed: Float): CPatrol {
     this.minX = Math.min(minX, maxX);
     this.maxX = Math.max(minX, maxX);
     this.speed = speed;
+
+    return this;
   }
 }

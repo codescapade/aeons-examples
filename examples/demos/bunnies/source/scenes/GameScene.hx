@@ -4,13 +4,13 @@ import aeons.Aeons;
 import aeons.core.Scene;
 import aeons.events.input.MouseEvent;
 import aeons.input.MouseButton;
-import aeons.systems.RenderSystem;
+import aeons.systems.SRender;
 
 import entities.EBunny;
 import entities.ECamera;
 import entities.EText;
 
-import systems.BunnySystem;
+import systems.SBunny;
 
 /**
  * The is the scene where the bunnies live.
@@ -29,24 +29,24 @@ class GameScene extends Scene {
   /**
    * Initialize the scene.
    */
-  public override function init() {
+  public override function create() {
     // Add the system that renders everything in the scene.
-    addSystem(new RenderSystem());
+    addSystem(SRender).create();
 
     // Add the system that updates the bunny movement.
-    addSystem(new BunnySystem());
+    addSystem(SBunny).create();
 
     // Load the sprite atlas so we can use it when creating bunnies in the EBunny entity.
     Aeons.assets.loadAtlas('atlas');
 
     // Add a camera entity to the scene.
-    addEntity(new ECamera());
+    addEntity(ECamera).create();
 
     // Add a text entity to the scene to display the FPS.
-    fps = addEntity(new EText(10, 10, 'FPS: 60'));
+    fps = addEntity(EText).create(10, 10, 'FPS: 60');
 
     // Add another text entity to dislay the bunny count.
-    bunnyCount = addEntity(new EText(10, 40, 'Bunnies: 0'));
+    bunnyCount = addEntity(EText).create(10, 40, 'Bunnies: 0');
 
     // Create the first bunny.
     createBunny();
@@ -86,7 +86,7 @@ class GameScene extends Scene {
 
   // Create a new bunny entity and add it to the list to keep track of them.
   function createBunny() {
-    final bunny = addEntity(new EBunny());
+    final bunny = addEntity(EBunny).create();
     bunnies.push(bunny);
     bunnyCount.setText('Bunnies: ${bunnies.length}');
   }

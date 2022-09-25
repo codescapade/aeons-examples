@@ -43,22 +43,14 @@ class CCameraFollow extends Component implements Updatable {
    * @param target The transform to follow.
    * @param bounds The bounds to the camera cannot go outside.
    */
-  public function new(target: CTransform, bounds: Rect) {
-    super();
+  public function create(target: CTransform, bounds: Rect): CCameraFollow {
     this.target = target;
     this.bounds = bounds;
-  }
 
-  /**
-   * Initialize the component. This is called automatically.
-   * @param entityId The id of the entity this component belongs to.
-   */
-  public override function init(entityId: Int) {
-    super.init(entityId);
-
-    // getComponent is not available in the constructor.
     transform = getComponent(CTransform);
     camera = getComponent(CCamera);
+
+    return this;
   }
 
   /**

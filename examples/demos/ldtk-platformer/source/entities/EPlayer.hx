@@ -19,51 +19,35 @@ class EPlayer extends Entity {
   // Making the transform component public so it can be followed by the camera.
   public var transform(default, null): CTransform;
 
-  final startX: Float;
-
-  final startY: Float;
-
-  final startFlipped: Bool;
-
-  final health: Int;
-
-  public function new(x: Float, y: Float, flipped: Bool, health: Int) {
-    super();
-    startX = x;
-    startY = y;
-    startFlipped = flipped;
-    this.health = health;
-  }
-
-  public override function init(id: Int) {
-    super.init(id);
-
-    transform = addComponent(new CTransform({
-      x: startX,
-      y: startY,
+  public function create(x: Float, y: Float, flipped: Bool, health: Int): EPlayer {
+    transform = addComponent(CTransform).create({
+      x: x,
+      y: y,
       zIndex: 3,
-      scaleX: startFlipped ? -1 : 1
-    }));
+      scaleX: flipped ? -1 : 1
+    });
 
     final atlas = Aeons.assets.getAtlas('sprites');
 
-    addComponent(new CSprite({ atlas: atlas, frameName: 'orange_alien_00' }));
+    addComponent(CSprite).create({ atlas: atlas, frameName: 'orange_alien_00' });
 
-    addComponent(new CSimpleBody({
+    addComponent(CSimpleBody).create({
       width: 16,
       height: 22,
       offset: { x: 0, y: 1 },
       tags: [Tag.Player]
-    }));
+    });
 
-    addComponent(new CPlayer(new Vector2(startX, startY), health));
+    addComponent(CPlayer).create(new Vector2(x, y), health);
 
     final idleAnim = new Animation(PlayerAnims.Idle, atlas, ['orange_alien_00'], 1);
     final walkAnim = new Animation(PlayerAnims.Walk, atlas, ['orange_alien_00', 'orange_alien_01'], 0.15, LOOP);
     final jumpAnim = new Animation(PlayerAnims.Jump, atlas, ['orange_alien_01'], 1);
-    addComponent(new CAnimation([idleAnim, walkAnim, jumpAnim]));
+    addComponent(CAnimation).create([idleAnim, walkAnim, jumpAnim]);
 
     final jumpSound = Aeons.assets.getSound('jump');
-    addComponent(new CAudio(jumpSound));
+    addComponent(CAudio).create({ sound: jumpSound });
+
+    return this;
   }
 }

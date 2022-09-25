@@ -21,20 +21,13 @@ class CCoinCounter extends Component {
    * Constructor.
    * @param collected The amount of coins currently connected. 
    */
-  public function new(collected: Int) {
-    super();
+  public function create(collected: Int): CCoinCounter {
     this.collected = collected;
-  }
-
-  /**
-   * Initialize the component
-   * @param entityId The id of the entity for this component.
-   */
-  public override function init(entityId: Int) {
-    super.init(entityId);
 
     text = getComponent(CText);
     text.text = '${collected}';
+
+    return this;
   }
 
   /**

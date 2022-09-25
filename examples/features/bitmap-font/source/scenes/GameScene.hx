@@ -8,15 +8,15 @@ import aeons.core.Entity;
 import aeons.core.Scene;
 import aeons.graphics.BitmapFont;
 import aeons.graphics.Color;
-import aeons.systems.RenderSystem;
+import aeons.systems.SRender;
 
 class GameScene extends Scene {
   var counterText: CBitmapText;
 
   var count = 0;
 
-  public override function init() {
-    addSystem(new RenderSystem());
+  public override function create() {
+    addSystem(SRender).create();
 
     // Fonts only needs to be loaded once when the game launches.
     // Don't call this in a scene that is reused multiple time.
@@ -41,9 +41,9 @@ class GameScene extends Scene {
    * Create the main camera.
    */
   function createCamera() {
-    final camera = addEntity(new Entity());
-    camera.addComponent(new CTransform());
-    camera.addComponent(new CCamera());
+    final camera = addEntity(Entity);
+    camera.addComponent(CTransform).create();
+    camera.addComponent(CCamera).create();
   }
 
   /**
@@ -56,19 +56,19 @@ class GameScene extends Scene {
    * @return The bitmap font component so we can update the text later.
    */
   function createText(x: Float, y: Float, text: String, font: BitmapFont, color: Color): CBitmapText {
-    final entity = addEntity(new Entity());
+    final entity = addEntity(Entity);
 
-    entity.addComponent(new CTransform({
+    entity.addComponent(CTransform).create({
       x: x,
       y: y
-    }));
+    });
 
-    final bmText = entity.addComponent(new CBitmapText({
+    final bmText = entity.addComponent(CBitmapText).create({
       font: font,
       text: text,
       color: color,
       anchorX: 0
-    }));
+    });
 
     return bmText;
   }

@@ -13,20 +13,12 @@ import components.CBunnyMove;
  * make a new entity. It is a bit like a prefab.
  */
 class EBunny extends Entity {
-  public function new() {
-    super();
-  }
-
-  // Init gets called after the entity has been created. This is where you can add components and access other
-  // entity variables that are not available in the constructor.
-  public override function init(id: Int) {
-    super.init(id);
-
+  public function create(): EBunny {
     // Transform component.
-    addComponent(new CTransform());
+    addComponent(CTransform).create();
 
     // Bunny move component.
-    addComponent(new CBunnyMove());
+    addComponent(CBunnyMove).create();
 
     // Random color.
     final color = Color.fromBytes(Aeons.random.int(0, 255), Aeons.random.int(0, 255), Aeons.random.int(0, 255));
@@ -35,6 +27,8 @@ class EBunny extends Entity {
     final atlas = Aeons.assets.getAtlas('atlas');
 
     // Sprite component.
-    addComponent(new CSprite({ atlas: atlas, frameName: 'bunny', color: color }));
+    addComponent(CSprite).create({ atlas: atlas, frameName: 'bunny', color: color });
+
+    return this;
   }
 }

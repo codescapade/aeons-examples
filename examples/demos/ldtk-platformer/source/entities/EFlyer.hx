@@ -14,34 +14,27 @@ import components.CPatrol;
  * The flyer enemy entity.
  */
 class EFlyer extends Entity {
-  final levelData: Ldtk.Entity_Flyer;
-
-  public function new(levelData: Ldtk.Entity_Flyer) {
-    super();
-    this.levelData = levelData;
-  }
-
-  public override function init(id: Int) {
-    super.init(id);
-
-    addComponent(new CTransform({ x: levelData.pixelX, y: levelData.pixelY }));
+  public function create(levelData: Ldtk.Entity_Flyer): EFlyer {
+    addComponent(CTransform).create({ x: levelData.pixelX, y: levelData.pixelY });
 
     final atlas = Aeons.assets.getAtlas('sprites');
-    addComponent(new CSprite({ atlas: atlas, frameName: 'flyer_00' }));
+    addComponent(CSprite).create({ atlas: atlas, frameName: 'flyer_00' });
 
-    addComponent(new CSimpleBody({
+    addComponent(CSimpleBody).create({
       width: 12,
       height: 12,
       type: KINEMATIC,
       tags: [Tag.Enemy]
-    }));
+    });
 
     // Get the world position of the min an max patrol positions.
     final minX = GridHelper.gridToWorld(levelData.f_Path[0].cx);
     final maxX = GridHelper.gridToWorld(levelData.f_Path[1].cx);
-    addComponent(new CPatrol(minX, maxX, 20));
+    addComponent(CPatrol).create(minX, maxX, 20);
 
     final fly = new Animation('fly', atlas, ['flyer_00', 'flyer_01', 'flyer_02'], 0.15, LOOP);
-    addComponent(new CAnimation([fly])).play('fly');
+    addComponent(CAnimation).create([fly]).play('fly');
+
+    return this;
   }
 }

@@ -16,23 +16,15 @@ class ECamera extends Entity {
 
   var camera: CCamera;
 
-  public function new(target: CTransform, bounds: Rect) {
-    super();
+  public function create(target: CTransform, bounds: Rect): ECamera {
     this.target = target;
     this.bounds = bounds;
-  }
 
-  /**
-   * Initialize the component. This is called automatically.
-   * @param id The entity for this id.
-   */
-  public override function init(id: Int) {
-    super.init(id);
+    transform = addComponent(CTransform).create();
+    camera = addComponent(CCamera).create({ zoom: 1 });
+    addComponent(CCameraFollow).create(target, bounds);
 
-    // Add component doesn't work in the constructor.
-    transform = addComponent(new CTransform());
-    camera = addComponent(new CCamera({ zoom: 1 }));
-    addComponent(new CCameraFollow(target, bounds));
+    return this;
   }
 
   /**

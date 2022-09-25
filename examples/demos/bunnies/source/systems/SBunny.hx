@@ -8,7 +8,7 @@ import aeons.core.Updatable;
 
 import components.CBunnyMove;
 
-class BunnySystem extends System implements Updatable {
+class SBunny extends System implements Updatable {
   final gravity = 0.5;
 
   final maxX = Aeons.display.viewWidth;
@@ -19,8 +19,8 @@ class BunnySystem extends System implements Updatable {
   @:bundle
   var bunnyBundles: Bundle<CBunnyMove, CTransform>;
 
-  public function new() {
-    super();
+  public function create(): SBunny {
+    return this;
   }
 
   public function update(dt: Float) {

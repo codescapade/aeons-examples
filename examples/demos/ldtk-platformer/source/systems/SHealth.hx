@@ -17,7 +17,7 @@ import scenes.IntroScene;
 
 import transitions.SquaresTransition;
 
-class HealthSystem extends System {
+class SHealth extends System {
   @:bundle
   var iconBundles: Bundle<CHealthIcon, CSprite>;
 
@@ -31,13 +31,11 @@ class HealthSystem extends System {
 
   final emptyHeart = 'heart_empty';
 
-  public function new() {
-    super();
-  }
-
-  public override function init() {
+  public function create(): SHealth {
     iconBundles.onAdded(bundleAdded);
     Aeons.events.on(HealthEvent.HEALTH_DOWN, healthDown);
+
+    return this;
   }
 
   function healthDown(event: HealthEvent) {
@@ -49,7 +47,13 @@ class HealthSystem extends System {
       updateSprites(player.health);
       gameOverBundle.get(0).entity.active = true;
       Aeons.timers.create(3, () -> {
-        SceneEvent.emit(SceneEvent.PUSH, new SquaresTransition(new IntroScene(), 1.8, Color.Black, 12));
+        final data: SquareTransitionData = {
+          nextScene: IntroScene,
+          duration: 1.8,
+          color: Color.Black,
+          squaresPerRow: 12
+        };
+        SceneEvent.emit(SceneEvent.PUSH, SquaresTransition, data);
       }, 0, true);
     }
   }

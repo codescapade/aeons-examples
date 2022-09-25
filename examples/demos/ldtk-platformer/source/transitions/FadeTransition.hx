@@ -11,9 +11,9 @@ class FadeTransition extends Transition {
 
   var currentColor = Color.Transparent;
 
-  public function new(nextScene: Scene, duration: Float, color: Color) {
-    super(nextScene, duration);
-    this.color = color;
+  public override function create() {
+    super.create();
+    color = userData.color;
   }
 
   public override function render(target: RenderTarget) {
@@ -29,4 +29,11 @@ class FadeTransition extends Transition {
   public override function transitionToNew() {
     Aeons.tweens.create(this, duration, { currentColor: Color.Transparent }, true);
   }
+}
+
+typedef FadeTransitionData = {
+  var nextScene: Class<Scene>;
+  var duration: Float;
+  var color: Color;
+  var ?data: Dynamic;
 }

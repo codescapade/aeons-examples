@@ -15,21 +15,13 @@ class CFPSUpdate extends Component implements Updatable {
   var text: CText;
 
   /**
-   * Constructor.
-   */
-  public function new() {
-    super();
-  }
-
-  /**
    * Initialize the component.
-   * @param entityId The id of the entity for this component.
    */
-  public override function init(entityId: Int) {
-    super.init(entityId);
-
+  public function create(): CFPSUpdate {
     // Get the text component reference.
     text = getComponent(CText);
+
+    return this;
   }
 
   /**

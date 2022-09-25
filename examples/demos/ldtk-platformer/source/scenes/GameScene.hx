@@ -12,11 +12,11 @@ import aeons.core.Scene;
 import aeons.events.input.KeyboardEvent;
 import aeons.graphics.Color;
 import aeons.math.Rect;
-import aeons.systems.AnimationSystem;
-import aeons.systems.DebugRenderSystem;
-import aeons.systems.RenderSystem;
-import aeons.systems.SimplePhysicsSystem;
-import aeons.systems.UpdateSystem;
+import aeons.systems.SAnimation;
+import aeons.systems.SDebugRender;
+import aeons.systems.SRender;
+import aeons.systems.SSimplePhysics;
+import aeons.systems.SUpdate;
 import aeons.tilemap.Tileset;
 import aeons.tilemap.ldtk.LdtkLayer;
 
@@ -35,39 +35,38 @@ import entities.ESmallRobot;
 import entities.ESpikeBall;
 import entities.ESpikey;
 
-import systems.EnemyPatrol;
-import systems.HealthSystem;
-import systems.PhysicsInteractions;
-import systems.PlayerMovement;
+import systems.SEnemyPatrol;
+import systems.SHealth;
+import systems.SPhysicsInteractions;
+import systems.SPlayerMovement;
 
 using aeons.math.AeMath;
 
 class GameScene extends Scene {
-  var debug: DebugRenderSystem;
+  var debug: SDebugRender;
 
   var fpsEntity: Entity;
 
-  public override function init() {
-    super.init();
+  public override function create() {
     final world = new Ldtk();
     final level = world.getLevel('Level_0${userData.level}');
 
-    addSystem(new SimplePhysicsSystem({
+    addSystem(SSimplePhysics).create({
       worldY: -200,
       worldWidth: level.pxWid,
       worldHeight: level.pxHei + 400,
       gravity: { x: 0, y: 800 }
-    }));
+    });
 
-    addSystem(new EnemyPatrol());
-    addSystem(new AnimationSystem());
-    addSystem(new UpdateSystem());
-    addSystem(new PlayerMovement());
-    addSystem(new HealthSystem());
-    addSystem(new RenderSystem());
-    addSystem(new PhysicsInteractions(userData.level));
+    addSystem(SEnemyPatrol).create();
+    addSystem(SAnimation).create();
+    addSystem(SUpdate).create();
+    addSystem(SPlayerMovement).create();
+    addSystem(SHealth).create();
+    addSystem(SRender).create();
+    addSystem(SPhysicsInteractions).create(userData.level);
 
-    debug = addSystem(new DebugRenderSystem());
+    debug = addSystem(SDebugRender).create();
     debug.enabled = false;
 
     createTilemap(level);
@@ -77,37 +76,38 @@ class GameScene extends Scene {
     createDeathZones(levelEntities.all_Death);
 
     for (coin in levelEntities.all_Coin) {
-      addEntity(new ECoin(coin.pixelX, coin.pixelY));
+      addEntity(ECoin).create(coin.pixelX, coin.pixelY);
     }
 
     for (robotData in levelEntities.all_Robot_small) {
-      addEntity(new ESmallRobot(robotData));
+      addEntity(ESmallRobot).create(robotData);
     }
 
     for (robotData in levelEntities.all_Robot_big) {
-      addEntity(new EBigRobot(robotData));
+      addEntity(EBigRobot).create(robotData);
     }
 
     for (flyerData in levelEntities.all_Flyer) {
-      addEntity(new EFlyer(flyerData));
+      addEntity(EFlyer).create(flyerData);
     }
 
     for (spikeyData in levelEntities.all_Spikey) {
-      addEntity(new ESpikey(spikeyData));
+      addEntity(ESpikey).create(spikeyData);
     }
 
     for (spikeData in levelEntities.all_Spike_ball) {
-      addEntity(new ESpikeBall(spikeData));
+      addEntity(ESpikeBall).create(spikeData);
     }
 
     final flagData = levelEntities.all_Flag[0];
-    addEntity(new EFlag(flagData.pixelX, flagData.pixelY));
+    addEntity(EFlag).create(flagData.pixelX, flagData.pixelY);
 
     final playerData = levelEntities.all_Player[0];
-    final player = addEntity(new EPlayer(playerData.pixelX, playerData.pixelY, playerData.f_Flipped, userData.health));
+    final player = addEntity(EPlayer).create(playerData.pixelX, playerData.pixelY, playerData.f_Flipped,
+      userData.health);
 
     final bounds = new Rect(0, 0, level.pxWid, level.pxHei);
-    final camera = addEntity(new ECamera(player.transform, bounds));
+    final camera = addEntity(ECamera).create(player.transform, bounds);
 
     final camX = Math.clamp(playerData.pixelX, 0 + Aeons.display.viewWidth * 0.5,
       level.pxWid - Aeons.display.viewWidth * 0.5);
@@ -126,19 +126,19 @@ class GameScene extends Scene {
 
   function addOneWayPlatforms(platforms: Array<Ldtk.Entity_One_way>) {
     for (platform in platforms) {
-      final entity = addEntity(new Entity());
+      final entity = addEntity(Entity);
 
-      entity.addComponent(new CTransform({
+      entity.addComponent(CTransform).create({
         x: platform.pixelX,
         y: platform.pixelY
-      }));
+      });
 
-      entity.addComponent(new CSimpleBody({
+      entity.addComponent(CSimpleBody).create({
         width: platform.width,
         height: platform.height,
         canCollide: TOP,
         type: STATIC
-      }));
+      });
     }
   }
 
@@ -151,13 +151,13 @@ class GameScene extends Scene {
     final plantsLayer = LdtkLayer.fromAutoLayer(level.l_Plants, levelTileset);
     final decorLayer = LdtkLayer.fromIntAutoLayer(level.l_Decor, levelTileset);
 
-    final entity = addEntity(new Entity());
-    entity.addComponent(new CTransform());
+    final entity = addEntity(Entity);
+    entity.addComponent(CTransform).create();
 
-    final tilemap = entity.addComponent(new CLdtkTilemap());
+    final tilemap = entity.addComponent(CLdtkTilemap).create();
     tilemap.addLayers([backgroundLayer, collisionLayer, plantsLayer, decorLayer]);
 
-    final collider = entity.addComponent(new CSimpleTilemapCollider());
+    final collider = entity.addComponent(CSimpleTilemapCollider).create();
     collider.setCollisionsFromLdtkLayer(collisionLayer, 0, 0, []);
     collider.addTag(Tag.Ground);
   }
@@ -165,58 +165,58 @@ class GameScene extends Scene {
   function createCoinCounter(camera: ECamera, totalCoins: Int) {
     final atlas = Aeons.assets.getAtlas('sprites');
 
-    final icon = addEntity(new Entity());
+    final icon = addEntity(Entity);
 
-    final iconTransform = icon.addComponent(new CTransform({
+    final iconTransform = icon.addComponent(CTransform).create({
       x: 20,
       y: 20,
       scaleX: 1,
       scaleY: 1,
       zIndex: 5
-    }));
+    });
     camera.addChild(iconTransform);
 
-    icon.addComponent(new CSprite({
+    icon.addComponent(CSprite).create({
       atlas: atlas,
       frameName: 'coin_00'
-    }));
+    });
 
-    final counter = addEntity(new Entity());
+    final counter = addEntity(Entity);
 
-    counter.addComponent(new CTransform({
+    counter.addComponent(CTransform).create({
       x: 12,
       y: 0,
       zIndex: 5,
       parent: iconTransform
-    }));
+    });
 
     final font = Aeons.assets.getFont('kenney_pixel');
-    counter.addComponent(new CText({
+    counter.addComponent(CText).create({
       font: font,
       fontSize: 12,
       anchorX: 0,
       color: Color.Black
-    }));
+    });
 
-    counter.addComponent(new CCoinCounter(userData.coins));
+    counter.addComponent(CCoinCounter).create(userData.coins);
   }
 
   function createDeathZones(zones: Array<Ldtk.Entity_Death>) {
     for (zone in zones) {
-      final entity = addEntity(new Entity());
+      final entity = addEntity(Entity);
 
-      entity.addComponent(new CTransform({
+      entity.addComponent(CTransform).create({
         x: zone.pixelX,
         y: zone.pixelY
-      }));
+      });
 
-      entity.addComponent(new CSimpleBody({
+      entity.addComponent(CSimpleBody).create({
         width: zone.width,
         height: zone.height,
         type: STATIC,
         tags: [Tag.Death],
         isTrigger: true
-      }));
+      });
     }
   }
 
@@ -229,35 +229,35 @@ class GameScene extends Scene {
 
   function createFPS(camera: ECamera) {
     final font = Aeons.assets.getFont('kenney_pixel');
-    fpsEntity = addEntity(new Entity());
+    fpsEntity = addEntity(Entity);
 
-    final transform = fpsEntity.addComponent(new CTransform({ x: Aeons.display.viewWidth - 50, y: 6, zIndex: 5 }));
+    final transform = fpsEntity.addComponent(CTransform).create({ x: Aeons.display.viewWidth - 50, y: 6, zIndex: 5 });
     camera.addChild(transform);
 
-    fpsEntity.addComponent(new CText({
+    fpsEntity.addComponent(CText).create({
       font: font,
       fontSize: 12,
       anchorX: 0,
       text: 'FPS: 0',
       hasBackground: true
-    }));
-    fpsEntity.addComponent(new CFPSUpdate());
+    });
+    fpsEntity.addComponent(CFPSUpdate).create();
     fpsEntity.active = false;
   }
 
   function createGameOverText(camera: ECamera) {
     final font = Aeons.assets.getFont('kenney_pixel');
-    final entity = addEntity(new Entity());
-    final transform = entity.addComponent(new CTransform({ x: Aeons.display.viewCenterX, y: 120, zIndex: 5 }));
+    final entity = addEntity(Entity);
+    final transform = entity.addComponent(CTransform).create({ x: Aeons.display.viewCenterX, y: 120, zIndex: 5 });
     camera.addChild(transform);
-    entity.addComponent(new CText({
+    entity.addComponent(CText).create({
       font: font,
       fontSize: 30,
       text: 'Game Over',
       anchorX: 0.5,
       color: Color.Black
-    }));
-    entity.addComponent(new CGameOverText());
+    });
+    entity.addComponent(CGameOverText).create();
     entity.active = false;
   }
 
@@ -267,12 +267,12 @@ class GameScene extends Scene {
     final y = 20;
 
     for (i in 0...totalHearts) {
-      var e = addEntity(new Entity());
-      var transform = e.addComponent(new CTransform({ x: x, y: y }));
+      var e = addEntity(Entity);
+      var transform = e.addComponent(CTransform).create({ x: x, y: y });
       camera.addChild(transform);
 
-      e.addComponent(new CSprite({ atlas: atlas, frameName: 'heart_empty' }));
-      e.addComponent(new CHealthIcon());
+      e.addComponent(CSprite).create({ atlas: atlas, frameName: 'heart_empty' });
+      e.addComponent(CHealthIcon).create();
 
       x += 20;
     }
