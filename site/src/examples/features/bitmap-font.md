@@ -1,9 +1,8 @@
 ---
 title: Bitmap Fonts
 layout: layouts/examples.html
-thumbnail: /thumbnails/bitmapFont.png
-eleventyExcludeFromCollections: true
-permalink: false
+thumbnail: /thumbnails/bitmap-font.png
+source: https://github.com/codescapade/aeons-examples/tree/main/examples/features/bitmap-font
 ---
 
 ###

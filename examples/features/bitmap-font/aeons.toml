@@ -1,6 +1,13 @@
 [aeons]
 projectName = "bitmap-font"
 
+parameters = ["-dce full"]
+
+[aeons.html5]
+disableContextMenu = true
+canvasId = "aeonsGame"
+scriptName = "aeons"
+
 # To enable lDtk support add "ldtk-haxe-api" and "deepnightLibs". Install them using haxelib.
 # To enable nape physics add "nape-haxe4". Install this using haxelib.
 libraries = []

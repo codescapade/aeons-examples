@@ -53,7 +53,7 @@ class BuildExamples {
       }
       Sys.setCwd(path);
       
-      runCommand('', 'node', [makePath, 'html5']);
+      runCommand('', 'aeons', ['build', 'html5']);
       FileSystem.deleteFile('build/html5/index.html');
 
       final outFolder = Path.join([outPath, folder]);
