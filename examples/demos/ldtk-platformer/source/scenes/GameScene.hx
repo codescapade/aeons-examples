@@ -116,11 +116,16 @@ class GameScene extends Scene {
 
     camera.setPosition(camX, camY);
 
-    createCoinCounter(camera, levelEntities.all_Coin.length);
-    createHearts(camera, 5);
-    createGameOverText(camera);
+    final uiEntity = addEntity(Entity);
+    final uiTransform = uiEntity.addComponent(CTransform)
+      .create({ x: -(Aeons.display.viewWidth * 0.5), y: -(Aeons.display.viewHeight * 0.5) });
+    camera.addChild(uiTransform);
 
-    createFPS(camera);
+    createCoinCounter(uiTransform, levelEntities.all_Coin.length);
+    createHearts(uiTransform, 5);
+    createGameOverText(uiTransform);
+
+    createFPS(uiTransform);
     Aeons.events.on(KeyboardEvent.KEY_DOWN, keyDown);
   }
 
@@ -162,7 +167,7 @@ class GameScene extends Scene {
     collider.addTag(Tag.Ground);
   }
 
-  function createCoinCounter(camera: ECamera, totalCoins: Int) {
+  function createCoinCounter(uiTransform: CTransform, totalCoins: Int) {
     final atlas = Aeons.assets.getAtlas('sprites');
 
     final icon = addEntity(Entity);
@@ -172,9 +177,9 @@ class GameScene extends Scene {
       y: 20,
       scaleX: 1,
       scaleY: 1,
-      zIndex: 5
+      zIndex: 5,
+      parent: uiTransform
     });
-    camera.addChild(iconTransform);
 
     icon.addComponent(CSprite).create({
       atlas: atlas,
@@ -227,12 +232,16 @@ class GameScene extends Scene {
     }
   }
 
-  function createFPS(camera: ECamera) {
+  function createFPS(uiTransform: CTransform) {
     final font = Aeons.assets.getFont('kenney_pixel');
     fpsEntity = addEntity(Entity);
 
-    final transform = fpsEntity.addComponent(CTransform).create({ x: Aeons.display.viewWidth - 50, y: 6, zIndex: 5 });
-    camera.addChild(transform);
+    fpsEntity.addComponent(CTransform).create({
+      x: Aeons.display.viewWidth - 50,
+      y: 6,
+      zIndex: 5,
+      parent: uiTransform
+    });
 
     fpsEntity.addComponent(CText).create({
       font: font,
@@ -245,11 +254,16 @@ class GameScene extends Scene {
     fpsEntity.active = false;
   }
 
-  function createGameOverText(camera: ECamera) {
+  function createGameOverText(uiTransform: CTransform) {
     final font = Aeons.assets.getFont('kenney_pixel');
     final entity = addEntity(Entity);
-    final transform = entity.addComponent(CTransform).create({ x: Aeons.display.viewCenterX, y: 120, zIndex: 5 });
-    camera.addChild(transform);
+    entity.addComponent(CTransform).create({
+      x: Aeons.display.viewCenterX,
+      y: 120,
+      zIndex: 5,
+      parent: uiTransform
+    });
+
     entity.addComponent(CText).create({
       font: font,
       fontSize: 30,
@@ -261,15 +275,14 @@ class GameScene extends Scene {
     entity.active = false;
   }
 
-  function createHearts(camera: ECamera, totalHearts: Int) {
+  function createHearts(uiTransform: CTransform, totalHearts: Int) {
     final atlas = Aeons.assets.getAtlas('sprites');
     var x = 300;
     final y = 20;
 
     for (i in 0...totalHearts) {
       var e = addEntity(Entity);
-      var transform = e.addComponent(CTransform).create({ x: x, y: y });
-      camera.addChild(transform);
+      e.addComponent(CTransform).create({ x: x, y: y, parent: uiTransform });
 
       e.addComponent(CSprite).create({ atlas: atlas, frameName: 'heart_empty' });
       e.addComponent(CHealthIcon).create();
