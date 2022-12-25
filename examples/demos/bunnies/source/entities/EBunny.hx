@@ -1,6 +1,7 @@
 package entities;
 
 import aeons.Aeons;
+import aeons.components.CLayer;
 import aeons.components.CSprite;
 import aeons.components.CTransform;
 import aeons.core.Entity;
@@ -28,6 +29,10 @@ class EBunny extends Entity {
 
     // Sprite component.
     addComponent(CSprite).create({ atlas: atlas, frameName: 'bunny', color: color });
+
+    // The layer component to set the layer to render on.
+    // The default layer is 0,
+    addComponent(CLayer).create();
 
     return this;
   }

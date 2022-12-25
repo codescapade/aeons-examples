@@ -7,7 +7,8 @@ libraries = [
 ]
 
 defines = [
-  "use_ldtk"
+  "use_ldtk",
+  "kha_html5_disable_automatic_size_adjust"
 ]
 
 parameters = ["-dce full"]
@@ -19,9 +20,26 @@ scriptName = "aeons"
 
 
 [[atlas]]
-name = "atlas"
+name = "backgrounds"
 saveFolder = "assets"
-folders = ["atlasImages"]
-trimmed = true
+folders = ["atlasImages/backgrounds"]
+trimmed = false
 extrude = 1
-packMethod = "optimal"
+packMethod = "basic"
+noData = true
+maxWidth = 156
+
+[[atlas]]
+name = "tiles"
+saveFolder = "assets"
+folders = ["atlasImages/tiles"]
+trimmed = false
+extrude = 1
+packMethod = "basic"
+noData = true
+maxWidth = 400
+
+[[atlas]]
+name = "sprites"
+saveFolder = "assets"
+folders = ["atlasImages/sprites"]

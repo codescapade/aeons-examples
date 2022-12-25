@@ -2,6 +2,7 @@ package entities;
 
 import aeons.Aeons;
 import aeons.components.CAnimation;
+import aeons.components.CLayer;
 import aeons.components.CSimpleBody;
 import aeons.components.CSprite;
 import aeons.components.CTransform;
@@ -29,6 +30,8 @@ class EFlag extends Entity {
       atlas: atlas,
       frameName: 'flag_00'
     });
+
+    addComponent(CLayer).create();
 
     addComponent(CSimpleBody).create({
       width: 18,

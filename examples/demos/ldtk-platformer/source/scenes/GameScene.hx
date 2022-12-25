@@ -1,6 +1,7 @@
 package scenes;
 
 import aeons.Aeons;
+import aeons.components.CLayer;
 import aeons.components.CLdtkTilemap;
 import aeons.components.CSimpleBody;
 import aeons.components.CSimpleTilemapCollider;
@@ -162,6 +163,8 @@ class GameScene extends Scene {
     final tilemap = entity.addComponent(CLdtkTilemap).create();
     tilemap.addLayers([backgroundLayer, collisionLayer, plantsLayer, decorLayer]);
 
+    entity.addComponent(CLayer).create();
+
     final collider = entity.addComponent(CSimpleTilemapCollider).create();
     collider.setCollisionsFromLdtkLayer(collisionLayer, 0, 0, []);
     collider.addTag(Tag.Ground);
@@ -177,9 +180,9 @@ class GameScene extends Scene {
       y: 20,
       scaleX: 1,
       scaleY: 1,
-      zIndex: 5,
       parent: uiTransform
     });
+    icon.addComponent(CLayer).create(5);
 
     icon.addComponent(CSprite).create({
       atlas: atlas,
@@ -191,9 +194,9 @@ class GameScene extends Scene {
     counter.addComponent(CTransform).create({
       x: 12,
       y: 0,
-      zIndex: 5,
       parent: iconTransform
     });
+    counter.addComponent(CLayer).create(5);
 
     final font = Aeons.assets.getFont('kenney_pixel');
     counter.addComponent(CText).create({
@@ -239,9 +242,9 @@ class GameScene extends Scene {
     fpsEntity.addComponent(CTransform).create({
       x: Aeons.display.viewWidth - 50,
       y: 6,
-      zIndex: 5,
       parent: uiTransform
     });
+    fpsEntity.addComponent(CLayer).create(5);
 
     fpsEntity.addComponent(CText).create({
       font: font,
@@ -260,9 +263,9 @@ class GameScene extends Scene {
     entity.addComponent(CTransform).create({
       x: Aeons.display.viewCenterX,
       y: 120,
-      zIndex: 5,
       parent: uiTransform
     });
+    entity.addComponent(CLayer).create(5);
 
     entity.addComponent(CText).create({
       font: font,
@@ -286,6 +289,7 @@ class GameScene extends Scene {
 
       e.addComponent(CSprite).create({ atlas: atlas, frameName: 'heart_empty' });
       e.addComponent(CHealthIcon).create();
+      e.addComponent(CLayer).create();
 
       x += 20;
     }

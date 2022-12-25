@@ -3,6 +3,8 @@ projectName = "bunnies"
 
 parameters = ["-dce full"]
 
+defines = ["kha_html5_disable_automatic_size_adjust"]
+
 [aeons.html5]
 disableContextMenu = true
 canvasId = "aeonsGame"

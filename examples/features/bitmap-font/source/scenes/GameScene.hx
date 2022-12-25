@@ -3,6 +3,7 @@ package scenes;
 import aeons.Aeons;
 import aeons.components.CBitmapText;
 import aeons.components.CCamera;
+import aeons.components.CLayer;
 import aeons.components.CTransform;
 import aeons.core.Entity;
 import aeons.core.Scene;
@@ -69,6 +70,8 @@ class GameScene extends Scene {
       color: color,
       anchorX: 0
     });
+
+    entity.addComponent(CLayer).create();
 
     return bmText;
   }

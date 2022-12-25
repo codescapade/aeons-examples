@@ -2,6 +2,7 @@ package scenes;
 
 import aeons.Aeons;
 import aeons.components.CAnimation;
+import aeons.components.CLayer;
 import aeons.components.CLdtkTilemap;
 import aeons.components.CText;
 import aeons.components.CTransform;
@@ -65,6 +66,8 @@ class IntroScene extends Scene {
 
     final tilemap = entity.addComponent(CLdtkTilemap).create();
     tilemap.addLayers([backgroundLayer, collisionLayer, plantsLayer, decorLayer]);
+
+    entity.addComponent(CLayer).create();
   }
 
   function createText() {
@@ -78,6 +81,7 @@ class IntroScene extends Scene {
       text: 'LDtk Platformer',
       color: Color.Black
     });
+    title.addComponent(CLayer).create();
 
     final demo = addEntity(Entity);
     demo.addComponent(CTransform).create({ x: 200, y: 90 });
@@ -87,16 +91,18 @@ class IntroScene extends Scene {
       text: 'Demo',
       color: Color.Black
     });
+    demo.addComponent(CLayer).create();
 
-    final demo = addEntity(Entity);
-    demo.addComponent(CTransform).create({ x: 190, y: 206 });
-    demo.addComponent(CText).create({
+    final pressSpace = addEntity(Entity);
+    pressSpace.addComponent(CTransform).create({ x: 190, y: 206 });
+    pressSpace.addComponent(CText).create({
       font: font,
       fontSize: 24,
       text: 'Press Spacebar',
       color: Color.Black
     });
-    demo.addComponent(CTextBlink).create();
+    pressSpace.addComponent(CTextBlink).create();
+    pressSpace.addComponent(CLayer).create();
   }
 
   function keyDown(event: KeyboardEvent) {

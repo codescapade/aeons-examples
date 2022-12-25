@@ -3,6 +3,7 @@ package entities;
 import aeons.Aeons;
 import aeons.components.CAnimation;
 import aeons.components.CAudio;
+import aeons.components.CLayer;
 import aeons.components.CSimpleBody;
 import aeons.components.CSprite;
 import aeons.components.CTransform;
@@ -23,6 +24,7 @@ class ECoin extends Entity {
 
     final atlas = Aeons.assets.getAtlas('sprites');
     addComponent(CSprite).create({ atlas: atlas, frameName: 'coin_00' });
+    addComponent(CLayer).create();
 
     final coinAnim = new Animation('rotate', atlas, ['coin_00', 'coin_01'], Aeons.random.float(0.15, 0.3), LOOP);
 

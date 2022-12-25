@@ -1,6 +1,7 @@
 package entities;
 
 import aeons.Aeons;
+import aeons.components.CLayer;
 import aeons.components.CText;
 import aeons.components.CTransform;
 import aeons.core.Entity;
@@ -12,8 +13,7 @@ class EText extends Entity {
   var cText: CText;
 
   public function create(x: Float, y: Float, text: String): EText {
-    // Transform component. Z index bigger than default 0 so will be drawn on top of the bunnies.
-    addComponent(CTransform).create({ x: x, y: y, zIndex: 1 });
+    addComponent(CTransform).create({ x: x, y: y });
 
     // Text component.
     final font = Aeons.assets.getFont('pixelFont');
@@ -24,6 +24,9 @@ class EText extends Entity {
       anchorX: 0,
       anchorY: 0
     });
+
+    // The layer component to set the layer to render on.
+    addComponent(CLayer).create(1);
 
     return this;
   }

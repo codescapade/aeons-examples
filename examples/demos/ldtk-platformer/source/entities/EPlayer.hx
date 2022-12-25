@@ -3,6 +3,7 @@ package entities;
 import aeons.Aeons;
 import aeons.components.CAnimation;
 import aeons.components.CAudio;
+import aeons.components.CLayer;
 import aeons.components.CSimpleBody;
 import aeons.components.CSprite;
 import aeons.components.CTransform;
@@ -23,13 +24,13 @@ class EPlayer extends Entity {
     transform = addComponent(CTransform).create({
       x: x,
       y: y,
-      zIndex: 3,
       scaleX: flipped ? -1 : 1
     });
 
     final atlas = Aeons.assets.getAtlas('sprites');
 
     addComponent(CSprite).create({ atlas: atlas, frameName: 'orange_alien_00' });
+    addComponent(CLayer).create(3);
 
     addComponent(CSimpleBody).create({
       width: 16,

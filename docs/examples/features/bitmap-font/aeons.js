@@ -259,98 +259,6 @@ UInt.toFloat = function(this1) {
 		return int + 0.0;
 	}
 };
-var aeons_assets_Assets = function() { };
-$hxClasses["aeons.assets.Assets"] = aeons_assets_Assets;
-aeons_assets_Assets.__name__ = "aeons.assets.Assets";
-aeons_assets_Assets.__isInterface__ = true;
-aeons_assets_Assets.prototype = {
-	loadBitmapFont: null
-	,__class__: aeons_assets_Assets
-};
-var aeons_audio_Audio = function() { };
-$hxClasses["aeons.audio.Audio"] = aeons_audio_Audio;
-aeons_audio_Audio.__name__ = "aeons.audio.Audio";
-aeons_audio_Audio.__isInterface__ = true;
-var aeons_core_Display = function() { };
-$hxClasses["aeons.core.Display"] = aeons_core_Display;
-aeons_core_Display.__name__ = "aeons.core.Display";
-aeons_core_Display.__isInterface__ = true;
-aeons_core_Display.prototype = {
-	viewWidth: null
-	,viewHeight: null
-	,pixelArt: null
-	,init: null
-	,scaleToWindow: null
-	,__class__: aeons_core_Display
-};
-var aeons_core_Entities = function() { };
-$hxClasses["aeons.core.Entities"] = aeons_core_Entities;
-aeons_core_Entities.__name__ = "aeons.core.Entities";
-aeons_core_Entities.__isInterface__ = true;
-aeons_core_Entities.prototype = {
-	addComponent: null
-	,getComponent: null
-	,getUpdateComponents: null
-	,getRenderComponents: null
-	,getDebugRenderComponents: null
-	,hasComponent: null
-	,hasBundleComponents: null
-	,getAllComponentsForEntity: null
-	,__class__: aeons_core_Entities
-};
-var aeons_events_Events = function() { };
-$hxClasses["aeons.events.Events"] = aeons_events_Events;
-aeons_events_Events.__name__ = "aeons.events.Events";
-aeons_events_Events.__isInterface__ = true;
-aeons_events_Events.prototype = {
-	on: null
-	,emit: null
-	,pushSceneList: null
-	,popSceneList: null
-	,replaceSceneList: null
-	,resetIndex: null
-	,setIndex: null
-	,__class__: aeons_events_Events
-};
-var aeons_math_Random = function() { };
-$hxClasses["aeons.math.Random"] = aeons_math_Random;
-aeons_math_Random.__name__ = "aeons.math.Random";
-aeons_math_Random.__isInterface__ = true;
-var aeons_utils_Storage = function() { };
-$hxClasses["aeons.utils.Storage"] = aeons_utils_Storage;
-aeons_utils_Storage.__name__ = "aeons.utils.Storage";
-aeons_utils_Storage.__isInterface__ = true;
-var aeons_core_Systems = function() { };
-$hxClasses["aeons.core.Systems"] = aeons_core_Systems;
-aeons_core_Systems.__name__ = "aeons.core.Systems";
-aeons_core_Systems.__isInterface__ = true;
-aeons_core_Systems.prototype = {
-	sort: null
-	,__class__: aeons_core_Systems
-};
-var aeons_utils_TimeStep = function() { };
-$hxClasses["aeons.utils.TimeStep"] = aeons_utils_TimeStep;
-aeons_utils_TimeStep.__name__ = "aeons.utils.TimeStep";
-aeons_utils_TimeStep.__isInterface__ = true;
-aeons_utils_TimeStep.prototype = {
-	dt: null
-	,update: null
-	,render: null
-	,reset: null
-	,__class__: aeons_utils_TimeStep
-};
-var aeons_utils_Timers = function() { };
-$hxClasses["aeons.utils.Timers"] = aeons_utils_Timers;
-aeons_utils_Timers.__name__ = "aeons.utils.Timers";
-aeons_utils_Timers.__isInterface__ = true;
-aeons_utils_Timers.prototype = {
-	create: null
-	,__class__: aeons_utils_Timers
-};
-var aeons_tween_Tweens = function() { };
-$hxClasses["aeons.tween.Tweens"] = aeons_tween_Tweens;
-aeons_tween_Tweens.__name__ = "aeons.tween.Tweens";
-aeons_tween_Tweens.__isInterface__ = true;
 var aeons_Aeons = function() { };
 $hxClasses["aeons.Aeons"] = aeons_Aeons;
 aeons_Aeons.__name__ = "aeons.Aeons";
@@ -387,6 +295,14 @@ aeons_Aeons.provideTimeStep = function(timeStep) {
 aeons_Aeons.provideTweens = function(tweens) {
 	aeons_Aeons._tweens = tweens;
 };
+var aeons_assets_Assets = function() { };
+$hxClasses["aeons.assets.Assets"] = aeons_assets_Assets;
+aeons_assets_Assets.__name__ = "aeons.assets.Assets";
+aeons_assets_Assets.__isInterface__ = true;
+aeons_assets_Assets.prototype = {
+	loadBitmapFont: null
+	,__class__: aeons_assets_Assets
+};
 var aeons_assets_services_InternalAssets = function() {
 	this.bitmapFonts = new haxe_ds_StringMap();
 };
@@ -408,6 +324,10 @@ aeons_assets_services_InternalAssets.prototype = {
 	}
 	,__class__: aeons_assets_services_InternalAssets
 };
+var aeons_audio_Audio = function() { };
+$hxClasses["aeons.audio.Audio"] = aeons_audio_Audio;
+aeons_audio_Audio.__name__ = "aeons.audio.Audio";
+aeons_audio_Audio.__isInterface__ = true;
 var aeons_audio_services_InternalAudio = function() {
 };
 $hxClasses["aeons.audio.services.InternalAudio"] = aeons_audio_services_InternalAudio;
@@ -436,18 +356,20 @@ aeons_bundles_BundleCCameraCTransform.prototype = $extend(aeons_bundles_BundleBa
 	,cTransform: null
 	,__class__: aeons_bundles_BundleCCameraCTransform
 });
-var aeons_bundles_BundleCRenderCTransform = function(entity) {
+var aeons_bundles_BundleCRenderCTransformCLayer = function(entity) {
 	this.entity = entity;
 	this.cRender = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CRender);
 	this.cTransform = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CTransform);
+	this.cLayer = aeons_Aeons._entities.getComponent(entity.id,aeons_components_CLayer);
 };
-$hxClasses["aeons.bundles.BundleCRenderCTransform"] = aeons_bundles_BundleCRenderCTransform;
-aeons_bundles_BundleCRenderCTransform.__name__ = "aeons.bundles.BundleCRenderCTransform";
-aeons_bundles_BundleCRenderCTransform.__super__ = aeons_bundles_BundleBase;
-aeons_bundles_BundleCRenderCTransform.prototype = $extend(aeons_bundles_BundleBase.prototype,{
+$hxClasses["aeons.bundles.BundleCRenderCTransformCLayer"] = aeons_bundles_BundleCRenderCTransformCLayer;
+aeons_bundles_BundleCRenderCTransformCLayer.__name__ = "aeons.bundles.BundleCRenderCTransformCLayer";
+aeons_bundles_BundleCRenderCTransformCLayer.__super__ = aeons_bundles_BundleBase;
+aeons_bundles_BundleCRenderCTransformCLayer.prototype = $extend(aeons_bundles_BundleBase.prototype,{
 	cRender: null
 	,cTransform: null
-	,__class__: aeons_bundles_BundleCRenderCTransform
+	,cLayer: null
+	,__class__: aeons_bundles_BundleCRenderCTransformCLayer
 });
 var aeons_bundles_BundleList = function() {
 	this.bundles = [];
@@ -490,6 +412,18 @@ aeons_bundles_BundleList.prototype = {
 			}
 		}
 		return false;
+	}
+	,getByEntityIt: function(entityId) {
+		var _g = 0;
+		var _g1 = this.bundles;
+		while(_g < _g1.length) {
+			var bundle = _g1[_g];
+			++_g;
+			if(bundle.entity.id == entityId) {
+				return bundle;
+			}
+		}
+		return null;
 	}
 	,__class__: aeons_bundles_BundleList
 };
@@ -598,7 +532,14 @@ aeons_components_CBitmapText.prototype = $extend(aeons_core_Component.prototype,
 			target.textRenderer.present();
 			target.shapeRenderer.drawSolidRect(x,y,width,height + 2,target.transform,color);
 		}
-		target.drawBitmapText(-this.width * this.anchorX,-(this.font == null ? 0 : this.font.fontData.lineHeight) * this.anchorY,this.text,this.font,this.color);
+		var x = -this.width * this.anchorX;
+		var y = -(this.font == null ? 0 : this.font.fontData.lineHeight) * this.anchorY;
+		var text = this.text;
+		var font = this.font;
+		var color = this.color;
+		target.shapeRenderer.present();
+		target.textRenderer.present();
+		target.imageRenderer.drawBitmapText(x,y,text,font,target.transform,color);
 	}
 	,inCameraBounds: function(cameraBounds) {
 		if(cameraBounds.x > -cameraBounds.width - this.width * 2 && cameraBounds.y > -cameraBounds.height - (this.font == null ? 0 : this.font.fontData.lineHeight) * 2 && cameraBounds.x < this.width * 2) {
@@ -665,8 +606,10 @@ aeons_components_CCamera.prototype = $extend(aeons_core_Component.prototype,{
 		this.bounds = new aeons_math_Rect();
 		this.visibilityBounds = new aeons_math_Rect();
 		this.updateBuffer();
-		this.transform.set_x(this.viewWidth * 0.5);
-		this.transform.set_y(this.viewHeight * 0.5);
+		if(this.transform.x == 0 && this.transform.y == 0) {
+			this.transform.set_x(this.viewWidth * 0.5);
+			this.transform.set_y(this.viewHeight * 0.5);
+		}
 		this.transform.isCameraTransform = true;
 		this.updateBounds();
 		if(aeons_components_CCamera.main == null) {
@@ -855,6 +798,27 @@ aeons_components_CDebugRender.prototype = $extend(aeons_core_Component.prototype
 	}
 	,__class__: aeons_components_CDebugRender
 });
+var aeons_components_CLayer = function(entityId) {
+	this.index = -1;
+	aeons_core_Component.call(this,entityId);
+};
+$hxClasses["aeons.components.CLayer"] = aeons_components_CLayer;
+aeons_components_CLayer.__name__ = "aeons.components.CLayer";
+aeons_components_CLayer.__super__ = aeons_core_Component;
+aeons_components_CLayer.prototype = $extend(aeons_core_Component.prototype,{
+	index: null
+	,create: function(index) {
+		if(index == null) {
+			index = 0;
+		}
+		var value = index;
+		value = aeons_math_AeMath.clampInt(Math,value,0,2147483647);
+		aeons_events_LayerEvent.emit("aeons_layer_changed",this.entityId,this.index,value);
+		this.index = value;
+		return this;
+	}
+	,__class__: aeons_components_CLayer
+});
 var aeons_components_CRender = function(entityId) {
 	aeons_core_Component.call(this,entityId);
 };
@@ -906,7 +870,6 @@ aeons_components_CTransform.prototype = $extend(aeons_core_Component.prototype,{
 	matrix: null
 	,x: null
 	,y: null
-	,zIndex: null
 	,angle: null
 	,scaleX: null
 	,scaleY: null
@@ -931,14 +894,12 @@ aeons_components_CTransform.prototype = $extend(aeons_core_Component.prototype,{
 			this.set_scaleX(options.scaleX == null ? 1.0 : options.scaleX);
 			this.set_scaleY(options.scaleY == null ? 1.0 : options.scaleY);
 			this.parent = options.parent == null ? null : options.parent;
-			this.set_zIndex(options.zIndex == null ? 0.0 : options.zIndex);
 		} else {
 			this.set_x(0.0);
 			this.set_y(0.0);
 			this.set_angle(0.0);
 			this.set_scaleX(1.0);
 			this.set_scaleY(1.0);
-			this.set_zIndex(0.0);
 			this.parent = null;
 		}
 		this.changed = true;
@@ -986,9 +947,6 @@ aeons_components_CTransform.prototype = $extend(aeons_core_Component.prototype,{
 		return position;
 	}
 	,localToParentPosition: function(position) {
-		if(this.isCameraTransform) {
-			return position;
-		}
 		if(this.angle == 0) {
 			if(this.scaleX == 1 && this.scaleY == 1) {
 				position.x += this.x;
@@ -1124,13 +1082,8 @@ aeons_components_CTransform.prototype = $extend(aeons_core_Component.prototype,{
 		this.scaleY = value;
 		return value;
 	}
-	,set_zIndex: function(value) {
-		this.zIndex = value;
-		aeons_events_SortEvent.emit("aeons_sort_z");
-		return value;
-	}
 	,__class__: aeons_components_CTransform
-	,__properties__: $extend(aeons_core_Component.prototype.__properties__,{set_scaleY:"set_scaleY",set_scaleX:"set_scaleX",set_angle:"set_angle",set_zIndex:"set_zIndex",set_y:"set_y",set_x:"set_x"})
+	,__properties__: $extend(aeons_core_Component.prototype.__properties__,{set_scaleY:"set_scaleY",set_scaleX:"set_scaleX",set_angle:"set_angle",set_y:"set_y",set_x:"set_x"})
 });
 var aeons_components_CUpdate = function(entityId) {
 	aeons_core_Component.call(this,entityId);
@@ -1150,6 +1103,33 @@ var aeons_core_DebugRenderable = function() { };
 $hxClasses["aeons.core.DebugRenderable"] = aeons_core_DebugRenderable;
 aeons_core_DebugRenderable.__name__ = "aeons.core.DebugRenderable";
 aeons_core_DebugRenderable.__isInterface__ = true;
+var aeons_core_Display = function() { };
+$hxClasses["aeons.core.Display"] = aeons_core_Display;
+aeons_core_Display.__name__ = "aeons.core.Display";
+aeons_core_Display.__isInterface__ = true;
+aeons_core_Display.prototype = {
+	viewWidth: null
+	,viewHeight: null
+	,pixelArt: null
+	,init: null
+	,scaleToWindow: null
+	,__class__: aeons_core_Display
+};
+var aeons_core_Entities = function() { };
+$hxClasses["aeons.core.Entities"] = aeons_core_Entities;
+aeons_core_Entities.__name__ = "aeons.core.Entities";
+aeons_core_Entities.__isInterface__ = true;
+aeons_core_Entities.prototype = {
+	addComponent: null
+	,getComponent: null
+	,getUpdateComponents: null
+	,getRenderComponents: null
+	,getDebugRenderComponents: null
+	,hasComponent: null
+	,hasBundleComponents: null
+	,getAllComponentsForEntity: null
+	,__class__: aeons_core_Entities
+};
 var aeons_core_Entity = function(id) {
 	this.active = true;
 	this.id = id;
@@ -1439,6 +1419,14 @@ aeons_core_System.prototype = {
 	}
 	,__class__: aeons_core_System
 	,__properties__: {set_priority:"set_priority"}
+};
+var aeons_core_Systems = function() { };
+$hxClasses["aeons.core.Systems"] = aeons_core_Systems;
+aeons_core_Systems.__name__ = "aeons.core.Systems";
+aeons_core_Systems.__isInterface__ = true;
+aeons_core_Systems.prototype = {
+	sort: null
+	,__class__: aeons_core_Systems
 };
 var aeons_core_Updatable = function() { };
 $hxClasses["aeons.core.Updatable"] = aeons_core_Updatable;
@@ -1991,6 +1979,51 @@ aeons_events_EventHandler.prototype = {
 	,priority: null
 	,__class__: aeons_events_EventHandler
 };
+var aeons_events_Events = function() { };
+$hxClasses["aeons.events.Events"] = aeons_events_Events;
+aeons_events_Events.__name__ = "aeons.events.Events";
+aeons_events_Events.__isInterface__ = true;
+aeons_events_Events.prototype = {
+	on: null
+	,emit: null
+	,pushSceneList: null
+	,popSceneList: null
+	,replaceSceneList: null
+	,resetIndex: null
+	,setIndex: null
+	,__class__: aeons_events_Events
+};
+var aeons_events_LayerEvent = function() {
+	aeons_events_Event.call(this);
+};
+$hxClasses["aeons.events.LayerEvent"] = aeons_events_LayerEvent;
+aeons_events_LayerEvent.__name__ = "aeons.events.LayerEvent";
+aeons_events_LayerEvent.get = function(type,entityId,currentLayer,newLayer) {
+	var event = aeons_events_LayerEvent.pool.get();
+	event.init(type,entityId,currentLayer,newLayer);
+	return event;
+};
+aeons_events_LayerEvent.emit = function(type,entityId,currentLayer,newLayer) {
+	var event = aeons_events_LayerEvent.get(type,entityId,currentLayer,newLayer);
+	aeons_Aeons._events.emit(event);
+};
+aeons_events_LayerEvent.__super__ = aeons_events_Event;
+aeons_events_LayerEvent.prototype = $extend(aeons_events_Event.prototype,{
+	entityId: null
+	,currentLayer: null
+	,newLayer: null
+	,init: function(type,entityId,currentLayer,newLayer) {
+		this.type = type;
+		this.entityId = entityId;
+		this.currentLayer = currentLayer;
+		this.newLayer = newLayer;
+	}
+	,put: function() {
+		aeons_events_Event.prototype.put.call(this);
+		aeons_events_LayerEvent.pool.put(this);
+	}
+	,__class__: aeons_events_LayerEvent
+});
 var aeons_events_SceneEvent = function() {
 	this.below = false;
 	this.clearAll = false;
@@ -2011,31 +2044,6 @@ aeons_events_SceneEvent.prototype = $extend(aeons_events_Event.prototype,{
 		aeons_events_SceneEvent.pool.put(this);
 	}
 	,__class__: aeons_events_SceneEvent
-});
-var aeons_events_SortEvent = function() {
-	aeons_events_Event.call(this);
-};
-$hxClasses["aeons.events.SortEvent"] = aeons_events_SortEvent;
-aeons_events_SortEvent.__name__ = "aeons.events.SortEvent";
-aeons_events_SortEvent.get = function(type) {
-	var event = aeons_events_SortEvent.pool.get();
-	event.init(type);
-	return event;
-};
-aeons_events_SortEvent.emit = function(type) {
-	var event = aeons_events_SortEvent.get(type);
-	aeons_Aeons._events.emit(event);
-};
-aeons_events_SortEvent.__super__ = aeons_events_Event;
-aeons_events_SortEvent.prototype = $extend(aeons_events_Event.prototype,{
-	init: function(type) {
-		this.type = type;
-	}
-	,put: function() {
-		aeons_events_Event.prototype.put.call(this);
-		aeons_events_SortEvent.pool.put(this);
-	}
-	,__class__: aeons_events_SortEvent
 });
 var aeons_events_input_GamepadEvent = function() {
 	this.value = 0.0;
@@ -2491,28 +2499,6 @@ aeons_graphics_RenderTarget.prototype = {
 		this.imageRenderer.present();
 		this.textRenderer.present();
 		this.g4.end();
-	}
-	,drawImage: function(x,y,image,color) {
-		this.shapeRenderer.present();
-		this.textRenderer.present();
-		var _this = this.imageRenderer;
-		var transform = this.transform;
-		var sw = image.get_width();
-		var sh = image.get_height();
-		_this.drawImageSectionWithSize(x,y,sw,sh,0,0,sw,sh,image,transform,color);
-	}
-	,drawBitmapText: function(x,y,text,font,color) {
-		this.shapeRenderer.present();
-		this.textRenderer.present();
-		this.imageRenderer.drawBitmapText(x,y,text,font,this.transform,color);
-	}
-	,setPipeline: function(pipeline) {
-		if(pipeline != null) {
-			this.g4.setPipeline(pipeline.state);
-		}
-		this.shapeRenderer.setPipeline(pipeline);
-		this.imageRenderer.setPipeline(pipeline);
-		this.textRenderer.setPipeline(pipeline);
 	}
 	,__class__: aeons_graphics_RenderTarget
 };
@@ -3210,6 +3196,10 @@ aeons_math_QuaternionEx.fromAxisAngleVal = function(cl,x,y,z,angle) {
 	var sin = Math.sin(angle / 2.0);
 	return new kha_math_Quaternion(sin * x,sin * y,sin * z,cos);
 };
+var aeons_math_Random = function() { };
+$hxClasses["aeons.math.Random"] = aeons_math_Random;
+aeons_math_Random.__name__ = "aeons.math.Random";
+aeons_math_Random.__isInterface__ = true;
 var aeons_math_Rect = function(x,y,width,height) {
 	if(height == null) {
 		height = 0.0;
@@ -3283,7 +3273,8 @@ aeons_math_services_InternalRandom.prototype = {
 	,__class__: aeons_math_services_InternalRandom
 };
 var aeons_systems_SRender = function() {
-	this.sortZ = false;
+	this.layerChanges = [];
+	this.layers = [];
 	var _gthis = this;
 	aeons_core_System.call(this);
 	this.cameraBundles = new aeons_bundles_BundleList();
@@ -3315,9 +3306,9 @@ var aeons_systems_SRender = function() {
 	});
 	this.renderBundles = new aeons_bundles_BundleList();
 	aeons_Aeons._events.on("aeons_" + "aeons.components.CRender" + "_added",function(event) {
-		if(aeons_Aeons._entities.hasBundleComponents(event.entity.id,["aeons.components.CRender","aeons.components.CTransform"])) {
+		if(aeons_Aeons._entities.hasBundleComponents(event.entity.id,["aeons.components.CRender","aeons.components.CTransform","aeons.components.CLayer"])) {
 			if(!_gthis.renderBundles.hasEntity(event.entity)) {
-				var b = new aeons_bundles_BundleCRenderCTransform(event.entity);
+				var b = new aeons_bundles_BundleCRenderCTransformCLayer(event.entity);
 				_gthis.renderBundles.addBundle(b);
 			}
 		}
@@ -3328,14 +3319,27 @@ var aeons_systems_SRender = function() {
 		}
 	});
 	aeons_Aeons._events.on("aeons_" + "aeons.components.CTransform" + "_added",function(event) {
-		if(aeons_Aeons._entities.hasBundleComponents(event.entity.id,["aeons.components.CRender","aeons.components.CTransform"])) {
+		if(aeons_Aeons._entities.hasBundleComponents(event.entity.id,["aeons.components.CRender","aeons.components.CTransform","aeons.components.CLayer"])) {
 			if(!_gthis.renderBundles.hasEntity(event.entity)) {
-				var b = new aeons_bundles_BundleCRenderCTransform(event.entity);
+				var b = new aeons_bundles_BundleCRenderCTransformCLayer(event.entity);
 				_gthis.renderBundles.addBundle(b);
 			}
 		}
 	});
 	aeons_Aeons._events.on("aeons_" + "aeons.components.CTransform" + "_removed",function(event) {
+		if(_gthis.renderBundles.hasEntity(event.entity)) {
+			_gthis.renderBundles.removeBundle(event.entity);
+		}
+	});
+	aeons_Aeons._events.on("aeons_" + "aeons.components.CLayer" + "_added",function(event) {
+		if(aeons_Aeons._entities.hasBundleComponents(event.entity.id,["aeons.components.CRender","aeons.components.CTransform","aeons.components.CLayer"])) {
+			if(!_gthis.renderBundles.hasEntity(event.entity)) {
+				var b = new aeons_bundles_BundleCRenderCTransformCLayer(event.entity);
+				_gthis.renderBundles.addBundle(b);
+			}
+		}
+	});
+	aeons_Aeons._events.on("aeons_" + "aeons.components.CLayer" + "_removed",function(event) {
 		if(_gthis.renderBundles.hasEntity(event.entity)) {
 			_gthis.renderBundles.removeBundle(event.entity);
 		}
@@ -3348,15 +3352,54 @@ aeons_systems_SRender.__super__ = aeons_core_System;
 aeons_systems_SRender.prototype = $extend(aeons_core_System.prototype,{
 	cameraBundles: null
 	,renderBundles: null
-	,sortZ: null
+	,layers: null
+	,layerChanges: null
 	,create: function() {
-		aeons_Aeons._events.on("aeons_sort_z",$bind(this,this.sortListener));
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		this.layers.push([]);
+		aeons_Aeons._events.on("aeons_layer_changed",$bind(this,this.layerChange));
 		return this;
 	}
 	,render: function(target) {
-		if(this.sortZ) {
-			aeons_utils_TimSort.timSort(this.renderBundles.bundles,$bind(this,this.sort));
-			this.sortZ = false;
+		while(this.layerChanges.length > 0) {
+			var change = this.layerChanges.pop();
+			while(this.layers.length - 1 < change.newLayer) this.layers.push([]);
+			if(change.currentLayer == -1) {
+				var bundle = this.renderBundles.getByEntityIt(change.entityId);
+				if(bundle != null) {
+					this.layers[change.newLayer].push(bundle);
+				}
+			} else {
+				var bundle1 = null;
+				var _g = 0;
+				var _g1 = this.layers[change.currentLayer];
+				while(_g < _g1.length) {
+					var b = _g1[_g];
+					++_g;
+					if(b.entity.id == change.entityId) {
+						bundle1 = b;
+						break;
+					}
+				}
+				if(bundle1 == null) {
+					bundle1 = this.renderBundles.getByEntityIt(change.entityId);
+				}
+				this.layers[change.newLayer].push(bundle1);
+			}
 		}
 		var _g_current = 0;
 		var _g_array = this.renderBundles.bundles;
@@ -3376,31 +3419,15 @@ aeons_systems_SRender.prototype = $extend(aeons_core_System.prototype,{
 			var tlPos = aeons_math_Vector2.get();
 			var brPos = aeons_math_Vector2.get();
 			camTarget.start(true,camera.backgroundColor);
-			var _g1_current1 = 0;
-			var _g1_array1 = this.renderBundles.bundles;
-			while(_g1_current1 < _g1_array1.length) {
-				var renderable = _g1_array1[_g1_current1++];
-				if(renderable.cTransform.containsParent(camTransform)) {
-					var _this = camTarget.transform;
-					var m = renderable.cTransform.matrix;
-					_this._00 = m._00;
-					_this._10 = m._10;
-					_this._20 = m._20;
-					_this._30 = m._30;
-					_this._01 = m._01;
-					_this._11 = m._11;
-					_this._21 = m._21;
-					_this._31 = m._31;
-					_this._02 = m._02;
-					_this._12 = m._12;
-					_this._22 = m._22;
-					_this._32 = m._32;
-					_this._03 = m._03;
-					_this._13 = m._13;
-					_this._23 = m._23;
-					_this._33 = m._33;
-					renderable.cRender.render(camTarget);
-				} else {
+			var _g = 0;
+			var _g1 = this.layers;
+			while(_g < _g1.length) {
+				var bundles = _g1[_g];
+				++_g;
+				var _g2 = 0;
+				while(_g2 < bundles.length) {
+					var renderable = bundles[_g2];
+					++_g2;
 					tlPos.x = camera.visibilityBounds.x;
 					tlPos.y = camera.visibilityBounds.y;
 					brPos.x = camera.visibilityBounds.x + camera.visibilityBounds.width;
@@ -3412,42 +3439,42 @@ aeons_systems_SRender.prototype = $extend(aeons_core_System.prototype,{
 					var width = Math.abs(tlPos.x - brPos.x);
 					var height = Math.abs(tlPos.y - brPos.y);
 					localBounds.set(x,y,width,height);
-					if(renderable.cRender.inCameraBounds(localBounds)) {
-						var _this1 = camTarget.transform;
-						var _this2 = camera.matrix;
-						var m1 = renderable.cTransform.matrix;
-						var m__00 = _this2._00 * m1._00 + _this2._10 * m1._01 + _this2._20 * m1._02 + _this2._30 * m1._03;
-						var m__10 = _this2._00 * m1._10 + _this2._10 * m1._11 + _this2._20 * m1._12 + _this2._30 * m1._13;
-						var m__20 = _this2._00 * m1._20 + _this2._10 * m1._21 + _this2._20 * m1._22 + _this2._30 * m1._23;
-						var m__30 = _this2._00 * m1._30 + _this2._10 * m1._31 + _this2._20 * m1._32 + _this2._30 * m1._33;
-						var m__01 = _this2._01 * m1._00 + _this2._11 * m1._01 + _this2._21 * m1._02 + _this2._31 * m1._03;
-						var m__11 = _this2._01 * m1._10 + _this2._11 * m1._11 + _this2._21 * m1._12 + _this2._31 * m1._13;
-						var m__21 = _this2._01 * m1._20 + _this2._11 * m1._21 + _this2._21 * m1._22 + _this2._31 * m1._23;
-						var m__31 = _this2._01 * m1._30 + _this2._11 * m1._31 + _this2._21 * m1._32 + _this2._31 * m1._33;
-						var m__02 = _this2._02 * m1._00 + _this2._12 * m1._01 + _this2._22 * m1._02 + _this2._32 * m1._03;
-						var m__12 = _this2._02 * m1._10 + _this2._12 * m1._11 + _this2._22 * m1._12 + _this2._32 * m1._13;
-						var m__22 = _this2._02 * m1._20 + _this2._12 * m1._21 + _this2._22 * m1._22 + _this2._32 * m1._23;
-						var m__32 = _this2._02 * m1._30 + _this2._12 * m1._31 + _this2._22 * m1._32 + _this2._32 * m1._33;
-						var m__03 = _this2._03 * m1._00 + _this2._13 * m1._01 + _this2._23 * m1._02 + _this2._33 * m1._03;
-						var m__13 = _this2._03 * m1._10 + _this2._13 * m1._11 + _this2._23 * m1._12 + _this2._33 * m1._13;
-						var m__23 = _this2._03 * m1._20 + _this2._13 * m1._21 + _this2._23 * m1._22 + _this2._33 * m1._23;
-						var m__33 = _this2._03 * m1._30 + _this2._13 * m1._31 + _this2._23 * m1._32 + _this2._33 * m1._33;
-						_this1._00 = m__00;
-						_this1._10 = m__10;
-						_this1._20 = m__20;
-						_this1._30 = m__30;
-						_this1._01 = m__01;
-						_this1._11 = m__11;
-						_this1._21 = m__21;
-						_this1._31 = m__31;
-						_this1._02 = m__02;
-						_this1._12 = m__12;
-						_this1._22 = m__22;
-						_this1._32 = m__32;
-						_this1._03 = m__03;
-						_this1._13 = m__13;
-						_this1._23 = m__23;
-						_this1._33 = m__33;
+					if(renderable.cRender.inCameraBounds(localBounds) || renderable.cTransform.containsParent(camTransform)) {
+						var _this = camTarget.transform;
+						var _this1 = camera.matrix;
+						var m = renderable.cTransform.matrix;
+						var m__00 = _this1._00 * m._00 + _this1._10 * m._01 + _this1._20 * m._02 + _this1._30 * m._03;
+						var m__10 = _this1._00 * m._10 + _this1._10 * m._11 + _this1._20 * m._12 + _this1._30 * m._13;
+						var m__20 = _this1._00 * m._20 + _this1._10 * m._21 + _this1._20 * m._22 + _this1._30 * m._23;
+						var m__30 = _this1._00 * m._30 + _this1._10 * m._31 + _this1._20 * m._32 + _this1._30 * m._33;
+						var m__01 = _this1._01 * m._00 + _this1._11 * m._01 + _this1._21 * m._02 + _this1._31 * m._03;
+						var m__11 = _this1._01 * m._10 + _this1._11 * m._11 + _this1._21 * m._12 + _this1._31 * m._13;
+						var m__21 = _this1._01 * m._20 + _this1._11 * m._21 + _this1._21 * m._22 + _this1._31 * m._23;
+						var m__31 = _this1._01 * m._30 + _this1._11 * m._31 + _this1._21 * m._32 + _this1._31 * m._33;
+						var m__02 = _this1._02 * m._00 + _this1._12 * m._01 + _this1._22 * m._02 + _this1._32 * m._03;
+						var m__12 = _this1._02 * m._10 + _this1._12 * m._11 + _this1._22 * m._12 + _this1._32 * m._13;
+						var m__22 = _this1._02 * m._20 + _this1._12 * m._21 + _this1._22 * m._22 + _this1._32 * m._23;
+						var m__32 = _this1._02 * m._30 + _this1._12 * m._31 + _this1._22 * m._32 + _this1._32 * m._33;
+						var m__03 = _this1._03 * m._00 + _this1._13 * m._01 + _this1._23 * m._02 + _this1._33 * m._03;
+						var m__13 = _this1._03 * m._10 + _this1._13 * m._11 + _this1._23 * m._12 + _this1._33 * m._13;
+						var m__23 = _this1._03 * m._20 + _this1._13 * m._21 + _this1._23 * m._22 + _this1._33 * m._23;
+						var m__33 = _this1._03 * m._30 + _this1._13 * m._31 + _this1._23 * m._32 + _this1._33 * m._33;
+						_this._00 = m__00;
+						_this._10 = m__10;
+						_this._20 = m__20;
+						_this._30 = m__30;
+						_this._01 = m__01;
+						_this._11 = m__11;
+						_this._21 = m__21;
+						_this._31 = m__31;
+						_this._02 = m__02;
+						_this._12 = m__12;
+						_this._22 = m__22;
+						_this._32 = m__32;
+						_this._03 = m__03;
+						_this._13 = m__13;
+						_this._23 = m__23;
+						_this._33 = m__33;
 						renderable.cRender.render(camTarget);
 					}
 				}
@@ -3469,26 +3496,39 @@ aeons_systems_SRender.prototype = $extend(aeons_core_System.prototype,{
 			var camBundle = _g3_array[_g3_current++];
 			var camera = camBundle.cCamera;
 			if(camera.pipeline != null) {
-				target.setPipeline(camera.pipeline);
+				var pipeline = camera.pipeline;
+				if(pipeline != null) {
+					target.g4.setPipeline(pipeline.state);
+				}
+				target.shapeRenderer.setPipeline(pipeline);
+				target.imageRenderer.setPipeline(pipeline);
+				target.textRenderer.setPipeline(pipeline);
 				if(camera.pipelineCallback != null) {
 					camera.pipelineCallback(target);
 				}
 			}
-			target.drawImage(camera.viewX,camera.viewY,camera.renderTarget.image,-1);
+			var x = camera.viewX;
+			var y = camera.viewY;
+			var image = camera.renderTarget.image;
+			target.shapeRenderer.present();
+			target.textRenderer.present();
+			var _this = target.imageRenderer;
+			var transform = target.transform;
+			var sw = image.get_width();
+			var sh = image.get_height();
+			_this.drawImageSectionWithSize(x,y,sw,sh,0,0,sw,sh,image,transform,-1);
 			target.present();
-			target.setPipeline(null);
+			var pipeline1 = null;
+			if(pipeline1 != null) {
+				target.g4.setPipeline(pipeline1.state);
+			}
+			target.shapeRenderer.setPipeline(pipeline1);
+			target.imageRenderer.setPipeline(pipeline1);
+			target.textRenderer.setPipeline(pipeline1);
 		}
 	}
-	,sortListener: function(event) {
-		this.sortZ = true;
-	}
-	,sort: function(a,b) {
-		if(a.cTransform.zIndex > b.cTransform.zIndex) {
-			return 1;
-		} else if(a.cTransform.zIndex < b.cTransform.zIndex) {
-			return -1;
-		}
-		return 0;
+	,layerChange: function(event) {
+		this.layerChanges.unshift({ entityId : event.entityId, currentLayer : event.currentLayer, newLayer : event.newLayer});
 	}
 	,__class__: aeons_systems_SRender
 });
@@ -3577,6 +3617,10 @@ aeons_tween_TweenData.prototype = {
 	,propertyName: null
 	,__class__: aeons_tween_TweenData
 };
+var aeons_tween_Tweens = function() { };
+$hxClasses["aeons.tween.Tweens"] = aeons_tween_Tweens;
+aeons_tween_Tweens.__name__ = "aeons.tween.Tweens";
+aeons_tween_Tweens.__isInterface__ = true;
 var aeons_tween_services_InternalTweens = function() {
 	this.completed = [];
 	this.tweens = [];
@@ -3607,590 +3651,20 @@ aeons_tween_services_InternalTweens.prototype = {
 	}
 	,__class__: aeons_tween_services_InternalTweens
 };
-var aeons_utils_TimSort = function(array,compare) {
-	this.array = array;
-	this.compare = compare;
-	this.minGallop = 7;
-	this.length = array.length;
-	this.stackSize = 0;
-	this.tmpStorageLength = 256;
-	if(this.length < 512) {
-		this.tmpStorageLength = this.length >>> 2;
-	}
-	this.tmp = [];
-	var _g = 0;
-	var _g1 = this.tmpStorageLength;
-	while(_g < _g1) {
-		var i = _g++;
-		this.tmp.push(null);
-	}
-	this.stackLength = this.length < 120 ? 5 : this.length < 1542 ? 10 : this.length < 119151 ? 19 : 40;
-	this.runStart = [];
-	this.runLength = [];
-	var _g = 0;
-	var _g1 = this.stackLength;
-	while(_g < _g1) {
-		var i = _g++;
-		this.runStart.push(0);
-		this.runLength.push(0);
-	}
-};
-$hxClasses["aeons.utils.TimSort"] = aeons_utils_TimSort;
-aeons_utils_TimSort.__name__ = "aeons.utils.TimSort";
-aeons_utils_TimSort.timSort = function(array,compare,lo,hi) {
-	if(lo == null) {
-		lo = 0;
-	}
-	if(hi == null) {
-		hi = array.length;
-	}
-	var remaining = hi - lo;
-	if(remaining < 2) {
-		return;
-	}
-	var runLength = 0;
-	if(remaining < 32) {
-		runLength = aeons_utils_TimSort.makeAscendingRun(array,lo,hi,compare);
-		aeons_utils_TimSort.binaryInsertionSort(array,lo,hi,lo + runLength,compare);
-		return;
-	}
-	var ts = new aeons_utils_TimSort(array,compare);
-	var minRun = aeons_utils_TimSort.minRunLength(remaining);
-	while(true) {
-		runLength = aeons_utils_TimSort.makeAscendingRun(array,lo,hi,compare);
-		if(runLength < minRun) {
-			var force = remaining;
-			if(force > minRun) {
-				force = minRun;
-			}
-			aeons_utils_TimSort.binaryInsertionSort(array,lo,lo + force,lo + runLength,compare);
-			runLength = force;
-		}
-		ts.pushRun(lo,runLength);
-		ts.mergeRuns();
-		remaining -= runLength;
-		lo += runLength;
-		if(!(remaining != 0)) {
-			break;
-		}
-	}
-	ts.forceMergeRuns();
-};
-aeons_utils_TimSort.minRunLength = function(n) {
-	var r = 0;
-	while(n >= 32) {
-		r |= n & 1;
-		n >>= 1;
-	}
-	return n + r;
-};
-aeons_utils_TimSort.makeAscendingRun = function(array,lo,hi,compare) {
-	var runHi = lo + 1;
-	if(runHi == hi) {
-		return 1;
-	}
-	if(compare(array[runHi++],array[lo]) < 0) {
-		while(runHi < hi && compare(array[runHi],array[runHi - 1]) < 0) ++runHi;
-		aeons_utils_TimSort.reverseRun(array,lo,runHi);
-	} else {
-		while(runHi < hi && compare(array[runHi],array[runHi - 1]) >= 0) ++runHi;
-	}
-	return runHi - lo;
-};
-aeons_utils_TimSort.gallopLeft = function(value,array,start,length,hint,compare) {
-	var lastOffset = 0;
-	var maxOffset = 0;
-	var offset = 1;
-	if(compare(value,array[start + hint]) > 0) {
-		maxOffset = length - hint;
-		while(offset < maxOffset && compare(value,array[start + hint + offset]) > 0) {
-			lastOffset = offset;
-			offset = (offset << 1) + 1;
-			if(offset <= 0) {
-				offset = maxOffset;
-			}
-		}
-		if(offset > maxOffset) {
-			offset = maxOffset;
-		}
-		lastOffset += hint;
-		offset += hint;
-	} else {
-		maxOffset = hint + 1;
-		while(offset < maxOffset && compare(value,array[start + hint - offset]) <= 0) {
-			lastOffset = offset;
-			offset = (offset << 1) + 1;
-			if(offset <= 0) {
-				offset = maxOffset;
-			}
-		}
-		if(offset > maxOffset) {
-			offset = maxOffset;
-		}
-		var tmp = lastOffset;
-		lastOffset = hint - offset;
-		offset = hint - tmp;
-	}
-	++lastOffset;
-	while(lastOffset < offset) {
-		var m = lastOffset + (offset - lastOffset >>> 1);
-		if(compare(value,array[start + m]) > 0) {
-			lastOffset = m + 1;
-		} else {
-			offset = m;
-		}
-	}
-	return offset;
-};
-aeons_utils_TimSort.gallopRight = function(value,array,start,length,hint,compare) {
-	var lastOffset = 0;
-	var maxOffset = 0;
-	var offset = 1;
-	if(compare(value,array[start + hint]) < 0) {
-		maxOffset = hint + 1;
-		while(offset < maxOffset && compare(value,array[start + hint - offset]) < 0) {
-			lastOffset = offset;
-			offset = (offset << 1) + 1;
-			if(offset <= 0) {
-				offset = maxOffset;
-			}
-		}
-		if(offset > maxOffset) {
-			offset = maxOffset;
-		}
-		var tmp = lastOffset;
-		lastOffset = hint - offset;
-		offset = hint - tmp;
-	} else {
-		maxOffset = length - hint;
-		while(offset < maxOffset && compare(value,array[start + hint + offset]) >= 0) {
-			lastOffset = offset;
-			offset = (offset << 1) + 1;
-			if(offset <= 0) {
-				offset = maxOffset;
-			}
-		}
-		if(offset > maxOffset) {
-			offset = maxOffset;
-		}
-		lastOffset += hint;
-		offset += hint;
-	}
-	++lastOffset;
-	while(lastOffset < offset) {
-		var m = lastOffset + (offset - lastOffset >>> 1);
-		if(compare(value,array[start + m]) < 0) {
-			offset = m;
-		} else {
-			lastOffset = m + 1;
-		}
-	}
-	return offset;
-};
-aeons_utils_TimSort.reverseRun = function(array,lo,hi) {
-	--hi;
-	while(lo < hi) {
-		var t = array[lo];
-		array[lo++] = array[hi];
-		array[hi--] = t;
-	}
-};
-aeons_utils_TimSort.binaryInsertionSort = function(array,lo,hi,start,compare) {
-	if(start == lo) {
-		++start;
-	}
-	var _g = start;
-	var _g1 = hi;
-	while(_g < _g1) {
-		var i = _g++;
-		var pivot = array[i];
-		var left = lo;
-		var right = i;
-		while(left < right) {
-			var mid = left + (right - left >>> 1);
-			if(compare(pivot,array[mid]) < 0) {
-				right = mid;
-			} else {
-				left = mid + 1;
-			}
-		}
-		var n = i - left;
-		if(n == 3) {
-			array[left + 3] = array[left + 2];
-			array[left + 2] = array[left + 1];
-			array[left + 1] = array[left];
-		} else if(n == 2) {
-			array[left + 2] = array[left + 1];
-			array[left + 1] = array[left];
-		} else if(n == 1) {
-			array[left + 1] = array[left];
-		} else {
-			while(n > 0) {
-				array[left + n] = array[left + n - 1];
-				--n;
-			}
-		}
-		array[left] = pivot;
-	}
-};
-aeons_utils_TimSort.prototype = {
-	array: null
-	,compare: null
-	,minGallop: null
-	,length: null
-	,tmpStorageLength: null
-	,stackLength: null
-	,stackSize: null
-	,runStart: null
-	,runLength: null
-	,tmp: null
-	,pushRun: function(runStart,runLength) {
-		this.runStart[this.stackSize] = runStart;
-		this.runLength[this.stackSize] = runLength;
-		this.stackSize += 1;
-	}
-	,mergeRuns: function() {
-		while(this.stackSize > 1) {
-			var n = this.stackSize - 2;
-			if(n >= 1 && this.runLength[n - 1] <= this.runLength[n] + this.runLength[n + 1] || n >= 2 && this.runLength[n - 2] <= this.runLength[n] + this.runLength[n - 1]) {
-				if(this.runLength[n - 1] < this.runLength[n + 1]) {
-					--n;
-				}
-			} else if(this.runLength[n] > this.runLength[n + 1]) {
-				break;
-			}
-			this.mergeAt(n);
-		}
-	}
-	,forceMergeRuns: function() {
-		while(this.stackSize > 1) {
-			var n = this.stackSize - 2;
-			if(n > 0 && this.runLength[n - 1] < this.runLength[n + 1]) {
-				--n;
-			}
-			this.mergeAt(n);
-		}
-	}
-	,mergeAt: function(i) {
-		var start1 = this.runStart[i];
-		var length1 = this.runLength[i];
-		var start2 = this.runStart[i + 1];
-		var length2 = this.runLength[i + 1];
-		this.runLength[i] = length1 + length2;
-		if(i == this.stackSize - 3) {
-			this.runStart[i + 1] = this.runStart[i + 2];
-			this.runLength[i + 1] = this.runLength[i + 2];
-		}
-		this.stackSize--;
-		var k = aeons_utils_TimSort.gallopRight(this.array[start2],this.array,start1,length1,0,this.compare);
-		start1 += k;
-		length1 -= k;
-		if(length1 == 0) {
-			return;
-		}
-		length2 = aeons_utils_TimSort.gallopLeft(this.array[start1 + length1 - 1],this.array,start2,length2,length2 - 1,this.compare);
-		if(length2 == 0) {
-			return;
-		}
-		if(length1 <= length2) {
-			this.mergeLow(start1,length1,start2,length2);
-		} else {
-			this.mergeHigh(start1,length1,start2,length2);
-		}
-	}
-	,mergeLow: function(start1,length1,start2,length2) {
-		var _g = 0;
-		var _g1 = length1;
-		while(_g < _g1) {
-			var i = _g++;
-			this.tmp[i] = this.array[start1 + i];
-		}
-		var cursor1 = 0;
-		var cursor2 = start2;
-		var dest = start1;
-		this.array[dest++] = this.array[cursor2++];
-		--length2;
-		if(length2 == 0) {
-			var _g = 0;
-			var _g1 = length1;
-			while(_g < _g1) {
-				var i = _g++;
-				this.array[dest + i] = this.tmp[cursor1 + i];
-			}
-			return;
-		}
-		if(length1 == 1) {
-			var _g = 0;
-			var _g1 = length2;
-			while(_g < _g1) {
-				var i = _g++;
-				this.array[dest + i] = this.array[cursor2 + i];
-			}
-			this.array[dest + length2] = this.tmp[cursor1];
-			return;
-		}
-		var minGallop = this.minGallop;
-		while(true) {
-			var count1 = 0;
-			var count2 = 0;
-			var exit = false;
-			while(true) {
-				if(this.compare(this.array[cursor2],this.tmp[cursor1]) < 0) {
-					this.array[dest++] = this.array[cursor2++];
-					++count2;
-					count1 = 0;
-					if(--length2 == 0) {
-						exit = true;
-						break;
-					}
-				} else {
-					this.array[dest++] = this.tmp[cursor1++];
-					++count1;
-					count2 = 0;
-					if(--length1 == 1) {
-						exit = true;
-						break;
-					}
-				}
-				if(!((count1 | count2) < minGallop)) {
-					break;
-				}
-			}
-			if(exit) {
-				break;
-			}
-			while(true) {
-				count1 = aeons_utils_TimSort.gallopRight(this.array[cursor2],this.tmp,cursor1,length1,0,this.compare);
-				if(count1 != 0) {
-					var _g = 0;
-					var _g1 = count1;
-					while(_g < _g1) {
-						var i = _g++;
-						this.array[dest + i] = this.tmp[cursor1 + i];
-					}
-					dest += count1;
-					cursor1 += count1;
-					length1 -= count1;
-					if(length1 <= 1) {
-						exit = true;
-						break;
-					}
-				}
-				this.array[dest++] = this.array[cursor2++];
-				if(--length2 == 0) {
-					exit = true;
-					break;
-				}
-				count2 = aeons_utils_TimSort.gallopLeft(this.tmp[cursor1],this.array,cursor2,length2,0,this.compare);
-				if(count2 != 0) {
-					var _g2 = 0;
-					var _g3 = count2;
-					while(_g2 < _g3) {
-						var i1 = _g2++;
-						this.array[dest + i1] = this.array[cursor2 + i1];
-					}
-					dest += count2;
-					cursor2 += count2;
-					length2 -= count2;
-					if(length2 == 0) {
-						exit = true;
-						break;
-					}
-				}
-				this.array[dest++] = this.tmp[cursor1++];
-				if(--length1 == 1) {
-					exit = true;
-					break;
-				}
-				--minGallop;
-				if(!(count1 >= 7 || count2 >= 7)) {
-					break;
-				}
-			}
-			if(exit) {
-				break;
-			}
-			if(minGallop < 0) {
-				minGallop = 0;
-			}
-			minGallop += 2;
-		}
-		this.minGallop = minGallop;
-		if(minGallop < 1) {
-			this.minGallop = 1;
-		}
-		if(length1 == 1) {
-			var _g = 0;
-			var _g1 = length2;
-			while(_g < _g1) {
-				var i = _g++;
-				this.array[dest + i] = this.array[cursor2 + i];
-			}
-			this.array[dest + length2] = this.tmp[cursor1];
-		} else if(length1 == 0) {
-			throw haxe_Exception.thrown("mergeLow preconditions were not respected");
-		} else {
-			var _g = 0;
-			var _g1 = length1;
-			while(_g < _g1) {
-				var i = _g++;
-				this.array[dest + i] = this.tmp[cursor1 + i];
-			}
-		}
-	}
-	,mergeHigh: function(start1,length1,start2,length2) {
-		var _g = 0;
-		var _g1 = length2;
-		while(_g < _g1) {
-			var i = _g++;
-			this.tmp[i] = this.array[start2 + i];
-		}
-		var cursor1 = start1 + length1 - 1;
-		var cursor2 = length2 - 1;
-		var dest = start2 + length2 - 1;
-		var customCursor = 0;
-		var customDest = 0;
-		this.array[dest--] = this.array[cursor1--];
-		if(--length1 == 0) {
-			customCursor = dest - (length2 - 1);
-			var _g = 0;
-			var _g1 = length2;
-			while(_g < _g1) {
-				var i = _g++;
-				this.array[customCursor + i] = this.tmp[i];
-			}
-			return;
-		}
-		if(length2 == 1) {
-			dest -= length1;
-			cursor1 -= length1;
-			customDest = dest + 1;
-			customCursor = cursor1 + 1;
-			var i = this.length - 1;
-			while(i >= 0) {
-				this.array[customDest + i] = this.array[customCursor + i];
-				--i;
-			}
-			this.array[dest] = this.tmp[cursor2];
-			return;
-		}
-		var minGallop = this.minGallop;
-		while(true) {
-			var count1 = 0;
-			var count2 = 0;
-			var exit = false;
-			while(true) {
-				if(this.compare(this.tmp[cursor2],this.array[cursor1]) < 0) {
-					this.array[dest--] = this.array[cursor1--];
-					++count1;
-					count2 = 0;
-					if(--length1 == 0) {
-						exit = true;
-						break;
-					}
-				} else {
-					this.array[dest--] = this.tmp[cursor2--];
-					++count2;
-					count1 = 0;
-					if(--length2 == 1) {
-						exit = true;
-						break;
-					}
-				}
-				if(!((count1 | count2) < minGallop)) {
-					break;
-				}
-			}
-			if(exit) {
-				break;
-			}
-			while(true) {
-				count1 = length1 - aeons_utils_TimSort.gallopRight(this.tmp[cursor2],this.array,start1,length1,length1 - 1,this.compare);
-				if(count1 != 0) {
-					dest -= count1;
-					cursor1 -= count1;
-					length1 -= count1;
-					customDest = dest + 1;
-					customCursor = cursor1 + 1;
-					var i = count1 - 1;
-					while(i >= 0) {
-						this.array[customDest + i] = this.array[customCursor + i];
-						--i;
-					}
-					if(length1 == 0) {
-						exit = true;
-						break;
-					}
-				}
-				this.array[dest--] = this.tmp[cursor2--];
-				if(--length2 == 1) {
-					exit = true;
-					break;
-				}
-				count2 = length2 - aeons_utils_TimSort.gallopLeft(this.array[cursor1],this.tmp,0,length2,length2 - 1,this.compare);
-				if(count2 != 0) {
-					dest -= count2;
-					cursor2 -= count2;
-					length2 -= count2;
-					customDest = dest + 1;
-					customCursor = cursor2 + 1;
-					var _g = 0;
-					var _g1 = count2;
-					while(_g < _g1) {
-						var i1 = _g++;
-						this.array[customDest + i1] = this.tmp[customCursor + i1];
-					}
-					if(length2 <= 1) {
-						exit = true;
-						break;
-					}
-				}
-				this.array[dest--] = this.array[cursor1--];
-				if(--length1 == 0) {
-					exit = true;
-					break;
-				}
-				--minGallop;
-				if(!(count1 >= 7 || count2 >= 7)) {
-					break;
-				}
-			}
-			if(exit) {
-				break;
-			}
-			if(minGallop < 0) {
-				minGallop = 0;
-			}
-			minGallop += 2;
-		}
-		this.minGallop = minGallop;
-		if(minGallop < 1) {
-			this.minGallop = 1;
-		}
-		if(length2 == 1) {
-			dest -= length1;
-			cursor1 -= length1;
-			customDest = dest + 1;
-			customCursor = cursor1 + 1;
-			var i = length1 - 1;
-			while(i >= 0) {
-				this.array[customDest + i] = this.array[customCursor + i];
-				--i;
-			}
-			this.array[dest] = this.tmp[cursor2];
-		} else if(length2 == 0) {
-			throw haxe_Exception.thrown("mergeHigh preconditions were not respected");
-		} else {
-			customCursor = dest - (length2 - 1);
-			var _g = 0;
-			var _g1 = length2;
-			while(_g < _g1) {
-				var i = _g++;
-				this.array[customCursor + i] = this.tmp[i];
-			}
-		}
-	}
-	,__class__: aeons_utils_TimSort
+var aeons_utils_Storage = function() { };
+$hxClasses["aeons.utils.Storage"] = aeons_utils_Storage;
+aeons_utils_Storage.__name__ = "aeons.utils.Storage";
+aeons_utils_Storage.__isInterface__ = true;
+var aeons_utils_TimeStep = function() { };
+$hxClasses["aeons.utils.TimeStep"] = aeons_utils_TimeStep;
+aeons_utils_TimeStep.__name__ = "aeons.utils.TimeStep";
+aeons_utils_TimeStep.__isInterface__ = true;
+aeons_utils_TimeStep.prototype = {
+	dt: null
+	,update: null
+	,render: null
+	,reset: null
+	,__class__: aeons_utils_TimeStep
 };
 var aeons_utils_Timer = function(interval,callback,repeat) {
 	if(repeat == null) {
@@ -4240,6 +3714,14 @@ aeons_utils_Timer.prototype = {
 		}
 	}
 	,__class__: aeons_utils_Timer
+};
+var aeons_utils_Timers = function() { };
+$hxClasses["aeons.utils.Timers"] = aeons_utils_Timers;
+aeons_utils_Timers.__name__ = "aeons.utils.Timers";
+aeons_utils_Timers.__isInterface__ = true;
+aeons_utils_Timers.prototype = {
+	create: null
+	,__class__: aeons_utils_Timers
 };
 var aeons_utils_services_InternalStorage = function() {
 };
@@ -5828,7 +5310,7 @@ kha_Image.createRenderTarget = function(width,height,format,depthStencil,antiAli
 	if(kha_SystemImpl.gl == null) {
 		return new kha_CanvasImage(width,height,format,true);
 	} else {
-		return new kha_WebGLImage(width,height,format,true,depthStencil,antiAliasingSamples);
+		return new kha_WebGLImage(width,height,format,true,depthStencil,antiAliasingSamples,false);
 	}
 };
 kha_Image.fromImage = function(image,readable) {
@@ -5838,13 +5320,16 @@ kha_Image.fromImage = function(image,readable) {
 		img.createTexture();
 		return img;
 	} else {
-		var img = new kha_WebGLImage(image.width,image.height,0,false,0,1);
+		var img = new kha_WebGLImage(image.width,image.height,0,false,0,1,readable);
 		img.image = image;
 		img.createTexture();
 		return img;
 	}
 };
-kha_Image.fromBytes = function(bytes,width,height,format,usage) {
+kha_Image.fromBytes = function(bytes,width,height,format,usage,readable) {
+	if(readable == null) {
+		readable = false;
+	}
 	if(format == null) {
 		format = 0;
 	}
@@ -5852,7 +5337,7 @@ kha_Image.fromBytes = function(bytes,width,height,format,usage) {
 		usage = 0;
 	}
 	if(kha_SystemImpl.gl != null) {
-		var img = new kha_WebGLImage(width,height,format,false,0,1);
+		var img = new kha_WebGLImage(width,height,format,false,0,1,readable);
 		img.image = img.bytesToArray(bytes);
 		img.createTexture();
 		return img;
@@ -5872,7 +5357,7 @@ kha_Image.fromVideo = function(video) {
 		img.createTexture();
 		return img;
 	} else {
-		var img = new kha_WebGLImage(jsvideo.element.videoWidth,jsvideo.element.videoHeight,0,false,0,1);
+		var img = new kha_WebGLImage(jsvideo.element.videoWidth,jsvideo.element.videoHeight,0,false,0,1,false);
 		img.video = jsvideo.element;
 		img.createTexture();
 		return img;
@@ -7446,19 +6931,6 @@ kha_SystemImpl.initAnimate = function(callback) {
 		}
 		kha_Scheduler.executeFrame();
 		if(canvas.getContext != null) {
-			if(kha_SystemImpl.lastCanvasClientWidth != canvas.clientWidth || kha_SystemImpl.lastCanvasClientHeight != canvas.clientHeight) {
-				var scale = window.devicePixelRatio;
-				var clientWidth = canvas.clientWidth;
-				var clientHeight = canvas.clientHeight;
-				canvas.width = clientWidth;
-				canvas.height = clientHeight;
-				if(scale != 1) {
-					canvas.style.width = (clientWidth / scale | 0) + "px";
-					canvas.style.height = (clientHeight / scale | 0) + "px";
-				}
-				kha_SystemImpl.lastCanvasClientWidth = canvas.clientWidth;
-				kha_SystemImpl.lastCanvasClientHeight = canvas.clientHeight;
-			}
 			kha_System.render([kha_SystemImpl.frame]);
 			if(kha_SystemImpl.ie && kha_SystemImpl.gl != null) {
 				kha_SystemImpl.gl.clearColor(1,1,1,1);
@@ -7965,7 +7437,7 @@ kha_Video.__interfaces__ = [kha_Resource];
 kha_Video.prototype = {
 	__class__: kha_Video
 };
-var kha_WebGLImage = function(width,height,format,renderTarget,depthStencilFormat,samples) {
+var kha_WebGLImage = function(width,height,format,renderTarget,depthStencilFormat,samples,readable) {
 	this.MSAAFrameBuffer = null;
 	this.depthTexture = null;
 	this.texture = null;
@@ -7976,6 +7448,7 @@ var kha_WebGLImage = function(width,height,format,renderTarget,depthStencilForma
 	this.myFormat = format;
 	this.renderTarget = renderTarget;
 	this.samples = samples;
+	this.readable = readable;
 	this.image = null;
 	this.video = null;
 	this.depthStencilFormat = depthStencilFormat;
@@ -8016,6 +7489,7 @@ kha_WebGLImage.prototype = $extend(kha_Image.prototype,{
 	,graphics2: null
 	,graphics4: null
 	,depthStencilFormat: null
+	,readable: null
 	,get_g2: function() {
 		if(this.graphics2 == null) {
 			this.graphics2 = new kha_js_graphics4_Graphics2(this);
@@ -8122,7 +7596,7 @@ kha_WebGLImage.prototype = $extend(kha_Image.prototype,{
 			this.initDepthStencilBuffer(this.depthStencilFormat);
 			var e = kha_SystemImpl.gl.checkFramebufferStatus(36160);
 			if(e != 36053) {
-				haxe_Log.trace("checkframebufferStatus error " + e,{ fileName : "lib/Kha/Backends/HTML5/kha/WebGLImage.hx", lineNumber : 270, className : "kha.WebGLImage", methodName : "createTexture"});
+				haxe_Log.trace("checkframebufferStatus error " + e,{ fileName : "lib/Kha/Backends/HTML5/kha/WebGLImage.hx", lineNumber : 283, className : "kha.WebGLImage", methodName : "createTexture"});
 			}
 			kha_SystemImpl.gl.bindRenderbuffer(36161,null);
 			kha_SystemImpl.gl.bindFramebuffer(36160,null);
@@ -16813,6 +16287,7 @@ scenes_GameScene.prototype = $extend(aeons_core_Scene.prototype,{
 		var entity = this.sceneProviders.entities.addEntity(aeons_core_Entity);
 		aeons_Aeons._entities.addComponent(entity,aeons_components_CTransform).create({ x : x, y : y});
 		var bmText = aeons_Aeons._entities.addComponent(entity,aeons_components_CBitmapText).create({ font : font, text : text, color : color, anchorX : 0});
+		aeons_Aeons._entities.addComponent(entity,aeons_components_CLayer).create();
 		return bmText;
 	}
 	,__class__: scenes_GameScene
@@ -16840,8 +16315,8 @@ haxe_ds_ObjectMap.count = 0;
 js_Boot.__toStr = ({ }).toString;
 aeons_events_ApplicationEvent.pool = new aeons_utils_Pool(aeons_events_ApplicationEvent);
 aeons_events_ComponentEvent.pool = new aeons_utils_Pool(aeons_events_ComponentEvent);
+aeons_events_LayerEvent.pool = new aeons_utils_Pool(aeons_events_LayerEvent);
 aeons_events_SceneEvent.pool = new aeons_utils_Pool(aeons_events_SceneEvent);
-aeons_events_SortEvent.pool = new aeons_utils_Pool(aeons_events_SortEvent);
 aeons_events_input_GamepadEvent.pool = new aeons_utils_Pool(aeons_events_input_GamepadEvent);
 aeons_events_input_KeyboardEvent.pool = new aeons_utils_Pool(aeons_events_input_KeyboardEvent);
 aeons_events_input_MouseEvent.pool = new aeons_utils_Pool(aeons_events_input_MouseEvent);
@@ -16904,8 +16379,6 @@ kha_SystemImpl.estimatedRefreshRate = 60;
 kha_SystemImpl.minimumScroll = 999;
 kha_SystemImpl.lastFirstTouchX = 0;
 kha_SystemImpl.lastFirstTouchY = 0;
-kha_SystemImpl.lastCanvasClientWidth = -1;
-kha_SystemImpl.lastCanvasClientHeight = -1;
 kha_SystemImpl.iosSoundEnabled = false;
 kha_SystemImpl.soundEnabled = false;
 kha_SystemImpl.iosTouchs = [];

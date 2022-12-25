@@ -69,33 +69,12 @@
         "h": 24,
         "w": 24,
         "x": 2,
-        "y": 1
-      },
-      "frame": {
-        "h": 23,
-        "w": 20,
-        "x": 41,
-        "y": 27
-      },
-      "trimmed": true,
-      "sourceSize": {
-        "h": 24,
-        "w": 24
-      },
-      "filename": "blue_alien_00"
-    },
-    {
-      "rotated": false,
-      "spriteSourceSize": {
-        "h": 24,
-        "w": 24,
-        "x": 2,
         "y": 0
       },
       "frame": {
         "h": 23,
         "w": 20,
-        "x": 63,
+        "x": 41,
         "y": 27
       },
       "trimmed": true,
@@ -116,15 +95,15 @@
       "frame": {
         "h": 23,
         "w": 20,
-        "x": 67,
-        "y": 1
+        "x": 63,
+        "y": 27
       },
       "trimmed": true,
       "sourceSize": {
         "h": 24,
         "w": 24
       },
-      "filename": "green_alien_00"
+      "filename": "blue_alien_00"
     },
     {
       "rotated": false,
@@ -137,6 +116,27 @@
       "frame": {
         "h": 23,
         "w": 20,
+        "x": 67,
+        "y": 1
+      },
+      "trimmed": true,
+      "sourceSize": {
+        "h": 24,
+        "w": 24
+      },
+      "filename": "green_alien_01"
+    },
+    {
+      "rotated": false,
+      "spriteSourceSize": {
+        "h": 24,
+        "w": 24,
+        "x": 2,
+        "y": 1
+      },
+      "frame": {
+        "h": 23,
+        "w": 20,
         "x": 85,
         "y": 26
       },
@@ -145,7 +145,7 @@
         "h": 24,
         "w": 24
       },
-      "filename": "green_alien_01"
+      "filename": "green_alien_00"
     },
     {
       "rotated": false,
@@ -166,7 +166,7 @@
         "h": 24,
         "w": 24
       },
-      "filename": "orange_alien_00"
+      "filename": "yellow_alien_00"
     },
     {
       "rotated": false,
@@ -187,7 +187,7 @@
         "h": 24,
         "w": 24
       },
-      "filename": "orange_alien_01"
+      "filename": "yellow_alien_01"
     },
     {
       "rotated": false,
@@ -208,7 +208,7 @@
         "h": 24,
         "w": 24
       },
-      "filename": "yellow_alien_00"
+      "filename": "orange_alien_00"
     },
     {
       "rotated": false,
@@ -229,7 +229,7 @@
         "h": 24,
         "w": 24
       },
-      "filename": "yellow_alien_01"
+      "filename": "orange_alien_01"
     },
     {
       "rotated": false,
@@ -341,14 +341,35 @@
       "spriteSourceSize": {
         "h": 24,
         "w": 24,
+        "x": 5,
+        "y": 7
+      },
+      "frame": {
+        "h": 17,
+        "w": 15,
+        "x": 194,
+        "y": 21
+      },
+      "trimmed": true,
+      "sourceSize": {
+        "h": 24,
+        "w": 24
+      },
+      "filename": "spikey_02"
+    },
+    {
+      "rotated": false,
+      "spriteSourceSize": {
+        "h": 24,
+        "w": 24,
         "x": 3,
         "y": 4
       },
       "frame": {
         "h": 17,
         "w": 18,
-        "x": 194,
-        "y": 21
+        "x": 202,
+        "y": 1
       },
       "trimmed": true,
       "sourceSize": {
@@ -363,33 +384,12 @@
         "h": 24,
         "w": 24,
         "x": 5,
-        "y": 7
-      },
-      "frame": {
-        "h": 17,
-        "w": 15,
-        "x": 202,
-        "y": 1
-      },
-      "trimmed": true,
-      "sourceSize": {
-        "h": 24,
-        "w": 24
-      },
-      "filename": "spikey_02"
-    },
-    {
-      "rotated": false,
-      "spriteSourceSize": {
-        "h": 24,
-        "w": 24,
-        "x": 5,
         "y": 10
       },
       "frame": {
         "h": 14,
         "w": 15,
-        "x": 214,
+        "x": 211,
         "y": 20
       },
       "trimmed": true,
@@ -410,7 +410,7 @@
       "frame": {
         "h": 13,
         "w": 18,
-        "x": 214,
+        "x": 211,
         "y": 36
       },
       "trimmed": true,
@@ -431,7 +431,7 @@
       "frame": {
         "h": 13,
         "w": 15,
-        "x": 219,
+        "x": 222,
         "y": 1
       },
       "trimmed": true,
@@ -446,13 +446,34 @@
       "spriteSourceSize": {
         "h": 18,
         "w": 18,
+        "x": 2,
+        "y": 3
+      },
+      "frame": {
+        "h": 12,
+        "w": 14,
+        "x": 1,
+        "y": 39
+      },
+      "trimmed": true,
+      "sourceSize": {
+        "h": 18,
+        "w": 18
+      },
+      "filename": "heart_full"
+    },
+    {
+      "rotated": false,
+      "spriteSourceSize": {
+        "h": 18,
+        "w": 18,
         "x": 3,
         "y": 3
       },
       "frame": {
         "h": 12,
         "w": 12,
-        "x": 1,
+        "x": 17,
         "y": 39
       },
       "trimmed": true,
@@ -473,7 +494,7 @@
       "frame": {
         "h": 12,
         "w": 8,
-        "x": 15,
+        "x": 31,
         "y": 39
       },
       "trimmed": true,
@@ -482,6 +503,27 @@
         "w": 18
       },
       "filename": "coin_01"
+    },
+    {
+      "rotated": false,
+      "spriteSourceSize": {
+        "h": 18,
+        "w": 18,
+        "x": 2,
+        "y": 3
+      },
+      "frame": {
+        "h": 12,
+        "w": 14,
+        "x": 228,
+        "y": 16
+      },
+      "trimmed": true,
+      "sourceSize": {
+        "h": 18,
+        "w": 18
+      },
+      "filename": "heart_empty"
     },
     {
       "rotated": false,
@@ -495,7 +537,7 @@
         "h": 12,
         "w": 24,
         "x": 231,
-        "y": 16
+        "y": 30
       },
       "trimmed": true,
       "sourceSize": {
@@ -503,48 +545,6 @@
         "w": 24
       },
       "filename": "flyer_01"
-    },
-    {
-      "rotated": false,
-      "spriteSourceSize": {
-        "h": 18,
-        "w": 18,
-        "x": 2,
-        "y": 3
-      },
-      "frame": {
-        "h": 12,
-        "w": 14,
-        "x": 25,
-        "y": 39
-      },
-      "trimmed": true,
-      "sourceSize": {
-        "h": 18,
-        "w": 18
-      },
-      "filename": "heart_empty"
-    },
-    {
-      "rotated": false,
-      "spriteSourceSize": {
-        "h": 18,
-        "w": 18,
-        "x": 2,
-        "y": 3
-      },
-      "frame": {
-        "h": 12,
-        "w": 14,
-        "x": 234,
-        "y": 30
-      },
-      "trimmed": true,
-      "sourceSize": {
-        "h": 18,
-        "w": 18
-      },
-      "filename": "heart_full"
     },
     {
       "rotated": false,
@@ -557,7 +557,7 @@
       "frame": {
         "h": 12,
         "w": 15,
-        "x": 236,
+        "x": 239,
         "y": 1
       },
       "trimmed": true,
